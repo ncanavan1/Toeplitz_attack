@@ -48,21 +48,22 @@ class Toeplitz_hashing:
 
     def calc_pa_explicit(self):
         ##must make sure that calc_pa_key has bden called first such that explicit version can be verified.
-        result = np.zeros(self.pa_len)
+        result = np.zeros(self.pa_len, dtype=int)
 
         for j in range(self.pa_len):
             for i in range(self.l_key):
                 intermediate_val = 0
                 if i >= j:
-                    intermediate_val = self.TM_coeff_row[i-j]*self.ec_key[i]
-                    result[j] = (result[j] + intermediate_val)%2
+                    intermediate_val = int(self.TM_coeff_row[i-j]) & int(self.ec_key[i])
+                    result[j] ^= intermediate_val
                 else:
-                    intermediate_val = self.TM_coeff_col[j-i]*self.ec_key[i]
-                    result[j] = (result[j] + intermediate_val)%2
+                    intermediate_val = int(self.TM_coeff_col[j-i]) & int(self.ec_key[i])
+                    result[j] ^= intermediate_val
                 
                 ##power model
                 self.simulated_power.append(intermediate_val + np.random.normal(0,self.sigma))
 
         self.pa_key = result
         
+    
 

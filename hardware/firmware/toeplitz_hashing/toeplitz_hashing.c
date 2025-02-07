@@ -58,17 +58,40 @@ void int_to_char_arr(int *i_arr, char *c_arr, int len){
   }
 }
 
+void long_delay(){
+  for(int i = 0; i < 1000; i++){
+    asm volatile(
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    "nop"       "\n\t"
+    ::
+    );
+  }
+}
 
 void toeplitz_hash(int *row_spec, int *col_spec, int *ec_key, int *pa_key, int pa_len, int l_key){
+  long_delay();
   for(int j = 0; j < pa_len; j++){
     for(int i = 0; i < l_key; i++){
       int intermediate_val = 0;
       if(i >= j){
+        
+        long_delay();
         intermediate_val = row_spec[i-j]*ec_key[i];
+        long_delay();
         pa_key[j] = (pa_key[j] + intermediate_val)%2;
       }
       else{
+        long_delay();
         intermediate_val = col_spec[j-i]*ec_key[i];
+        long_delay();
         pa_key[j] = (pa_key[j] + intermediate_val)%2;
       }
     }
@@ -98,10 +121,10 @@ int main(void)
     int pa_len = 8; //place holder sizes
     int l_key = 10;
 
-    char row_spec[l_key+1];
-    char col_spec[pa_len+1];
-    char ec_key[l_key+1];
-    char pa_key[pa_len+1];
+    char row_spec[l_key];
+    char col_spec[pa_len];
+    char ec_key[l_key];
+    char pa_key[pa_len];
 
     int row_spec_i[l_key];
     int col_spec_i[pa_len];
@@ -129,6 +152,7 @@ int main(void)
 
         my_puts(row_spec);
         char_to_int_arr(row_spec, row_spec_i, l_key);
+        my_puts("\n");
         print_int_array_serial(row_spec_i,l_key);
         my_puts("\n");
 
@@ -142,6 +166,9 @@ int main(void)
         trigger_high();
 
         my_puts(col_spec);
+        char_to_int_arr(col_spec, col_spec_i, pa_len);
+        my_puts("\n");
+        print_int_array_serial(col_spec_i, pa_len);
         my_puts("\n");
 
         trigger_low();
@@ -153,21 +180,17 @@ int main(void)
         trigger_high();
 
         my_puts(ec_key);
-        my_puts("\n");
-
-
-        char_to_int_arr(col_spec, col_spec_i, pa_len);
         char_to_int_arr(ec_key, ec_key_i, l_key);
+        my_puts("\n");
+        print_int_array_serial(ec_key_i,l_key);
+        my_puts("\n");
 
         toeplitz_hash(row_spec_i, col_spec_i, ec_key_i, pa_key_i, pa_len, l_key);
 
         int_to_char_arr(pa_key_i, pa_key, pa_len);
 
-        //my_puts("PA KEY: ");
-        //my_puts(pa_key);
-
-        int_to_char_arr(row_spec_i, row_spec, l_key);
-        my_puts(row_spec);
+        my_puts("PA KEY: ");
+        print_int_array_serial(pa_key_i,pa_len);
 
     }
 

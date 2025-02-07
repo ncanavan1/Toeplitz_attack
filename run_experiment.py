@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from graphing import plotting
 
 def gen_ec_key(N):
-    return np.random.randint(0,2,N)
+    return np.random.randint(0,2,N,dtype=int)
 
 
 def main():
@@ -16,6 +16,19 @@ def main():
     sample_number = 10
     sigma_range = np.arange(0,2,0.2)
     sigma_acc = []
+
+
+    TM_test = th.Toeplitz_hashing(pa_len,ec_key,l_key)
+    row_spec = TM_test.TM_coeff_row
+    col_spec = TM_test.TM_coeff_col
+    TM_test.calc_pa_explicit()
+    pa_test = TM_test.pa_key
+
+    print("ROW SPEC: {0}".format(row_spec))
+    print("COL SPEC: {0}".format(col_spec))
+    print("EC KEY: {0}".format(ec_key))
+    print("PA KEY: {0}".format(pa_test))
+
 
     for sigma in sigma_range:
         ##Alice's genuine computation
