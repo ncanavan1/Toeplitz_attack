@@ -1,6 +1,8 @@
 import numpy as np
 import struct
+import scipy
 import matplotlib.pyplot as plt
+import scipy.linalg
 
 
 class FFT_Toeplitz_hashing:
@@ -25,12 +27,11 @@ class FFT_Toeplitz_hashing:
         self.padded_key = np.zeros(self.hash_len + self.key_len - 1)
 
     def embed_toeplitz_on_circulant(self):
-        for i in range(self.key_len):
-            self.circulant_coeff[i] = self.TM_first_row_coeff[i]
-            self.padded_key[i] = self.ec_key[i] ##Convert ec key to padded version
-        
-        for i in range(self.hash_len-1):
-            self.circulant_coeff[self.key_len + i] = self.TM_first_col_coeff[-1-i]
+        ## This is how scipy does it https://github.com/scipy/scipy/blob/v1.15.1/scipy/linalg/_basic.py#L1960
+        self.circulant_coeff = np.concatenate((self.TM_first_col_coeff, self.TM_first_row_coeff[-1:0:-1]))
+
+        self.padded_key[:self.key_len] = self.ec_key
+
 
 
     def print_matrices(self):
@@ -135,10 +136,8 @@ class FFT_Toeplitz_hashing:
     
     def fft_hash(self):
         v = self.DFT(self.circulant_coeff)
-        y = self.DFT(self.padded_key)
+        y = self.DFT_explicit(self.padded_key)
         u = np.multiply(v,y)
-        cx = np.round(np.real(self.IDFT(u)))%2
+        cx = self.IDFT(u)
+        cx = np.round(cx).real%2
         return cx[:self.hash_len]
-
-
-

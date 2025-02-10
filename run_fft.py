@@ -1,11 +1,34 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import sympy as sp
 from privacy_amplification import fft_toeplitz as th
 from privacy_amplification import toeplitz_hashing as th_basic
-import sympy as sp
+
 
 def gen_ec_key(N):
     return np.random.randint(0,2,N,dtype=int)
+
+
+
+##the fft solutions and basic matrix multiplications should be equal
+def verify_correct_outputs(key_len, hash_len):
+    ec_key = gen_ec_key(key_len)
+
+
+    TH_Bas = th_basic.Toeplitz_hashing(hash_len, ec_key, key_len)
+    TH_Bas.calc_pa_key()
+    basic_hash = TH_Bas.pa_key
+    print("\n{0}\n".format(basic_hash))
+
+        
+    TH_FFT = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key,
+                                     TM_first_row_coeff=TH_Bas.TM_coeff_row, TM_first_col_coeff=TH_Bas.TM_coeff_col)
+    TH_FFT.embed_toeplitz_on_circulant()
+    fft_hash = TH_FFT.fft_hash()
+
+    print("\n{0}\n".format(fft_hash))
+
+
 
 
 
@@ -43,4 +66,5 @@ def main():
 
 
 if __name__=="__main__":
-    main()
+    #main()
+    verify_correct_outputs(10,8)
