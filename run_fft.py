@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import sympy as sp
 from privacy_amplification import fft_toeplitz as th
 from privacy_amplification import toeplitz_hashing as th_basic
+import time
 
 
 def gen_ec_key(N):
@@ -24,12 +25,42 @@ def verify_correct_outputs(key_len, hash_len):
     TH_FFT = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key,
                                      TM_first_row_coeff=TH_Bas.TM_coeff_row, TM_first_col_coeff=TH_Bas.TM_coeff_col)
     TH_FFT.embed_toeplitz_on_circulant()
-    fft_hash = TH_FFT.fft_hash()
+    DFT_hash = TH_FFT.DFT_hash()
 
-    print("\n{0}\n".format(fft_hash))
+    FFT_hash = TH_FFT.FFT_hash()
+
+    print("\nDFT Hash: {0}\n".format(DFT_hash))
+
+    print("\nFFT Hash: {0}\n".format(DFT_hash))
 
 
 
+def verify_fft(M,N):
+
+    X = gen_ec_key(N)
+    TH = th.FFT_Toeplitz_hashing(M,N,X)
+
+    start = time.time()
+    DFT = TH.DFT(X)
+    end = time.time()
+    dft_time = end - start
+    print(DFT)
+
+    start = time.time()
+    FFT = TH.FFT(X)
+    end = time.time()
+    fft_time = end - start
+    print("\n\n")
+    print(FFT)
+
+    print("\nDFT Time: {0}".format(dft_time))
+    print("\nFFT Time: {0}".format(fft_time))
+
+    ifft_return = TH.IFFT(FFT)
+    ifft_return = np.array(np.round(ifft_return).real%2,dtype=int)
+    print(ifft_return)
+    print("\n")
+    print(X)
 
 
 def main():
@@ -67,4 +98,5 @@ def main():
 
 if __name__=="__main__":
     #main()
-    verify_correct_outputs(10,8)
+    #verify_fft(8,16)
+    verify_correct_outputs(30,20)

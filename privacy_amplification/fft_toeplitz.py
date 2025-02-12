@@ -134,10 +134,60 @@ class FFT_Toeplitz_hashing:
         x = np.dot(e, X)/N
         return x
     
-    def fft_hash(self):
+    def DFT_hash(self):
         v = self.DFT(self.circulant_coeff)
         y = self.DFT_explicit(self.padded_key)
         u = np.multiply(v,y)
         cx = self.IDFT(u)
+        cx = np.round(cx).real%2
+        return cx[:self.hash_len]
+    
+    ##Cooly-Turkey 1-D Method
+    def FFT(self, X):
+        N = X.size
+
+        if N % 2 > 0:
+            p = 0
+            while(2**p < N):
+                p = p+1
+            N_new = 2**p
+            X = np.concatenate((X,np.zeros(N_new-N)))
+            N = N_new
+
+        if N<=16:
+            return self.DFT(X)
+        else:
+            X_even = self.FFT(X[::2])
+            X_odd = self.FFT(X[1::2])
+            factor = np.exp(-2j * np.pi * np.arange(N) / N)
+            return np.concatenate([X_even + factor[:int(N / 2)] * X_odd, 
+                                   X_even + factor[int(N / 2):] * X_odd])
+
+    ###Cooley-Turky 1-D method
+    def IFFT(self, X):
+        N = X.size
+
+        if N % 2 > 0:
+            p = 0
+            while(2**p < N):
+                p = p+1
+            N_new = 2**p
+            X = np.concatenate((X,np.zeros(N_new-N)))
+            N = N_new
+            
+        if N<=16:
+            return self.IDFT(X)
+        else:
+            X_even = self.IFFT(X[::2])
+            X_odd = self.IFFT(X[1::2])
+            factor = np.exp(-2j * np.pi * np.arange(N) / N)
+            return np.concatenate([X_even + factor[:int(N / 2)] * X_odd, 
+                                   X_even + factor[int(N / 2):] * X_odd])
+    
+    def FFT_hash(self):
+        v = self.FFT(self.circulant_coeff)
+        y = self.FFT(self.padded_key)
+        u = np.multiply(v,y)
+        cx = self.IFFT(u)
         cx = np.round(cx).real%2
         return cx[:self.hash_len]
