@@ -3,6 +3,7 @@ import struct
 import scipy
 import matplotlib.pyplot as plt
 import scipy.linalg
+from adversary import FFT_HW_attack
 
 
 class FFT_Toeplitz_hashing:
@@ -73,11 +74,14 @@ class FFT_Toeplitz_hashing:
     def binary(self,num):
         return ''.join('{:0>8b}'.format(c) for c in struct.pack('!f', num))
     
+    def float_to_bin(self, num):
+        return format(struct.unpack('!I', struct.pack('!f', num))[0], '032b')
+
     def HW_calc(self, x):
         x_re = x.real
         x_im = x.imag
-        b_re = self.binary(x_re)
-        b_im = self.binary(x_im)
+        b_re = self.float_to_bin(x_re)
+        b_im = self.float_to_bin(x_im)
         HW = 0
         for b in b_re:
             if b == "1":
@@ -124,6 +128,10 @@ class FFT_Toeplitz_hashing:
         plt.legend()
         plt.tight_layout()
         plt.show()
+
+        Eve = FFT_HW_attack.Eve(HW_seq, 0,0,0,0,0)
+        Eve_key = Eve.DFT_SCA(N,0,N**2)
+
         return X
     
     def IDFT(self, X):
@@ -136,14 +144,14 @@ class FFT_Toeplitz_hashing:
     
     def DFT_hash(self):
         v = self.DFT(self.circulant_coeff)
-        y = self.DFT_explicit(self.padded_key)
+        y = self.DFT(self.padded_key)
         u = np.multiply(v,y)
         cx = self.IDFT(u)
         cx = np.round(cx).real%2
         return cx[:self.hash_len]
     
     ##Cooly-Turkey 1-D Method
-    def FFT(self, X):
+    def FFT(self, X, record=False):
         N = X.size
 
         if N % 2 > 0:
@@ -155,10 +163,13 @@ class FFT_Toeplitz_hashing:
             N = N_new
 
         if N<=16:
-            return self.DFT(X)
+            if record == False:
+                return self.DFT(X)
+            else:
+                return self.DFT_explicit(X)
         else:
-            X_even = self.FFT(X[::2])
-            X_odd = self.FFT(X[1::2])
+            X_even = self.FFT(X[::2], record=record)
+            X_odd = self.FFT(X[1::2], record=record)
             factor = np.exp(-2j * np.pi * np.arange(N) / N)
             return np.concatenate([X_even + factor[:int(N / 2)] * X_odd, 
                                    X_even + factor[int(N / 2):] * X_odd])
@@ -185,9 +196,78 @@ class FFT_Toeplitz_hashing:
                                    X_even + factor[int(N / 2):] * X_odd])
     
     def FFT_hash(self):
-        v = self.FFT(self.circulant_coeff)
-        y = self.FFT(self.padded_key)
+        v = self.FFT(self.circulant_coeff, record=False)
+        y = self.FFT(self.padded_key, record=True)
         u = np.multiply(v,y)
         cx = self.IFFT(u)
         cx = np.round(cx).real%2
         return cx[:self.hash_len]
+    
+    def reverse_bits(self, n, bitSize):
+        result = 0
+        for i in range(bitSize):
+            if n & (1 << i):
+                result |= 1 << (bitSize - 1 - i)
+        return result
+    
+    def bit_reverse(self, x, X):
+        N = X.size
+        bit_size = len(bin(N-1))-2
+        for k in range(N):
+            reversed_binary = self.reverse_bits(k,bit_size)
+            X[int(reversed_binary)] = x[k]
+        return X
+
+    def DIT_FFT(self, x):
+        N = x.size
+
+        if N % 2 > 0:
+            p = 0
+            while(2**p < N):
+                p = p+1
+            N_new = 2**p
+            x = np.concatenate((x,np.zeros(N_new-N)))
+            N = N_new
+        
+        X = np.zeros(N,dtype=complex)
+        X = self.bit_reverse(x,X)
+
+        iterations = int(np.log2(N))
+        for s in range(1,iterations):
+            m = 2**s
+            w_m = np.exp(-2j*np.pi/m)
+            for k in range(0,N,m): ##not sure on this line
+                w = 1
+                for j in range(int(m/2)):
+                    t = w*X[int(k+j+(m/2))]
+                    u = X[k+j]
+                    X[k+j] = u + t
+                    X[int(k+j+(m/2))] = u - t
+                    w = w*w_m
+        
+        return X
+
+    def butterfly(self, N, x):
+        w = np.exp(-2j * np.pi * np.arange(N) / N)
+        w0 = w[1]
+
+        X = np.copy(x)
+        X = np.array(X,dtype=complex)
+
+        HWa0 = self.HW_calc(X[0])
+        HWb0 = self.HW_calc(X[1])
+
+        a = X[0]
+        b = w0*X[1]
+        X[0] = a + b
+        X[1] = a - b
+
+        HWa1 = self.HW_calc(X[0])
+        HWb1 = self.HW_calc(X[1])
+
+        print("Bit a: {0}, Bit b: {1}".format(x[0], x[1]))
+        print("X[0]: {0}, X[1]: {1}".format(X[0], X[1]))
+        print("w: {0}".format(w0))
+
+        print("Bit a HW: {0} --> {1}".format(HWa0, HWa1))
+        print("Bit b HW: {0} --> {1}".format(HWb0, HWb1))

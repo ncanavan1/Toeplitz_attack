@@ -53,14 +53,32 @@ def verify_fft(M,N):
     print("\n\n")
     print(FFT)
 
+    start = time.time()
+    FFT_numpy = np.fft.fft(X)
+    end = time.time()
+    numpy_time = end - start
+
+
+
+    DIT_FFT = TH.DIT_FFT(X)
+    print("\nDIT FFT\n")
+    print(DIT_FFT)
+    print("\nNumpy FFT\n")
+    print(FFT_numpy)
+
     print("\nDFT Time: {0}".format(dft_time))
     print("\nFFT Time: {0}".format(fft_time))
+    print("\nNumpy Time: {0}".format(numpy_time))
+
 
     ifft_return = TH.IFFT(FFT)
     ifft_return = np.array(np.round(ifft_return).real%2,dtype=int)
     print(ifft_return)
     print("\n")
     print(X)
+
+    print("\n\n")
+    TH.butterfly(8, np.random.randint(0,2,8))
 
 
 def main():
@@ -96,7 +114,8 @@ def main():
 
 
 
+
 if __name__=="__main__":
     #main()
-    #verify_fft(8,16)
-    verify_correct_outputs(30,20)
+    verify_fft(8,16)
+    #verify_correct_outputs(30,20)

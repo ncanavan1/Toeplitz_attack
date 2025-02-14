@@ -76,6 +76,36 @@ void long_delay(){
   }
 }
 
+
+void fft_recursive(float* x){
+  int N = sizeof(x);
+  float omega, t, u;
+
+  int len, start, j, k = 0;
+  for(len = N; len > 0; len >> 1){
+    for(start = 0; start < N; start = j + len){
+      omega = 9;
+      for(j = start; j < start + len; ++j){
+        t = omega* x[j + len];
+        u = x[j];
+        x[j + len] = u - t;
+        x[j] = x[j] + t;
+      }
+    }
+  }
+}
+
+void ifft_recursive(){
+
+}
+
+
+void toeplitz_hash_fft(){
+
+}
+
+
+
 void toeplitz_hash(int *row_spec, int *col_spec, int *ec_key, int *pa_key, int pa_len, int l_key){
   long_delay();
   for(int j = 0; j < pa_len; j++){
