@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.linalg
 import sympy as sp
 from privacy_amplification import fft_toeplitz as th
 from privacy_amplification import toeplitz_hashing as th_basic
 import time
+import scipy
 
 
 def gen_ec_key(N):
@@ -32,6 +34,33 @@ def verify_correct_outputs(key_len, hash_len):
     print("\nDFT Hash: {0}\n".format(DFT_hash))
 
     print("\nFFT Hash: {0}\n".format(DFT_hash))
+
+    x = np.asarray([0,1,1,0,1,1,0,1,1,1,0,0,1,0,0,0,0,1,1,0,1,1,0,1,1,1,0,0,1,0,0,0])
+
+    X = TH_FFT.FFT(x, record=True)
+
+    #X_invDFT = TH_FFT.IDFT(X)
+    X_invDFT = np.conj((TH_FFT.FFT(np.conj(X))))/32
+
+   # X_np = np.fft.fft(x)
+    X_np = np.fft.ifft(X)
+
+    print(X_invDFT)
+
+    print("\n\n")
+
+    print(X_np)
+
+    
+def numpy_fft(TH, colLen):
+
+    N = len(TH.circulant_coeff)
+    v = np.fft.fft(TH.circulant_coeff)
+    y = np.fft.fft(TH.padded_key)
+    u = np.multiply(v,y)
+    cx_p = np.fft.ifft(u)
+    cx = np.round(cx_p).real%2
+    return cx[:colLen], v, y, u, cx_p
 
 
 
@@ -81,6 +110,55 @@ def verify_fft(M,N):
     TH.butterfly(8, np.random.randint(0,2,8))
 
 
+def compare_to_numpy():
+    #col = np.array([0,1,0])
+    #row = np.array([0,1,1,0,1])
+    #ec_key = np.array([1,1,0,1,1])
+    #hash_len = 3
+    #key_len = 5
+
+    ##Ensure m + n - 1 is a power of 2
+
+    key_len = 80
+    hash_len = 49
+    ec_key = gen_ec_key(key_len)
+
+
+    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key)
+    TH.print_matrices()
+    TH.embed_toeplitz_on_circulant()
+    myKey, v1, y1, u1, cx_p1 = TH.FFT_hash()
+
+    scipy_res = scipy.linalg.matmul_toeplitz((TH.TM_first_col_coeff,TH.TM_first_row_coeff),ec_key)
+    scipy_res = np.round(scipy_res).real%2
+
+    numpy_key, v2, y2, u2, cx_p2 = numpy_fft(TH, hash_len)
+    print("Done")
+    
+    print("\n\nv")
+    print(v1 - v2)
+    print("\n\ny")
+    print(y1 - y2)
+    print("\n\nu")
+    print(u1 - u2)
+
+    print("\n\nu1")
+    print(u1)
+
+    print("\n\nu2")
+    print(u2)
+
+    print("\n\ncx_p")
+    print(cx_p1 - cx_p2)
+
+    print("\n\ncx_p1")
+    print(cx_p1)
+
+    print("\n\ncx_p2")
+    print(cx_p2)
+
+
+
 def main():
     key_len = 10
     hash_len = 8
@@ -117,5 +195,6 @@ def main():
 
 if __name__=="__main__":
     #main()
-    verify_fft(8,16)
+    #verify_fft(8,16)
     #verify_correct_outputs(30,20)
+    compare_to_numpy()

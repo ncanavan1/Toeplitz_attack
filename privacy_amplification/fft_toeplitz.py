@@ -30,6 +30,7 @@ class FFT_Toeplitz_hashing:
     def embed_toeplitz_on_circulant(self):
         ## This is how scipy does it https://github.com/scipy/scipy/blob/v1.15.1/scipy/linalg/_basic.py#L1960
         self.circulant_coeff = np.concatenate((self.TM_first_col_coeff, self.TM_first_row_coeff[-1:0:-1]))
+        #self.circulant_coeff = np.array([0,1,1,0,1,0,1])
 
         self.padded_key[:self.key_len] = self.ec_key
 
@@ -61,15 +62,6 @@ class FFT_Toeplitz_hashing:
 
         print(CM)
 
-        
-        
-    def DFT(self, x):
-        N = len(x)
-        n = np.arange(N)
-        k = n.reshape((N,1))
-        e = np.exp(-2j * np.pi * k * n / N)
-        X = np.dot(e,x)
-        return X
     
     def binary(self,num):
         return ''.join('{:0>8b}'.format(c) for c in struct.pack('!f', num))
@@ -134,74 +126,84 @@ class FFT_Toeplitz_hashing:
 
         return X
     
+    def DFT(self, x):
+        """Compute the discrete Fourier Transform of the 1D array x"""
+        N = x.size
+        n = np.arange(N)
+        k = n.reshape((N,1))
+        M = np.exp(-2j * np.pi * k * n / N)
+        return np.dot(M, x)
+    
     def IDFT(self, X):
         N = X.size
         n = np.arange(N)
         k = n.reshape((N,1))
-        e = np.exp(2j * np.pi * k * n / N)
-        x = np.dot(e, X)/N
+        e = np.exp(-2j * np.pi * k * n / N)
+        x = np.dot(e,X)/N
         return x
-    
-    def DFT_hash(self):
-        v = self.DFT(self.circulant_coeff)
-        y = self.DFT(self.padded_key)
-        u = np.multiply(v,y)
-        cx = self.IDFT(u)
-        cx = np.round(cx).real%2
-        return cx[:self.hash_len]
-    
-    ##Cooly-Turkey 1-D Method
-    def FFT(self, X, record=False):
-        N = X.size
 
-        if N % 2 > 0:
-            p = 0
-            while(2**p < N):
-                p = p+1
-            N_new = 2**p
-            X = np.concatenate((X,np.zeros(N_new-N)))
-            N = N_new
-
-        if N<=16:
-            if record == False:
-                return self.DFT(X)
-            else:
-                return self.DFT_explicit(X)
+    
+    def FFT(self, x):
+        #"""A recursive implementation of the 1D Cooley-Tukey FFT"""
+        
+        N = x.shape[0]
+        
+        #if N % 2 > 0:
+         #   raise ValueError("size of x must be a power of 2")
+        if N <= 16:  # this cutoff should be optimized
+            return self.DFT(x)
         else:
-            X_even = self.FFT(X[::2], record=record)
-            X_odd = self.FFT(X[1::2], record=record)
-            factor = np.exp(-2j * np.pi * np.arange(N) / N)
-            return np.concatenate([X_even + factor[:int(N / 2)] * X_odd, 
-                                   X_even + factor[int(N / 2):] * X_odd])
+            X_even = self.FFT(x[::2])
+            X_odd = self.FFT(x[1::2])
+            x_out = np.zeros(N,dtype=complex)
+            w_n = np.exp(-2j * np.pi / N)
+            w = 1
+            for i in range(int(N/2)):
+                x_out[i] = X_even[i] + w*X_odd[i]
+                x_out[int(N/2) + i] = X_even[i] - w*X_odd[i]
+                w = w_n*w
+            #return np.concatenate([X_even + factor[:int(N / 2)] * X_odd,
+            #                    X_even + factor[int(N / 2):] * X_odd])
+            return x_out
 
     ###Cooley-Turky 1-D method
-    def IFFT(self, X):
-        N = X.size
-
-        if N % 2 > 0:
-            p = 0
-            while(2**p < N):
-                p = p+1
-            N_new = 2**p
-            X = np.concatenate((X,np.zeros(N_new-N)))
-            N = N_new
-            
-        if N<=16:
-            return self.IDFT(X)
+    def IFFT(self, x):
+        #"""A recursive implementation of the 1D Cooley-Tukey FFT"""
+        N = x.shape[0]
+        
+        #if N % 2 > 0:
+         #   raise ValueError("size of x must be a power of 2")
+        if N <= 16:  # this cutoff should be optimized
+            return self.IDFT(x)
         else:
-            X_even = self.IFFT(X[::2])
-            X_odd = self.IFFT(X[1::2])
-            factor = np.exp(-2j * np.pi * np.arange(N) / N)
-            return np.concatenate([X_even + factor[:int(N / 2)] * X_odd, 
-                                   X_even + factor[int(N / 2):] * X_odd])
+            X_even = self.IFFT(x[::2])
+            X_odd = self.IFFT(x[1::2])
+            x_out = np.zeros(N,dtype=complex)
+            w_n = np.exp(2j * np.pi / N)
+            w = 1
+            for i in range(int(N/2)):
+                x_out[i] = X_even[i] + w*X_odd[i]
+                x_out[int(N/2) + i] = X_even[i] - w*X_odd[i]
+                w = w_n*w
+            #return np.concatenate([X_even + factor[:int(N / 2)] * X_odd,
+            #                    X_even + factor[int(N / 2):] * X_odd])
+            return x_out
     
     def FFT_hash(self):
-        v = self.FFT(self.circulant_coeff, record=False)
-        y = self.FFT(self.padded_key, record=True)
+
+        v = self.FFT(np.asarray(self.circulant_coeff,dtype=complex))#, record=False)
+        y = self.FFT(np.asarray(self.padded_key,dtype=complex))#, record=False)
+
+        N = len(self.circulant_coeff)
+        #rnd_no = 5
+        #for i in range(N):
+        #    v[i] = complex(round(v[i].real,rnd_no),round(v[i].imag,rnd_no))
+        #    y[i] = complex(round(y[i].real,rnd_no),round(y[i].imag,rnd_no))
+
         u = np.multiply(v,y)
-        cx = self.IFFT(u)
-        cx = np.round(cx).real%2
-        return cx[:self.hash_len]
+        cx_p = np.conj(self.FFT(np.conj(u)))/N
+        cx = np.round(cx_p).real%2
+        return cx[:self.hash_len], v, y, u, cx_p
     
     def reverse_bits(self, n, bitSize):
         result = 0
