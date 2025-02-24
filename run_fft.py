@@ -111,23 +111,26 @@ def verify_fft(M,N):
 
 
 def compare_to_numpy():
-    #col = np.array([0,1,0])
-    #row = np.array([0,1,1,0,1])
-    #ec_key = np.array([1,1,0,1,1])
-    #hash_len = 3
+    #col = np.array([1,0,0,1])
+    #row = np.array([1,1,0,0,1])
+    #ec_key = np.array([0,0,1,1,0])
+    #hash_len = 4
     #key_len = 5
+    row = np.array([1,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,0,0,0,0])
+    col = np.array([1,0,1,1,0,0,0,1,1,1,1,0,0])
+    ec_key = np.array([0,1,1,1,0,1,0,1,1,1,1,0,1,0,0,1,0,1,0,1])
 
     ##Ensure m + n - 1 is a power of 2
 
-    key_len = 80
-    hash_len = 49
-    ec_key = gen_ec_key(key_len)
+    key_len = 20
+    hash_len = 13
+   # ec_key = gen_ec_key(key_len)
 
 
-    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key)
+    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key)#, row, col)
     TH.print_matrices()
     TH.embed_toeplitz_on_circulant()
-    myKey, v1, y1, u1, cx_p1 = TH.FFT_hash()
+    myKey, v1, y1, u1, cx_p1 = TH.FFT_hash_recursive()
 
     scipy_res = scipy.linalg.matmul_toeplitz((TH.TM_first_col_coeff,TH.TM_first_row_coeff),ec_key)
     scipy_res = np.round(scipy_res).real%2
@@ -156,6 +159,12 @@ def compare_to_numpy():
 
     print("\n\ncx_p2")
     print(cx_p2)
+
+
+    print("\n\nKeys\n")
+    print(myKey - numpy_key)
+
+
 
 
 

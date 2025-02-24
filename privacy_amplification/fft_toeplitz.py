@@ -134,14 +134,6 @@ class FFT_Toeplitz_hashing:
         M = np.exp(-2j * np.pi * k * n / N)
         return np.dot(M, x)
     
-    def IDFT(self, X):
-        N = X.size
-        n = np.arange(N)
-        k = n.reshape((N,1))
-        e = np.exp(-2j * np.pi * k * n / N)
-        x = np.dot(e,X)/N
-        return x
-
     
     def FFT(self, x):
         #"""A recursive implementation of the 1D Cooley-Tukey FFT"""
@@ -166,44 +158,6 @@ class FFT_Toeplitz_hashing:
             #                    X_even + factor[int(N / 2):] * X_odd])
             return x_out
 
-    ###Cooley-Turky 1-D method
-    def IFFT(self, x):
-        #"""A recursive implementation of the 1D Cooley-Tukey FFT"""
-        N = x.shape[0]
-        
-        #if N % 2 > 0:
-         #   raise ValueError("size of x must be a power of 2")
-        if N <= 16:  # this cutoff should be optimized
-            return self.IDFT(x)
-        else:
-            X_even = self.IFFT(x[::2])
-            X_odd = self.IFFT(x[1::2])
-            x_out = np.zeros(N,dtype=complex)
-            w_n = np.exp(2j * np.pi / N)
-            w = 1
-            for i in range(int(N/2)):
-                x_out[i] = X_even[i] + w*X_odd[i]
-                x_out[int(N/2) + i] = X_even[i] - w*X_odd[i]
-                w = w_n*w
-            #return np.concatenate([X_even + factor[:int(N / 2)] * X_odd,
-            #                    X_even + factor[int(N / 2):] * X_odd])
-            return x_out
-    
-    def FFT_hash(self):
-
-        v = self.FFT(np.asarray(self.circulant_coeff,dtype=complex))#, record=False)
-        y = self.FFT(np.asarray(self.padded_key,dtype=complex))#, record=False)
-
-        N = len(self.circulant_coeff)
-        #rnd_no = 5
-        #for i in range(N):
-        #    v[i] = complex(round(v[i].real,rnd_no),round(v[i].imag,rnd_no))
-        #    y[i] = complex(round(y[i].real,rnd_no),round(y[i].imag,rnd_no))
-
-        u = np.multiply(v,y)
-        cx_p = np.conj(self.FFT(np.conj(u)))/N
-        cx = np.round(cx_p).real%2
-        return cx[:self.hash_len], v, y, u, cx_p
     
     def reverse_bits(self, n, bitSize):
         result = 0
@@ -212,64 +166,62 @@ class FFT_Toeplitz_hashing:
                 result |= 1 << (bitSize - 1 - i)
         return result
     
-    def bit_reverse(self, x, X):
-        N = X.size
-        bit_size = len(bin(N-1))-2
-        for k in range(N):
-            reversed_binary = self.reverse_bits(k,bit_size)
-            X[int(reversed_binary)] = x[k]
-        return X
+    def bit_reverse(self, x):
+        N = x.shape[0]
+        s = int(np.log2(N))
+        for i in range(N):
+            rb = self.reverse_bits(i,s)
+            if(i < rb):
+                tmp = x[i]
+                x[i] = x[rb]
+                x[rb] = tmp
+        return x
+
+    
 
     def DIT_FFT(self, x):
-        N = x.size
+        N = x.shape[0]
+        s = int(np.log2(N))
+        x = np.asarray(self.bit_reverse(x),dtype=complex)
+        for stage in range(1,s+1):
+            p=0
+            q=0 + 2**(stage-1)
+            n=0
+            while(n <= 2**(stage-1) and q <=N):
+                w = np.exp(-2j*np.pi*n/(2**stage))
+                y = x[p] + w*x[q]
+                z = x[p] - w*x[q]
+                x[p] = y
+                x[q] = z
+                p=p+1
+                q=q+1
+                n=n+1
+                if(q%2**stage == 0):
+                    p = p + 2**(stage-1)
+                    q = q + 2**(stage-1)
+                    n=0
+        return x
 
-        if N % 2 > 0:
-            p = 0
-            while(2**p < N):
-                p = p+1
-            N_new = 2**p
-            x = np.concatenate((x,np.zeros(N_new-N)))
-            N = N_new
-        
-        X = np.zeros(N,dtype=complex)
-        X = self.bit_reverse(x,X)
 
-        iterations = int(np.log2(N))
-        for s in range(1,iterations):
-            m = 2**s
-            w_m = np.exp(-2j*np.pi/m)
-            for k in range(0,N,m): ##not sure on this line
-                w = 1
-                for j in range(int(m/2)):
-                    t = w*X[int(k+j+(m/2))]
-                    u = X[k+j]
-                    X[k+j] = u + t
-                    X[int(k+j+(m/2))] = u - t
-                    w = w*w_m
-        
-        return X
+    
+    def FFT_hash_recursive(self):
 
-    def butterfly(self, N, x):
-        w = np.exp(-2j * np.pi * np.arange(N) / N)
-        w0 = w[1]
+        N = len(self.circulant_coeff)
+        v = self.FFT(np.asarray(self.circulant_coeff,dtype=complex))#, record=False)
+        y = self.FFT(np.asarray(self.padded_key,dtype=complex))#, record=False)
+        u = np.multiply(v,y)
+        cx_p = np.conj(self.FFT(np.conj(u)))/N
+        cx = np.round(cx_p).real%2
+        return cx[:self.hash_len], v, y, u, cx_p
 
-        X = np.copy(x)
-        X = np.array(X,dtype=complex)
 
-        HWa0 = self.HW_calc(X[0])
-        HWb0 = self.HW_calc(X[1])
+    def FFT_hash_itterative(self):
 
-        a = X[0]
-        b = w0*X[1]
-        X[0] = a + b
-        X[1] = a - b
+        N = len(self.circulant_coeff)
+        v = self.DIT_FFT(self.circulant_coeff)
+        y = self.DIT_FFT(self.padded_key)
+        u = np.multiply(v,y)
+        cx_p = np.conj(self.FFT(np.conj(u)))/N
+        cx = np.round(cx_p).real%2
+        return cx[:self.hash_len], v, y, u, cx_p
 
-        HWa1 = self.HW_calc(X[0])
-        HWb1 = self.HW_calc(X[1])
-
-        print("Bit a: {0}, Bit b: {1}".format(x[0], x[1]))
-        print("X[0]: {0}, X[1]: {1}".format(X[0], X[1]))
-        print("w: {0}".format(w0))
-
-        print("Bit a HW: {0} --> {1}".format(HWa0, HWa1))
-        print("Bit b HW: {0} --> {1}".format(HWb0, HWb1))
