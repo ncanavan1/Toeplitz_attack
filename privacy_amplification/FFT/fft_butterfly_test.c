@@ -6,7 +6,7 @@
 #define PI 3.1415926535897932384626433832795  // Value of Pi 
 
 
-void embed_toeplitz_on_circulant(double complex *circ, int* row1, int* col1, int rowLen, int colLen, int circulant_size){
+void embed_toeplitz_on_circulant(float complex *circ, int* row1, int* col1, int rowLen, int colLen, int circulant_size){
   int m = 0;
   for(int i = 0; i < colLen; i++){
     circ[m] = col1[i] + 0*I;
@@ -18,7 +18,7 @@ void embed_toeplitz_on_circulant(double complex *circ, int* row1, int* col1, int
   }  
 }
 
-void pad_key(complex double *padded_key, int *key, int padLen, int keyLen){
+void pad_key(complex float *padded_key, int *key, int padLen, int keyLen){
   for(int i = 0; i < keyLen; i++){
     padded_key[i] = key[i] + 0*I;
   }
@@ -28,7 +28,7 @@ void pad_key(complex double *padded_key, int *key, int padLen, int keyLen){
 }
 
 
-void conj_array(double complex *arr, int N){
+void conj_array(float complex *arr, int N){
   for(int i = 0; i < N; i++){
     arr[i] = conj(arr[i]);
   }
@@ -44,11 +44,11 @@ int reverse_bit(int num, int s) {
     return res;
 }
 
-void reverse_array(double complex *X, int N, int s){
+void reverse_array(float complex *X, int N, int s){
     for(int i = 0; i < N; i ++){
         int rb = reverse_bit(i,s);
         if(i < rb){
-            double complex tmp = X[i];
+          float complex tmp = X[i];
             X[i] = X[rb];
             X[rb] = tmp;
         }
@@ -57,7 +57,7 @@ void reverse_array(double complex *X, int N, int s){
 
 
 //https://github.com/Swati-Verma671/Computation-of-DFT-using-Radix-2-DIT-FFT-algorithm/blob/main/code.m
-void DIT_FFT(double complex *X, int N){
+void DIT_FFT(float complex *X, int N){
     int s = round(log2(N));
     reverse_array(X,N,s);
     for(int stage=1; stage <= s; stage++){
@@ -66,9 +66,9 @@ void DIT_FFT(double complex *X, int N){
         int n = 0;
         while (n<=pow(2,(stage-1))-1 && q <=N)
         {
-            double complex w = cexp(-2*I*PI*n/(pow(2,stage)));
-            double complex y = X[p] + w*X[q];
-            double complex z = X[p] - w*X[q];
+            float complex w = cexp(-2*I*PI*n/(pow(2,stage)));
+            float complex y = X[p] + w*X[q];
+            float complex z = X[p] - w*X[q];
             X[p] = y;
             X[q] = z;
             p++;
@@ -83,7 +83,7 @@ void DIT_FFT(double complex *X, int N){
     }
 }
 
-void DIT_IFFT(double complex *X, int N){
+void DIT_IFFT(float complex *X, int N){
     conj_array(X, N);
     DIT_FFT(X,N);
     conj_array(X,N);
@@ -97,16 +97,16 @@ void DIT_IFFT(double complex *X, int N){
 void Toeplitz_hash_fft_butterfly(int* input_key, int* output_key, int* row1, int *col1, int rowLen, int colLen){
 
     int circulant_size = rowLen + colLen - 1;
-    double complex circ[circulant_size];
-    double complex padded_key[circulant_size];
-    double complex u[circulant_size];
-    double complex cx[circulant_size];
+    float complex *circ = (float complex*)malloc(circulant_size * sizeof(float complex));
+    float complex *padded_key = (float complex*)malloc(circulant_size * sizeof(float complex));
+   // double complex u[circulant_size];
+   // double complex cx[circulant_size];
 
     for(int i=0; i < circulant_size; i++){
       circ[i] = 0 + 0*I;
       padded_key[i] = 0 + 0*I;
-      u[i] = 0 + 0*I;
-      cx[i] = 0 + 0*I;
+    //  u[i] = 0 + 0*I;
+    //  cx[i] = 0 + 0*I;
 
     }
 
@@ -117,43 +117,43 @@ void Toeplitz_hash_fft_butterfly(int* input_key, int* output_key, int* row1, int
     DIT_FFT(circ,circulant_size);
     DIT_FFT(padded_key,circulant_size);
     for(int i = 0; i < circulant_size; i++){
-      u[i] = circ[i] * padded_key[i];
+      circ[i] = circ[i] * padded_key[i];
     }
 
-    DIT_IFFT(u, circulant_size);
+    DIT_IFFT(circ, circulant_size);
 
 
     for(int i = 0; i < colLen; i++){
-      int bit_rounded = round(creal(u[i]));
+      int bit_rounded = round(creal(circ[i]));
       output_key[i] = bit_rounded%2; 
     }
-    int k=7;
-
+    free(circ);
+    free(padded_key);
 }
 
 void naive_mult_result(int *row1, int*col1, int *input_key, int * output_key, int rowLen, int colLen){
 
-  printf("\n\n");
+ // printf("\n\n");
 
   for(int i = 0; i < colLen; i++){
     output_key[i] = 0;
     for(int j = 0; j < rowLen; j++){
       if (i >= j){
-        printf("%d,", col1[i-j]);
+        //printf("%d,", col1[i-j]);
         output_key[i] = output_key[i] + (col1[i-j]*input_key[j]);
       }
       else{
-        printf("%d,", row1[j-i]);
+        //printf("%d,", row1[j-i]);
         output_key[i] = output_key[i] + (row1[j-i]*input_key[j]);
       }
     }
-    printf("\n");
+    //printf("\n");
   }
 
-    printf("Final Result\n");
+    //printf("Final Result\n");
   for(int i = 0; i < colLen; i++){
     output_key[i] = (int)output_key[i]%2;
-    printf("%d,", output_key[i]);
+   // printf("%d,", output_key[i]);
   }
 }
 
@@ -164,7 +164,63 @@ void generate_binary_list(int arr[], int length) {
     }
 }
 
+
+
+
+void run_size_timing_test(){
+  int pow2[] = {3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,23,24};
+  int repeats = 1;
+  int tests = sizeof(pow2)/sizeof(pow2[0]);
+  int N;
+  int rowLen;
+  int colLen;
+
+  for(int t = 0; t < tests; t++){
+    N = (int)pow(2,pow2[t]);
+    rowLen = (int)round(2*N/3);
+    colLen = N - rowLen + 1;
+    int *row1 = (int*)malloc(rowLen * sizeof(int));
+    int *col1 = (int*)malloc(colLen * sizeof(int));
+    int *input_key = (int*)malloc(rowLen * sizeof(int));
+    int *output_key_fft = (int*)malloc(colLen * sizeof(int));
+    //int output_key_naive[colLen];
+    generate_binary_list(row1, rowLen);
+    generate_binary_list(col1, colLen);
+    generate_binary_list(input_key, rowLen);
+
+    printf("For N = %d\n",N);
+    Toeplitz_hash_fft_butterfly(input_key, output_key_fft, row1, col1, rowLen, colLen);
+
+    /*
+    naive_mult_result(row1, col1, input_key, output_key_naive, rowLen, colLen);
+
+    int err = 0;
+    for(int i = 0; i < colLen; i++){
+      if(output_key_fft[i] != output_key_naive[i]){
+        printf("Error on Bit %d \n",i);
+        err++;
+      }
+    }
+    if(err == 0){
+      printf("\nFFT matches Naive Implimentation\n");
+    }*/
+    printf("Done\n\n");
+    free(row1);
+    free(col1);
+    free(input_key);
+    free(output_key_fft);
+  }
+}
+
+
+
+
 int main(){
+  run_size_timing_test();
+}
+
+
+int main_old(){
 
     //double complex test[] = {0,1,2,3,4,5,6,7};
     //reverse_array(tes1,0,1,0,0,1,0,1,0,1t,8,3);

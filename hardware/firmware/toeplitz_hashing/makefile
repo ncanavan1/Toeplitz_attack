@@ -30,13 +30,14 @@
 
 # Target file name (without extension).
 # This is the name of the compiled .hex file.
-TARGET = toeplitz_hashing
+TARGET = Toeplitz_FFT
 
 # List C source files here.
 # Header files (.h) are automatically pulled in.
-SRC += toeplitz_hashing.c
+SRC += Toeplitz_FFT.c
 
 # -----------------------------------------------------------------------------
+
 ifeq ($(CRYPTO_OPTIONS),)
 CRYPTO_OPTIONS = AES128C
 endif

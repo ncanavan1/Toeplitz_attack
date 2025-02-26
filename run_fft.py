@@ -6,6 +6,7 @@ from privacy_amplification import fft_toeplitz as th
 from privacy_amplification import toeplitz_hashing as th_basic
 import time
 import scipy
+from adversary import FFT_HW_attack as attack
 
 
 def gen_ec_key(N):
@@ -127,15 +128,18 @@ def compare_to_numpy():
    # ec_key = gen_ec_key(key_len)
 
 
-    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key)#, row, col)
+    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key, row, col)
     TH.print_matrices()
     TH.embed_toeplitz_on_circulant()
-    myKey, v1, y1, u1, cx_p1 = TH.FFT_hash_recursive()
+    numpy_key, v2, y2, u2, cx_p2 = numpy_fft(TH, hash_len)
+
+    myKey, v1, y1, u1, cx_p1, HW = TH.FFT_hash_itterative()
+    plt.plot(HW)
+    plt.show()
 
     scipy_res = scipy.linalg.matmul_toeplitz((TH.TM_first_col_coeff,TH.TM_first_row_coeff),ec_key)
     scipy_res = np.round(scipy_res).real%2
 
-    numpy_key, v2, y2, u2, cx_p2 = numpy_fft(TH, hash_len)
     print("Done")
     
     print("\n\nv")
@@ -200,10 +204,31 @@ def main():
     print(explicit_fft)
 
 
+def Eve_attack():
+    row = np.array([1,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,0,0,0,0])
+    col = np.array([1,0,1,1,0,0,0,1,1,1,1,0,0])
+    ec_key = np.array([0,1,1,1,0,1,0,1,1,1,1,0,1,0,0,1,0,1,0,1])
+
+    ##Ensure m + n - 1 is a power of 2
+
+    key_len = 20
+    hash_len = 13
+   # ec_key = gen_ec_key(key_len)
+
+
+    TH  = th.FFT_Toeplitz_hashing(hash_len, key_len, ec_key, row, col)
+    TH.print_matrices()
+    TH.embed_toeplitz_on_circulant()
+    myKey, v1, y1, u1, cx_p1, HW = TH.FFT_hash_itterative()
+
+    Eve = attack.Eve(HW, hash_len, key_len, [TH.TM_first_row_coeff, TH.TM_first_col_coeff], 0.1)
+    Eve.run_attack(16)
+    
 
 
 if __name__=="__main__":
     #main()
     #verify_fft(8,16)
     #verify_correct_outputs(30,20)
-    compare_to_numpy()
+    #compare_to_numpy()
+    Eve_attack()

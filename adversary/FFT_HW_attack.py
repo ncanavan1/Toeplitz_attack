@@ -1,13 +1,59 @@
 import numpy as np
+from scipy import stats
+from privacy_amplification import fft_toeplitz as th
+from privacy_amplification.FFT.FFT import *
+import struct
 
 class Eve:
-    def __init__(self, Traces, hash_len, key_len, Toeplitz_spec, known_key, sigma):
-        self.Traces = Traces
+    def __init__(self, target_trace, hash_len, key_len, Toeplitz_spec, sigma):
+        self.target_trace = target_trace
         self.hash_len = hash_len
         self.key_len = key_len
         self.Toeplitz_spec = Toeplitz_spec 
-        self.known_key = known_key
         self.sigma = sigma
+
+
+    def binary(num):
+        return ''.join('{:0>8b}'.format(c) for c in struct.pack('!f', num))
+
+    ##compute HW model for Butterfly FFT
+    def HW_Model(self, X):
+        return DIT_FFT_leaky(X)
+        
+    def guess_string(self, num, hyp_size):
+        b_string = binary(num)
+        guess = np.zeros(hyp_size)
+        for i in range(len(b_string)):
+            guess[i] = int(b_string[i])
+        return guess
+
+    def run_attack(self, hyp_size):
+        best_guesses = []
+        for i in range(2**hyp_size):
+            guess = self.guess_string(i, hyp_size)
+            x, HW = DIT_FFT_leaky(guess)
+            ##calculate correlation
+            
+            ##if correlation is max,,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #def isolate_FFT():
 
