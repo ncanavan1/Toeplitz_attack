@@ -117,9 +117,9 @@ def compare_to_numpy():
     #ec_key = np.array([0,0,1,1,0])
     #hash_len = 4
     #key_len = 5
-    row = np.array([1,0,1,1,1,1,0,0,1,1,0,1,0,1,1,0,0,0,0,0])
-    col = np.array([1,0,1,1,0,0,0,1,1,1,1,0,0])
-    ec_key = np.array([0,1,1,1,0,1,0,1,1,1,1,0,1,0,0,1,0,1,0,1])
+    row = np.array([0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1 ,1])
+    col = np.array([1, 0, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 1])
+    ec_key = np.array([0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0])
 
     ##Ensure m + n - 1 is a power of 2
 
@@ -167,6 +167,8 @@ def compare_to_numpy():
 
     print("\n\nKeys\n")
     print(myKey - numpy_key)
+
+    print(myKey)
 
 
 
@@ -230,5 +232,5 @@ if __name__=="__main__":
     #main()
     #verify_fft(8,16)
     #verify_correct_outputs(30,20)
-    #compare_to_numpy()
-    Eve_attack()
+    compare_to_numpy()
+    #Eve_attack()

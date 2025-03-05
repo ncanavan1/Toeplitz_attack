@@ -174,3 +174,12 @@ def DIT_FFT_leaky(x):
                 q = q + 2**(stage-1)
                 n=0
     return x, HW_trace
+
+
+if __name__=="__main__":
+    arr = np.zeros(32)
+    for i in range(32):
+        arr[i] = i
+    arr_r = bit_reverse(arr)
+    k=7
+    DIT_FFT(np.asarray([1,0,1,1,0,1,0,0,1,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0]))

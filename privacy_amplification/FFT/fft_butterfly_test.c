@@ -213,9 +213,18 @@ void run_size_timing_test(){
 }
 
 
+void binary_char_to_int(int *char_arr, int *int_arr, int len){
+  for(int i = 0; i < len; i++){
+    int_arr[i] = char_arr[i] - '0';
+  }
+}
 
 
 int main(){
+
+  char arr[] = {'0','1','0','1'};
+  int int_arr[4];
+  binary_char_to_int(arr, int_arr, 4);
   run_size_timing_test();
 }
 

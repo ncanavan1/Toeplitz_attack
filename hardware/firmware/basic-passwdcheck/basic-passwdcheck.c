@@ -96,6 +96,8 @@ int main(void)
         my_puts("Please enter password to continue: ");
         my_read(passwd, 32);
 
+        
+
         uint8_t passbad = 0;
 
         trigger_high();
