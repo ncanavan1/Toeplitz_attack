@@ -1,0 +1,4001 @@
+   1              	 .cpu cortex-m4
+   2              	 .eabi_attribute 20,1
+   3              	 .eabi_attribute 21,1
+   4              	 .eabi_attribute 23,3
+   5              	 .eabi_attribute 24,1
+   6              	 .eabi_attribute 25,1
+   7              	 .eabi_attribute 26,1
+   8              	 .eabi_attribute 30,4
+   9              	 .eabi_attribute 34,1
+  10              	 .eabi_attribute 18,4
+  11              	 .file "Toeplitz_FFT.c"
+  12              	 .text
+  13              	.Ltext0:
+  14              	 .cfi_sections .debug_frame
+  15              	 .section .text.led_ok,"ax",%progbits
+  16              	 .align 1
+  17              	 .weak led_ok
+  18              	 .arch armv7e-m
+  19              	 .syntax unified
+  20              	 .thumb
+  21              	 .thumb_func
+  22              	 .fpu softvfp
+  24              	led_ok:
+  25              	.LVL0:
+  26              	.LFB0:
+  27              	 .file 1 ".././hal/hal.h"
+   1:.././hal/hal.h **** /*
+   2:.././hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:.././hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:.././hal/hal.h **** 
+   5:.././hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:.././hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:.././hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:.././hal/hal.h ****     (at your option) any later version.
+   9:.././hal/hal.h **** 
+  10:.././hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:.././hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:.././hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:.././hal/hal.h ****     GNU General Public License for more details.
+  14:.././hal/hal.h **** 
+  15:.././hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:.././hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:.././hal/hal.h **** */
+  18:.././hal/hal.h **** 
+  19:.././hal/hal.h **** #ifndef HAL_H_
+  20:.././hal/hal.h **** #define HAL_H_
+  21:.././hal/hal.h **** 
+  22:.././hal/hal.h **** #include <stdint.h>
+  23:.././hal/hal.h **** 
+  24:.././hal/hal.h **** void platform_init(void);
+  25:.././hal/hal.h **** 
+  26:.././hal/hal.h **** //PLATFORM Define Types
+  27:.././hal/hal.h **** #define CW301_AVR      1
+  28:.././hal/hal.h **** #define CW301_XMEGA    2
+  29:.././hal/hal.h **** #define CW303          3
+  30:.././hal/hal.h **** #define CW304          4
+  31:.././hal/hal.h **** #define CW308_MEGARF   8
+  32:.././hal/hal.h **** #define CW308_PIC24FJ  10
+  33:.././hal/hal.h **** #define CW308_SAM4L    11
+  34:.././hal/hal.h **** #define CW308_SI4010   12
+  35:.././hal/hal.h **** #define CW308_MPC5748G 13
+  36:.././hal/hal.h **** #define CW308_STM32F0  14
+  37:.././hal/hal.h **** #define CW308_STM32F1  15
+  38:.././hal/hal.h **** #define CW308_STM32F2  16
+  39:.././hal/hal.h **** #define CW308_STM32F3  17
+  40:.././hal/hal.h **** #define CW308_STM32F4  18
+  41:.././hal/hal.h **** #define CW308_CC2538   19
+  42:.././hal/hal.h **** #define CW308_K24F     20
+  43:.././hal/hal.h **** #define CW308_NRF52840 21
+  44:.././hal/hal.h **** #define CW308_AURIX    22
+  45:.././hal/hal.h **** #define CW308_SAML11   23
+  46:.././hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:.././hal/hal.h **** #define CW308_K82F     25
+  48:.././hal/hal.h **** #define CW308_LPC55S6X 26
+  49:.././hal/hal.h **** #define CW308_PSOC62   27
+  50:.././hal/hal.h **** #define CW308_IMXRT1062 28
+  51:.././hal/hal.h **** #define CW308_FE310    29
+  52:.././hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:.././hal/hal.h **** #define CW308_EFM32GG11  31
+  54:.././hal/hal.h **** #define CW308_STM32L5  32
+  55:.././hal/hal.h **** #define CW308_STM32L4  33
+  56:.././hal/hal.h **** #define CW308_RX65N  34
+  57:.././hal/hal.h **** #define CW308_MPC5676R 35
+  58:.././hal/hal.h **** #define CW308_NEORV32  36
+  59:.././hal/hal.h **** #define CW305_IBEX  37
+  60:.././hal/hal.h **** 
+  61:.././hal/hal.h **** //HAL_TYPE Define Types
+  62:.././hal/hal.h **** #define HAL_avr      1
+  63:.././hal/hal.h **** #define HAL_xmega    2
+  64:.././hal/hal.h **** #define HAL_pic24f   3
+  65:.././hal/hal.h **** #define HAL_sam4l    4
+  66:.././hal/hal.h **** #define HAL_stm32f0  5
+  67:.././hal/hal.h **** #define HAL_stm32f1  6
+  68:.././hal/hal.h **** #define HAL_stm32f2  7
+  69:.././hal/hal.h **** #define HAL_stm32f3  8
+  70:.././hal/hal.h **** #define HAL_stm32f4  9
+  71:.././hal/hal.h **** #define HAL_cc2538   10
+  72:.././hal/hal.h **** #define HAL_k24f     11
+  73:.././hal/hal.h **** #define HAL_nrf52840 12
+  74:.././hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:.././hal/hal.h **** #define HAL_aurix    14
+  76:.././hal/hal.h **** #define HAL_saml11   15
+  77:.././hal/hal.h **** #define HAL_efm32tg11b 16
+  78:.././hal/hal.h **** #define HAL_k82f     17
+  79:.././hal/hal.h **** #define HAL_lpc55s6x 18
+  80:.././hal/hal.h **** #define HAL_psoc62   19
+  81:.././hal/hal.h **** #define HAL_imxrt1062 20
+  82:.././hal/hal.h **** #define HAL_fe310    21
+  83:.././hal/hal.h **** #define HAL_efr32mg21a 22
+  84:.././hal/hal.h **** #define HAL_efm32gg11 23
+  85:.././hal/hal.h **** #define HAL_stm32l5 24
+  86:.././hal/hal.h **** #define HAL_stm32l4 25
+  87:.././hal/hal.h **** #define HAL_rx65n 26
+  88:.././hal/hal.h **** #define HAL_mpc5676r 27
+  89:.././hal/hal.h **** #define HAL_neorv32  28
+  90:.././hal/hal.h **** #define HAL_sam4s  29
+  91:.././hal/hal.h **** #define HAL_ibex  30
+  92:.././hal/hal.h **** 
+  93:.././hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:.././hal/hal.h ****     #include <avr/io.h>
+  95:.././hal/hal.h ****     #include <util/delay.h>
+  96:.././hal/hal.h ****     #include "avr/avr_hal.h"
+  97:.././hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:.././hal/hal.h ****     #include <avr/io.h>
+  99:.././hal/hal.h ****     #include <util/delay.h>
+ 100:.././hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:.././hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:.././hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:.././hal/hal.h ****     #include <xc.h>
+ 104:.././hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:.././hal/hal.h ****     #include "pic24f/uart.h"
+ 106:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:.././hal/hal.h ****     #include "sam4l/sam4l_hal.h"
+ 108:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:.././hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:.././hal/hal.h **** 	#include "stm32f1/stm32f1_hal.h"
+ 112:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:.././hal/hal.h **** 	#include "stm32f2/stm32f2_hal.h"
+ 114:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:.././hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:.././hal/hal.h **** 	#ifdef SECCAN
+ 117:.././hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:.././hal/hal.h **** 	#endif
+ 119:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:.././hal/hal.h **** 	#include "stm32f4/stm32f4_hal.h"
+ 121:.././hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:.././hal/hal.h **** 	#include "cc2538/cc2538_hal.h"
+ 123:.././hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:.././hal/hal.h ****     #include "k24f/k24f_hal.h"
+ 125:.././hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:.././hal/hal.h **** #include "k82f/k82f_hal.h"
+ 127:.././hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:.././hal/hal.h ****     #include "nrf52840/nrf52840_hal.h"   
+ 129:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:.././hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:.././hal/hal.h ****     void led_error(unsigned int status);
+ 132:.././hal/hal.h ****     void led_ok(unsigned int status);
+ 133:.././hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:.././hal/hal.h ****     #include "aurix/aurix_hal.h"
+ 135:.././hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:.././hal/hal.h ****      #include "saml11/saml11_hal.h"
+ 137:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:.././hal/hal.h ****      #include "efm32tg11b/efm32tg11b_hal.h"
+ 139:.././hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:.././hal/hal.h ****      #include "lpc55s6x/lpc55s6x_hal.h"
+ 141:.././hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:.././hal/hal.h ****     #include "psoc62/psoc62_hal.h"
+ 143:.././hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:.././hal/hal.h ****     #include "imxrt1062/imxrt1062_hal.h"
+ 145:.././hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:.././hal/hal.h ****     #include "fe310/fe310_hal.h"
+ 147:.././hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:.././hal/hal.h ****     #include "efr32mg21a/efr32mg21a_hal.h"
+ 149:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:.././hal/hal.h ****     #include "efm32gg11/efm32gg11_hal.h"
+ 151:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:.././hal/hal.h ****     #include "stm32l5/stm32l5_hal.h"
+ 153:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:.././hal/hal.h ****     #include "stm32l4/stm32l4_hal.h"
+ 155:.././hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:.././hal/hal.h ****     #include "rx65n/rx65n_hal.h"
+ 157:.././hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:.././hal/hal.h ****     #include "mpc5676r/MPC5676R_hal.h"
+ 159:.././hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:.././hal/hal.h ****     #include "neorv32/neorv32_hal.h"
+ 161:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:.././hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:.././hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:.././hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:.././hal/hal.h **** #else
+ 166:.././hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:.././hal/hal.h **** #endif
+ 168:.././hal/hal.h **** 
+ 169:.././hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:.././hal/hal.h ****     #undef trigger_setup
+ 171:.././hal/hal.h ****     #undef trigger_high
+ 172:.././hal/hal.h ****     #undef trigger_low
+ 173:.././hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:.././hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:.././hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:.././hal/hal.h ****     
+ 177:.././hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:.././hal/hal.h **** 
+ 179:.././hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:.././hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:.././hal/hal.h ****                                   }
+ 182:.././hal/hal.h **** 
+ 183:.././hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:.././hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:.././hal/hal.h ****                                 } \
+ 186:.././hal/hal.h ****                                   \
+ 187:.././hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:.././hal/hal.h ****                                   \
+ 189:.././hal/hal.h ****                                 /*Wait for done  */ \
+ 190:.././hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:.././hal/hal.h ****                                     ; \
+ 192:.././hal/hal.h ****                                 } \
+ 193:.././hal/hal.h ****                                   \
+ 194:.././hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:.././hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:.././hal/hal.h ****                                 }
+ 197:.././hal/hal.h ****     
+ 198:.././hal/hal.h **** #endif
+ 199:.././hal/hal.h **** 
+ 200:.././hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+ 201:.././hal/hal.h **** {
+  28              	 .loc 1 201 1 view-0
+  29              	 .cfi_startproc
+  30              	 
+  31              	 
+  32              	 
+ 202:.././hal/hal.h **** }
+  33              	 .loc 1 202 1 view .LVU1
+  34 0000 7047     	 bx lr
+  35              	 .cfi_endproc
+  36              	.LFE0:
+  38              	 .section .text.led_error,"ax",%progbits
+  39              	 .align 1
+  40              	 .weak led_error
+  41              	 .syntax unified
+  42              	 .thumb
+  43              	 .thumb_func
+  44              	 .fpu softvfp
+  46              	led_error:
+  47              	.LFB28:
+  48              	 .cfi_startproc
+  49              	 
+  50              	 
+  51              	 
+  52 0000 7047     	 bx lr
+  53              	 .cfi_endproc
+  54              	.LFE28:
+  56              	 .section .text.my_puts,"ax",%progbits
+  57              	 .align 1
+  58              	 .global my_puts
+  59              	 .syntax unified
+  60              	 .thumb
+  61              	 .thumb_func
+  62              	 .fpu softvfp
+  64              	my_puts:
+  65              	.LVL1:
+  66              	.LFB5:
+  67              	 .file 2 "Toeplitz_FFT.c"
+   1:Toeplitz_FFT.c **** #include "hal.h"
+   2:Toeplitz_FFT.c **** #include <stdint.h>
+   3:Toeplitz_FFT.c **** #include <stdlib.h>
+   4:Toeplitz_FFT.c **** #include <stdio.h>
+   5:Toeplitz_FFT.c **** #include <math.h>
+   6:Toeplitz_FFT.c **** #include <complex.h>
+   7:Toeplitz_FFT.c **** #include <time.h>
+   8:Toeplitz_FFT.c **** 
+   9:Toeplitz_FFT.c **** #define IDLE 0
+  10:Toeplitz_FFT.c **** #define KEY 1
+  11:Toeplitz_FFT.c **** #define PLAIN 2
+  12:Toeplitz_FFT.c **** #define PI 3.1415926535897932384626433832795  // Value of Pi 
+  13:Toeplitz_FFT.c **** #define BUFLEN 64
+  14:Toeplitz_FFT.c **** 
+  15:Toeplitz_FFT.c **** uint8_t memory[BUFLEN];
+  16:Toeplitz_FFT.c **** uint8_t tmp[BUFLEN];
+  17:Toeplitz_FFT.c **** char asciibuf[BUFLEN];
+  18:Toeplitz_FFT.c **** uint8_t pt[16];
+  19:Toeplitz_FFT.c **** 
+  20:Toeplitz_FFT.c **** static void delay_2_ms(void);
+  21:Toeplitz_FFT.c **** 
+  22:Toeplitz_FFT.c **** 
+  23:Toeplitz_FFT.c **** void my_puts(char *c)
+  24:Toeplitz_FFT.c **** {
+  68              	 .loc 2 24 1 view-0
+  69              	 .cfi_startproc
+  70              	 
+  71              	 
+  72              	 .loc 2 24 1 is_stmt 0 view .LVU3
+  73 0000 38B5     	 push {r3,r4,r5,lr}
+  74              	.LCFI0:
+  75              	 .cfi_def_cfa_offset 16
+  76              	 .cfi_offset 3,-16
+  77              	 .cfi_offset 4,-12
+  78              	 .cfi_offset 5,-8
+  79              	 .cfi_offset 14,-4
+  80              	.LBB2:
+  25:Toeplitz_FFT.c ****   do {
+  26:Toeplitz_FFT.c ****     putch(*c);
+  81              	 .loc 2 26 5 view .LVU4
+  82 0002 044D     	 ldr r5,.L6
+  83              	.LBE2:
+  24:Toeplitz_FFT.c ****   do {
+  84              	 .loc 2 24 1 view .LVU5
+  85 0004 0446     	 mov r4,r0
+  86              	.LVL2:
+  87              	.L4:
+  25:Toeplitz_FFT.c ****   do {
+  88              	 .loc 2 25 3 is_stmt 1 discriminator 1 view .LVU6
+  89              	.LBB3:
+  90              	 .loc 2 26 5 discriminator 1 view .LVU7
+  91 0006 2078     	 ldrb r0,[r4]
+  92 0008 A847     	 blx r5
+  93              	.LVL3:
+  94              	.LBE3:
+  27:Toeplitz_FFT.c **** 
+  28:Toeplitz_FFT.c ****   } while (*++c);
+  95              	 .loc 2 28 11 discriminator 1 view .LVU8
+  96              	 .loc 2 28 3 is_stmt 0 discriminator 1 view .LVU9
+  97 000a 14F8013F 	 ldrb r3,[r4,#1]!
+  98              	.LVL4:
+  99              	 .loc 2 28 3 discriminator 1 view .LVU10
+ 100 000e 002B     	 cmp r3,#0
+ 101 0010 F9D1     	 bne .L4
+  29:Toeplitz_FFT.c **** }
+ 102              	 .loc 2 29 1 view .LVU11
+ 103 0012 38BD     	 pop {r3,r4,r5,pc}
+ 104              	.LVL5:
+ 105              	.L7:
+ 106              	 .loc 2 29 1 view .LVU12
+ 107              	 .align 2
+ 108              	.L6:
+ 109 0014 00000000 	 .word putch
+ 110              	 .cfi_endproc
+ 111              	.LFE5:
+ 113              	 .section .text.my_read,"ax",%progbits
+ 114              	 .align 1
+ 115              	 .global my_read
+ 116              	 .syntax unified
+ 117              	 .thumb
+ 118              	 .thumb_func
+ 119              	 .fpu softvfp
+ 121              	my_read:
+ 122              	.LVL6:
+ 123              	.LFB7:
+  30:Toeplitz_FFT.c **** 
+  31:Toeplitz_FFT.c **** static void delay_2_ms()
+  32:Toeplitz_FFT.c **** {
+  33:Toeplitz_FFT.c ****   for (volatile unsigned int i=0; i < 0xfff; i++ ){
+  34:Toeplitz_FFT.c ****     ;
+  35:Toeplitz_FFT.c ****   }
+  36:Toeplitz_FFT.c **** }
+  37:Toeplitz_FFT.c **** 
+  38:Toeplitz_FFT.c **** void my_read(char *buf, int len)
+  39:Toeplitz_FFT.c **** {
+ 124              	 .loc 2 39 1 is_stmt 1 view-0
+ 125              	 .cfi_startproc
+ 126              	 
+ 127              	 
+  40:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 128              	 .loc 2 40 3 view .LVU14
+ 129              	.LBB4:
+ 130              	 .loc 2 40 7 view .LVU15
+ 131              	 .loc 2 40 7 is_stmt 0 view .LVU16
+ 132              	.LBE4:
+  39:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 133              	 .loc 2 39 1 view .LVU17
+ 134 0000 2DE9F041 	 push {r4,r5,r6,r7,r8,lr}
+ 135              	.LCFI1:
+ 136              	 .cfi_def_cfa_offset 24
+ 137              	 .cfi_offset 4,-24
+ 138              	 .cfi_offset 5,-20
+ 139              	 .cfi_offset 6,-16
+ 140              	 .cfi_offset 7,-12
+ 141              	 .cfi_offset 8,-8
+ 142              	 .cfi_offset 14,-4
+ 143              	.LBB7:
+ 144              	.LBB5:
+  41:Toeplitz_FFT.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 145              	 .loc 2 41 21 view .LVU18
+ 146 0004 DFF83080 	 ldr r8,.L17
+ 147              	.LBE5:
+ 148              	.LBE7:
+  39:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 149              	 .loc 2 39 1 view .LVU19
+ 150 0008 0446     	 mov r4,r0
+ 151 000a 0E46     	 mov r6,r1
+ 152              	.LBB8:
+  40:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 153              	 .loc 2 40 11 view .LVU20
+ 154 000c 0025     	 movs r5,#0
+ 155              	.LVL7:
+ 156              	.L9:
+  40:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 157              	 .loc 2 40 18 is_stmt 1 discriminator 1 view .LVU21
+  40:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++) {
+ 158              	 .loc 2 40 3 is_stmt 0 discriminator 1 view .LVU22
+ 159 000e B542     	 cmp r5,r6
+ 160 0010 0DDA     	 bge .L16
+ 161 0012 6719     	 adds r7,r4,r5
+ 162              	.L10:
+ 163              	.LBB6:
+ 164              	 .loc 2 41 45 is_stmt 1 discriminator 1 view .LVU23
+ 165              	 .loc 2 41 11 discriminator 1 view .LVU24
+ 166              	 .loc 2 41 21 is_stmt 0 discriminator 1 view .LVU25
+ 167 0014 C047     	 blx r8
+ 168              	.LVL8:
+ 169              	 .loc 2 41 19 discriminator 1 view .LVU26
+ 170 0016 C0B2     	 uxtb r0,r0
+ 171 0018 6055     	 strb r0,[r4,r5]
+ 172              	 .loc 2 41 11 discriminator 1 view .LVU27
+ 173 001a 0028     	 cmp r0,#0
+ 174 001c FAD0     	 beq .L10
+ 175              	.LBE6:
+  42:Toeplitz_FFT.c **** 
+  43:Toeplitz_FFT.c ****     if (buf[i] == '\n') {
+ 176              	 .loc 2 43 5 is_stmt 1 view .LVU28
+ 177              	 .loc 2 43 8 is_stmt 0 view .LVU29
+ 178 001e 0A28     	 cmp r0,#10
+ 179 0020 03D1     	 bne .L11
+  44:Toeplitz_FFT.c ****       buf[i] = '\0';
+ 180              	 .loc 2 44 7 is_stmt 1 view .LVU30
+ 181              	 .loc 2 44 14 is_stmt 0 view .LVU31
+ 182 0022 0023     	 movs r3,#0
+ 183 0024 3B70     	 strb r3,[r7]
+  45:Toeplitz_FFT.c ****       return;
+ 184              	 .loc 2 45 7 is_stmt 1 view .LVU32
+ 185              	.LVL9:
+ 186              	.L8:
+ 187              	 .loc 2 45 7 is_stmt 0 view .LVU33
+ 188              	.LBE8:
+  46:Toeplitz_FFT.c ****     }
+  47:Toeplitz_FFT.c ****   }
+  48:Toeplitz_FFT.c ****   buf[len - 1] = '\0';
+  49:Toeplitz_FFT.c **** }
+ 189              	 .loc 2 49 1 view .LVU34
+ 190 0026 BDE8F081 	 pop {r4,r5,r6,r7,r8,pc}
+ 191              	.LVL10:
+ 192              	.L11:
+ 193              	.LBB9:
+  40:Toeplitz_FFT.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 194              	 .loc 2 40 27 is_stmt 1 discriminator 2 view .LVU35
+  40:Toeplitz_FFT.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 195              	 .loc 2 40 28 is_stmt 0 discriminator 2 view .LVU36
+ 196 002a 0135     	 adds r5,r5,#1
+ 197              	.LVL11:
+  40:Toeplitz_FFT.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 198              	 .loc 2 40 28 discriminator 2 view .LVU37
+ 199 002c EFE7     	 b .L9
+ 200              	.L16:
+  40:Toeplitz_FFT.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 201              	 .loc 2 40 28 discriminator 2 view .LVU38
+ 202              	.LBE9:
+  48:Toeplitz_FFT.c **** }
+ 203              	 .loc 2 48 3 is_stmt 1 view .LVU39
+  48:Toeplitz_FFT.c **** }
+ 204              	 .loc 2 48 16 is_stmt 0 view .LVU40
+ 205 002e 3444     	 add r4,r4,r6
+ 206              	.LVL12:
+  48:Toeplitz_FFT.c **** }
+ 207              	 .loc 2 48 16 view .LVU41
+ 208 0030 0023     	 movs r3,#0
+ 209 0032 04F8013C 	 strb r3,[r4,#-1]
+ 210 0036 F6E7     	 b .L8
+ 211              	.L18:
+ 212              	 .align 2
+ 213              	.L17:
+ 214 0038 00000000 	 .word getch
+ 215              	 .cfi_endproc
+ 216              	.LFE7:
+ 218              	 .global __aeabi_i2d
+ 219              	 .global __aeabi_dmul
+ 220              	 .global __aeabi_dadd
+ 221              	 .global __aeabi_d2iz
+ 222              	 .section .text.char_to_int,"ax",%progbits
+ 223              	 .align 1
+ 224              	 .global char_to_int
+ 225              	 .syntax unified
+ 226              	 .thumb
+ 227              	 .thumb_func
+ 228              	 .fpu softvfp
+ 230              	char_to_int:
+ 231              	.LVL13:
+ 232              	.LFB8:
+  50:Toeplitz_FFT.c **** 
+  51:Toeplitz_FFT.c **** 
+  52:Toeplitz_FFT.c **** int char_to_int(char *c_arr, int len){
+ 233              	 .loc 2 52 38 is_stmt 1 view-0
+ 234              	 .cfi_startproc
+ 235              	 
+ 236              	 
+  53:Toeplitz_FFT.c ****   int num = 0;
+ 237              	 .loc 2 53 3 view .LVU43
+  54:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 238              	 .loc 2 54 3 view .LVU44
+ 239              	.LBB10:
+ 240              	 .loc 2 54 7 view .LVU45
+ 241              	 .loc 2 54 7 is_stmt 0 view .LVU46
+ 242              	.LBE10:
+  52:Toeplitz_FFT.c ****   int num = 0;
+ 243              	 .loc 2 52 38 view .LVU47
+ 244 0000 2DE9F74F 	 push {r0,r1,r2,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 245              	.LCFI2:
+ 246              	 .cfi_def_cfa_offset 48
+ 247              	 .cfi_offset 4,-36
+ 248              	 .cfi_offset 5,-32
+ 249              	 .cfi_offset 6,-28
+ 250              	 .cfi_offset 7,-24
+ 251              	 .cfi_offset 8,-20
+ 252              	 .cfi_offset 9,-16
+ 253              	 .cfi_offset 10,-12
+ 254              	 .cfi_offset 11,-8
+ 255              	 .cfi_offset 14,-4
+ 256              	.LBB11:
+ 257              	 .loc 2 54 11 view .LVU48
+ 258 0004 0024     	 movs r4,#0
+  55:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 259              	 .loc 2 55 33 view .LVU49
+ 260 0006 194F     	 ldr r7,.L22
+ 261              	.LBE11:
+  52:Toeplitz_FFT.c ****   int num = 0;
+ 262              	 .loc 2 52 38 view .LVU50
+ 263 0008 0646     	 mov r6,r0
+ 264 000a 0D46     	 mov r5,r1
+  53:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 265              	 .loc 2 53 7 view .LVU51
+ 266 000c A046     	 mov r8,r4
+ 267              	.LVL14:
+ 268              	.L20:
+ 269              	.LBB12:
+  54:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 270              	 .loc 2 54 18 is_stmt 1 discriminator 1 view .LVU52
+  54:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 271              	 .loc 2 54 3 is_stmt 0 discriminator 1 view .LVU53
+ 272 000e AC42     	 cmp r4,r5
+ 273 0010 03DB     	 blt .L21
+ 274              	.LBE12:
+  56:Toeplitz_FFT.c ****   }
+  57:Toeplitz_FFT.c ****   return num;
+ 275              	 .loc 2 57 3 is_stmt 1 view .LVU54
+  58:Toeplitz_FFT.c **** }
+ 276              	 .loc 2 58 1 is_stmt 0 view .LVU55
+ 277 0012 4046     	 mov r0,r8
+ 278 0014 03B0     	 add sp,sp,#12
+ 279              	.LCFI3:
+ 280              	 .cfi_remember_state
+ 281              	 .cfi_def_cfa_offset 36
+ 282              	 
+ 283 0016 BDE8F08F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,pc}
+ 284              	.LVL15:
+ 285              	.L21:
+ 286              	.LCFI4:
+ 287              	 .cfi_restore_state
+ 288              	.LBB13:
+  55:Toeplitz_FFT.c ****   }
+ 289              	 .loc 2 55 5 is_stmt 1 discriminator 3 view .LVU56
+  55:Toeplitz_FFT.c ****   }
+ 290              	 .loc 2 55 23 is_stmt 0 discriminator 3 view .LVU57
+ 291 001a 305D     	 ldrb r0,[r6,r4]
+  55:Toeplitz_FFT.c ****   }
+ 292              	 .loc 2 55 33 discriminator 3 view .LVU58
+ 293 001c 3038     	 subs r0,r0,#48
+ 294 001e B847     	 blx r7
+ 295              	.LVL16:
+ 296 0020 8246     	 mov r10,r0
+  55:Toeplitz_FFT.c ****   }
+ 297              	 .loc 2 55 34 discriminator 3 view .LVU59
+ 298 0022 2046     	 mov r0,r4
+  55:Toeplitz_FFT.c ****   }
+ 299              	 .loc 2 55 33 discriminator 3 view .LVU60
+ 300 0024 8B46     	 mov fp,r1
+  55:Toeplitz_FFT.c ****   }
+ 301              	 .loc 2 55 34 discriminator 3 view .LVU61
+ 302 0026 B847     	 blx r7
+ 303              	.LVL17:
+ 304 0028 DFF844C0 	 ldr ip,.L22+4
+ 305 002c 0246     	 mov r2,r0
+ 306 002e 0B46     	 mov r3,r1
+ 307 0030 0020     	 movs r0,#0
+ 308 0032 1049     	 ldr r1,.L22+8
+ 309 0034 E047     	 blx ip
+ 310              	.LVL18:
+ 311 0036 0246     	 mov r2,r0
+ 312 0038 0B46     	 mov r3,r1
+  55:Toeplitz_FFT.c ****   }
+ 313              	 .loc 2 55 15 discriminator 3 view .LVU62
+ 314 003a 4046     	 mov r0,r8
+  55:Toeplitz_FFT.c ****   }
+ 315              	 .loc 2 55 34 discriminator 3 view .LVU63
+ 316 003c CDE90023 	 strd r2,[sp]
+  55:Toeplitz_FFT.c ****   }
+ 317              	 .loc 2 55 15 discriminator 3 view .LVU64
+ 318 0040 B847     	 blx r7
+ 319              	.LVL19:
+  55:Toeplitz_FFT.c ****   }
+ 320              	 .loc 2 55 33 discriminator 3 view .LVU65
+ 321 0042 DDE90023 	 ldrd r2,[sp]
+  55:Toeplitz_FFT.c ****   }
+ 322              	 .loc 2 55 15 discriminator 3 view .LVU66
+ 323 0046 8046     	 mov r8,r0
+ 324              	.LVL20:
+  55:Toeplitz_FFT.c ****   }
+ 325              	 .loc 2 55 15 discriminator 3 view .LVU67
+ 326 0048 8946     	 mov r9,r1
+  55:Toeplitz_FFT.c ****   }
+ 327              	 .loc 2 55 33 discriminator 3 view .LVU68
+ 328 004a 5046     	 mov r0,r10
+ 329 004c 5946     	 mov r1,fp
+ 330 004e DFF828B0 	 ldr fp,.L22+12
+ 331 0052 D847     	 blx fp
+ 332              	.LVL21:
+ 333 0054 0246     	 mov r2,r0
+ 334 0056 0B46     	 mov r3,r1
+  55:Toeplitz_FFT.c ****   }
+ 335              	 .loc 2 55 15 discriminator 3 view .LVU69
+ 336 0058 4046     	 mov r0,r8
+ 337 005a 4946     	 mov r1,r9
+ 338 005c DFF81C80 	 ldr r8,.L22+16
+ 339 0060 C047     	 blx r8
+ 340              	.LVL22:
+  55:Toeplitz_FFT.c ****   }
+ 341              	 .loc 2 55 9 discriminator 3 view .LVU70
+ 342 0062 074B     	 ldr r3,.L22+20
+ 343 0064 9847     	 blx r3
+ 344              	.LVL23:
+  54:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 345              	 .loc 2 54 28 discriminator 3 view .LVU71
+ 346 0066 0134     	 adds r4,r4,#1
+ 347              	.LVL24:
+  55:Toeplitz_FFT.c ****   }
+ 348              	 .loc 2 55 9 discriminator 3 view .LVU72
+ 349 0068 8046     	 mov r8,r0
+ 350              	.LVL25:
+  54:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 351              	 .loc 2 54 27 is_stmt 1 discriminator 3 view .LVU73
+  54:Toeplitz_FFT.c ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 352              	 .loc 2 54 27 is_stmt 0 discriminator 3 view .LVU74
+ 353 006a D0E7     	 b .L20
+ 354              	.L23:
+ 355              	 .align 2
+ 356              	.L22:
+ 357 006c 00000000 	 .word __aeabi_i2d
+ 358 0070 00000000 	 .word pow
+ 359 0074 00002440 	 .word 1076101120
+ 360 0078 00000000 	 .word __aeabi_dmul
+ 361 007c 00000000 	 .word __aeabi_dadd
+ 362 0080 00000000 	 .word __aeabi_d2iz
+ 363              	.LBE13:
+ 364              	 .cfi_endproc
+ 365              	.LFE8:
+ 367              	 .section .text.int_to_char_arr,"ax",%progbits
+ 368              	 .align 1
+ 369              	 .global int_to_char_arr
+ 370              	 .syntax unified
+ 371              	 .thumb
+ 372              	 .thumb_func
+ 373              	 .fpu softvfp
+ 375              	int_to_char_arr:
+ 376              	.LVL26:
+ 377              	.LFB9:
+  59:Toeplitz_FFT.c **** 
+  60:Toeplitz_FFT.c **** void int_to_char_arr(int *i_arr, char *c_arr, int len){
+ 378              	 .loc 2 60 55 is_stmt 1 view-0
+ 379              	 .cfi_startproc
+ 380              	 
+ 381              	 
+  61:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 382              	 .loc 2 61 3 view .LVU76
+ 383              	.LBB14:
+ 384              	 .loc 2 61 7 view .LVU77
+ 385              	 .loc 2 61 7 is_stmt 0 view .LVU78
+ 386              	.LBE14:
+  60:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 387              	 .loc 2 60 55 view .LVU79
+ 388 0000 10B5     	 push {r4,lr}
+ 389              	.LCFI5:
+ 390              	 .cfi_def_cfa_offset 8
+ 391              	 .cfi_offset 4,-8
+ 392              	 .cfi_offset 14,-4
+ 393              	.LBB15:
+ 394              	 .loc 2 61 11 view .LVU80
+ 395 0002 0023     	 movs r3,#0
+ 396              	.LVL27:
+ 397              	.L25:
+ 398              	 .loc 2 61 18 is_stmt 1 discriminator 1 view .LVU81
+ 399              	 .loc 2 61 3 is_stmt 0 discriminator 1 view .LVU82
+ 400 0004 9342     	 cmp r3,r2
+ 401 0006 00DB     	 blt .L26
+ 402              	.LBE15:
+  62:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+  63:Toeplitz_FFT.c ****   }
+  64:Toeplitz_FFT.c **** }
+ 403              	 .loc 2 64 1 view .LVU83
+ 404 0008 10BD     	 pop {r4,pc}
+ 405              	.L26:
+ 406              	.LBB16:
+  62:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 407              	 .loc 2 62 5 is_stmt 1 discriminator 3 view .LVU84
+  62:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 408              	 .loc 2 62 25 is_stmt 0 discriminator 3 view .LVU85
+ 409 000a 50F82340 	 ldr r4,[r0,r3,lsl#2]
+ 410 000e 3034     	 adds r4,r4,#48
+  62:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 411              	 .loc 2 62 14 discriminator 3 view .LVU86
+ 412 0010 CC54     	 strb r4,[r1,r3]
+  61:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 413              	 .loc 2 61 27 is_stmt 1 discriminator 3 view .LVU87
+  61:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 414              	 .loc 2 61 28 is_stmt 0 discriminator 3 view .LVU88
+ 415 0012 0133     	 adds r3,r3,#1
+ 416              	.LVL28:
+  61:Toeplitz_FFT.c ****     c_arr[i] = i_arr[i] + '0';
+ 417              	 .loc 2 61 28 discriminator 3 view .LVU89
+ 418 0014 F6E7     	 b .L25
+ 419              	.LBE16:
+ 420              	 .cfi_endproc
+ 421              	.LFE9:
+ 423              	 .section .text.long_delay,"ax",%progbits
+ 424              	 .align 1
+ 425              	 .global long_delay
+ 426              	 .syntax unified
+ 427              	 .thumb
+ 428              	 .thumb_func
+ 429              	 .fpu softvfp
+ 431              	long_delay:
+ 432              	.LFB10:
+  65:Toeplitz_FFT.c **** 
+  66:Toeplitz_FFT.c **** void long_delay(){
+ 433              	 .loc 2 66 18 is_stmt 1 view-0
+ 434              	 .cfi_startproc
+ 435              	 
+ 436              	 
+ 437              	 
+  67:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 438              	 .loc 2 67 3 view .LVU91
+ 439              	.LBB17:
+ 440              	 .loc 2 67 7 view .LVU92
+ 441              	.LVL29:
+ 442              	 .loc 2 67 18 view .LVU93
+ 443              	.LBE17:
+  66:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 444              	 .loc 2 66 18 is_stmt 0 view .LVU94
+ 445 0000 4FF47A73 	 mov r3,#1000
+ 446              	.LVL30:
+ 447              	.L28:
+ 448              	.LBB18:
+  68:Toeplitz_FFT.c ****     asm volatile(
+ 449              	 .loc 2 68 5 is_stmt 1 discriminator 3 view .LVU95
+ 450              	 .syntax unified
+ 451              	
+ 452 0004 00BF     	 nop
+ 453 0006 00BF     	 nop
+ 454 0008 00BF     	 nop
+ 455 000a 00BF     	 nop
+ 456 000c 00BF     	 nop
+ 457 000e 00BF     	 nop
+ 458 0010 00BF     	 nop
+ 459 0012 00BF     	 nop
+ 460 0014 00BF     	 nop
+ 461 0016 00BF     	 nop
+ 462              	 
+ 463              	
+  67:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 464              	 .loc 2 67 28 discriminator 3 view .LVU96
+ 465              	.LVL31:
+  67:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 466              	 .loc 2 67 18 discriminator 3 view .LVU97
+  67:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 467              	 .loc 2 67 3 is_stmt 0 discriminator 3 view .LVU98
+ 468              	 .thumb
+ 469              	 .syntax unified
+ 470 0018 013B     	 subs r3,r3,#1
+ 471              	.LVL32:
+  67:Toeplitz_FFT.c ****   for(int i = 0; i < 1000; i++){
+ 472              	 .loc 2 67 3 discriminator 3 view .LVU99
+ 473 001a F3D1     	 bne .L28
+ 474              	.LBE18:
+  69:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  70:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  71:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  72:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  73:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  74:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  75:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  76:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  77:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  78:Toeplitz_FFT.c ****     "nop"       "\n\t"
+  79:Toeplitz_FFT.c ****     ::
+  80:Toeplitz_FFT.c ****     );
+  81:Toeplitz_FFT.c ****   }
+  82:Toeplitz_FFT.c **** }
+ 475              	 .loc 2 82 1 view .LVU100
+ 476 001c 7047     	 bx lr
+ 477              	 .cfi_endproc
+ 478              	.LFE10:
+ 480              	 .section .rodata.print_int_array_serial.str1.1,"aMS",%progbits,1
+ 481              	.LC0:
+ 482 0000 25642000 	 .ascii "%d \000"
+ 483              	 .section .text.print_int_array_serial,"ax",%progbits
+ 484              	 .align 1
+ 485              	 .global print_int_array_serial
+ 486              	 .syntax unified
+ 487              	 .thumb
+ 488              	 .thumb_func
+ 489              	 .fpu softvfp
+ 491              	print_int_array_serial:
+ 492              	.LVL33:
+ 493              	.LFB11:
+  83:Toeplitz_FFT.c **** 
+  84:Toeplitz_FFT.c **** 
+  85:Toeplitz_FFT.c **** void print_int_array_serial(const int *arr, int len) {
+ 494              	 .loc 2 85 54 is_stmt 1 view-0
+ 495              	 .cfi_startproc
+ 496              	 
+ 497              	 
+  86:Toeplitz_FFT.c ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 498              	 .loc 2 86 5 view .LVU102
+  87:Toeplitz_FFT.c ****     for (int i = 0; i < len; i++) {
+ 499              	 .loc 2 87 5 view .LVU103
+ 500              	.LBB19:
+ 501              	 .loc 2 87 10 view .LVU104
+ 502              	 .loc 2 87 10 is_stmt 0 view .LVU105
+ 503              	.LBE19:
+  85:Toeplitz_FFT.c ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 504              	 .loc 2 85 54 view .LVU106
+ 505 0000 2DE9F043 	 push {r4,r5,r6,r7,r8,r9,lr}
+ 506              	.LCFI6:
+ 507              	 .cfi_def_cfa_offset 28
+ 508              	 .cfi_offset 4,-28
+ 509              	 .cfi_offset 5,-24
+ 510              	 .cfi_offset 6,-20
+ 511              	 .cfi_offset 7,-16
+ 512              	 .cfi_offset 8,-12
+ 513              	 .cfi_offset 9,-8
+ 514              	 .cfi_offset 14,-4
+ 515              	.LBB25:
+  88:Toeplitz_FFT.c ****         // Convert integer to string
+  89:Toeplitz_FFT.c ****         sprintf(buffer, "%d ", arr[i]);
+ 516              	 .loc 2 89 9 view .LVU107
+ 517 0004 DFF83880 	 ldr r8,.L35
+ 518              	.LBB20:
+ 519              	.LBB21:
+  90:Toeplitz_FFT.c ****         
+  91:Toeplitz_FFT.c ****         // Send the string over serial
+  92:Toeplitz_FFT.c ****         for (char *ptr = buffer; *ptr != '\0'; ptr++) {
+  93:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 520              	 .loc 2 93 13 view .LVU108
+ 521 0008 DFF83890 	 ldr r9,.L35+4
+ 522              	.LBE21:
+ 523              	.LBE20:
+ 524              	.LBE25:
+  85:Toeplitz_FFT.c ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 525              	 .loc 2 85 54 view .LVU109
+ 526 000c 85B0     	 sub sp,sp,#20
+ 527              	.LCFI7:
+ 528              	 .cfi_def_cfa_offset 48
+  85:Toeplitz_FFT.c ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 529              	 .loc 2 85 54 view .LVU110
+ 530 000e 0746     	 mov r7,r0
+ 531 0010 0E46     	 mov r6,r1
+ 532              	.LBB26:
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 533              	 .loc 2 87 14 view .LVU111
+ 534 0012 0025     	 movs r5,#0
+ 535              	.LVL34:
+ 536              	.L31:
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 537              	 .loc 2 87 21 is_stmt 1 discriminator 1 view .LVU112
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 538              	 .loc 2 87 5 is_stmt 0 discriminator 1 view .LVU113
+ 539 0014 B542     	 cmp r5,r6
+ 540 0016 05DB     	 blt .L34
+ 541              	.LBE26:
+  94:Toeplitz_FFT.c ****         }
+  95:Toeplitz_FFT.c ****     }
+  96:Toeplitz_FFT.c ****     putch('\n'); // Add a newline for better readability
+ 542              	 .loc 2 96 5 is_stmt 1 view .LVU114
+ 543 0018 0A4B     	 ldr r3,.L35+4
+ 544 001a 0A20     	 movs r0,#10
+ 545 001c 9847     	 blx r3
+ 546              	.LVL35:
+  97:Toeplitz_FFT.c **** }
+ 547              	 .loc 2 97 1 is_stmt 0 view .LVU115
+ 548 001e 05B0     	 add sp,sp,#20
+ 549              	.LCFI8:
+ 550              	 .cfi_remember_state
+ 551              	 .cfi_def_cfa_offset 28
+ 552              	 
+ 553 0020 BDE8F083 	 pop {r4,r5,r6,r7,r8,r9,pc}
+ 554              	.LVL36:
+ 555              	.L34:
+ 556              	.LCFI9:
+ 557              	 .cfi_restore_state
+ 558              	.LBB27:
+  89:Toeplitz_FFT.c ****         
+ 559              	 .loc 2 89 9 is_stmt 1 view .LVU116
+ 560 0024 57F82520 	 ldr r2,[r7,r5,lsl#2]
+ 561 0028 074B     	 ldr r3,.L35+8
+ 562 002a 4146     	 mov r1,r8
+ 563 002c 6846     	 mov r0,sp
+ 564 002e 9847     	 blx r3
+ 565              	.LVL37:
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 566              	 .loc 2 92 9 view .LVU117
+ 567              	.LBB23:
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 568              	 .loc 2 92 14 view .LVU118
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 569              	 .loc 2 92 14 is_stmt 0 view .LVU119
+ 570 0030 6C46     	 mov r4,sp
+ 571              	.LVL38:
+ 572              	.L32:
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 573              	 .loc 2 92 34 is_stmt 1 discriminator 1 view .LVU120
+ 574 0032 14F8010B 	 ldrb r0,[r4],#1
+ 575              	.LVL39:
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 576              	 .loc 2 92 9 is_stmt 0 discriminator 1 view .LVU121
+ 577 0036 08B9     	 cbnz r0,.L33
+ 578              	.LBE23:
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 579              	 .loc 2 87 30 is_stmt 1 discriminator 2 view .LVU122
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 580              	 .loc 2 87 31 is_stmt 0 discriminator 2 view .LVU123
+ 581 0038 0135     	 adds r5,r5,#1
+ 582              	.LVL40:
+  87:Toeplitz_FFT.c ****         // Convert integer to string
+ 583              	 .loc 2 87 31 discriminator 2 view .LVU124
+ 584 003a EBE7     	 b .L31
+ 585              	.L33:
+ 586              	.LBB24:
+ 587              	.LBB22:
+  93:Toeplitz_FFT.c ****         }
+ 588              	 .loc 2 93 13 is_stmt 1 discriminator 3 view .LVU125
+ 589 003c C847     	 blx r9
+ 590              	.LVL41:
+ 591              	.LBE22:
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 592              	 .loc 2 92 48 discriminator 3 view .LVU126
+  92:Toeplitz_FFT.c ****             putch(*ptr); // Send each character
+ 593              	 .loc 2 92 48 is_stmt 0 discriminator 3 view .LVU127
+ 594 003e F8E7     	 b .L32
+ 595              	.L36:
+ 596              	 .align 2
+ 597              	.L35:
+ 598 0040 00000000 	 .word .LC0
+ 599 0044 00000000 	 .word putch
+ 600 0048 00000000 	 .word sprintf
+ 601              	.LBE24:
+ 602              	.LBE27:
+ 603              	 .cfi_endproc
+ 604              	.LFE11:
+ 606              	 .global __aeabi_i2f
+ 607              	 .global __aeabi_fadd
+ 608              	 .section .text.embed_toeplitz_on_circulant,"ax",%progbits
+ 609              	 .align 1
+ 610              	 .global embed_toeplitz_on_circulant
+ 611              	 .syntax unified
+ 612              	 .thumb
+ 613              	 .thumb_func
+ 614              	 .fpu softvfp
+ 616              	embed_toeplitz_on_circulant:
+ 617              	.LVL42:
+ 618              	.LFB12:
+  98:Toeplitz_FFT.c **** 
+  99:Toeplitz_FFT.c **** 
+ 100:Toeplitz_FFT.c **** ////////////////////////
+ 101:Toeplitz_FFT.c **** /// FFT STUFF //////////
+ 102:Toeplitz_FFT.c **** 
+ 103:Toeplitz_FFT.c **** void embed_toeplitz_on_circulant(float complex *circ, int* row1, int* col1, int rowLen, int colLen,
+ 619              	 .loc 2 103 120 is_stmt 1 view-0
+ 620              	 .cfi_startproc
+ 621              	 
+ 622              	 
+ 623              	 .loc 2 103 120 is_stmt 0 view .LVU129
+ 624 0000 2DE9F84F 	 push {r3,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 625              	.LCFI10:
+ 626              	 .cfi_def_cfa_offset 40
+ 627              	 .cfi_offset 3,-40
+ 628              	 .cfi_offset 4,-36
+ 629              	 .cfi_offset 5,-32
+ 630              	 .cfi_offset 6,-28
+ 631              	 .cfi_offset 7,-24
+ 632              	 .cfi_offset 8,-20
+ 633              	 .cfi_offset 9,-16
+ 634              	 .cfi_offset 10,-12
+ 635              	 .cfi_offset 11,-8
+ 636              	 .cfi_offset 14,-4
+ 637              	.LBB28:
+ 104:Toeplitz_FFT.c ****   int m = 0;
+ 105:Toeplitz_FFT.c ****   for(int i = 0; i < colLen; i++){
+ 106:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 638              	 .loc 2 106 23 view .LVU130
+ 639 0004 194F     	 ldr r7,.L42
+ 640              	.LBE28:
+ 103:Toeplitz_FFT.c ****   int m = 0;
+ 641              	 .loc 2 103 120 view .LVU131
+ 642 0006 0446     	 mov r4,r0
+ 643 0008 8846     	 mov r8,r1
+ 644 000a 9146     	 mov r9,r2
+ 104:Toeplitz_FFT.c ****   int m = 0;
+ 645              	 .loc 2 104 3 is_stmt 1 view .LVU132
+ 646              	.LVL43:
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 647              	 .loc 2 105 3 view .LVU133
+ 648              	.LBB29:
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 649              	 .loc 2 105 7 view .LVU134
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 650              	 .loc 2 105 7 is_stmt 0 view .LVU135
+ 651              	.LBE29:
+ 103:Toeplitz_FFT.c ****   int m = 0;
+ 652              	 .loc 2 103 120 view .LVU136
+ 653 000c 1D46     	 mov r5,r3
+ 104:Toeplitz_FFT.c ****   int m = 0;
+ 654              	 .loc 2 104 7 view .LVU137
+ 655 000e 0026     	 movs r6,#0
+ 656              	.LBB30:
+ 657              	 .loc 2 106 23 view .LVU138
+ 658 0010 4FF0000A 	 mov r10,#0
+ 659              	 .loc 2 106 13 view .LVU139
+ 660 0014 00F1040B 	 add fp,r0,#4
+ 661              	.LVL44:
+ 662              	.L38:
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 663              	 .loc 2 105 18 is_stmt 1 discriminator 1 view .LVU140
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 664              	 .loc 2 105 3 is_stmt 0 discriminator 1 view .LVU141
+ 665 0018 0A9B     	 ldr r3,[sp,#40]
+ 666 001a 9E42     	 cmp r6,r3
+ 667 001c 0EDB     	 blt .L39
+ 668              	.LBE30:
+ 107:Toeplitz_FFT.c ****     m++;
+ 108:Toeplitz_FFT.c ****   }
+ 109:Toeplitz_FFT.c ****   for(int i = rowLen-1; i >= 1; i--){
+ 669              	 .loc 2 109 3 is_stmt 1 view .LVU142
+ 670              	.LBB31:
+ 671              	 .loc 2 109 7 view .LVU143
+ 672 001e 23EAE377 	 bic r7,r3,r3,asr#31
+ 673 0022 04EBC704 	 add r4,r4,r7,lsl#3
+ 674              	.LVL45:
+ 110:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 675              	 .loc 2 110 23 is_stmt 0 view .LVU144
+ 676 0026 DFF84890 	 ldr r9,.L42+4
+ 677              	.LVL46:
+ 678              	 .loc 2 110 23 view .LVU145
+ 679 002a 104F     	 ldr r7,.L42
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 680              	 .loc 2 109 11 view .LVU146
+ 681 002c 013D     	 subs r5,r5,#1
+ 682              	.LVL47:
+ 683              	 .loc 2 110 23 view .LVU147
+ 684 002e 0026     	 movs r6,#0
+ 685              	.LVL48:
+ 686              	.L40:
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 687              	 .loc 2 109 25 is_stmt 1 discriminator 1 view .LVU148
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 688              	 .loc 2 109 3 is_stmt 0 discriminator 1 view .LVU149
+ 689 0030 002D     	 cmp r5,#0
+ 690 0032 04F10804 	 add r4,r4,#8
+ 691 0036 0DDC     	 bgt .L41
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 692              	 .loc 2 109 3 discriminator 1 view .LVU150
+ 693              	.LBE31:
+ 111:Toeplitz_FFT.c ****     m++;
+ 112:Toeplitz_FFT.c ****   }  
+ 113:Toeplitz_FFT.c **** }
+ 694              	 .loc 2 113 1 view .LVU151
+ 695 0038 BDE8F88F 	 pop {r3,r4,r5,r6,r7,r8,r9,r10,fp,pc}
+ 696              	.LVL49:
+ 697              	.L39:
+ 698              	.LBB32:
+ 106:Toeplitz_FFT.c ****     m++;
+ 699              	 .loc 2 106 5 is_stmt 1 discriminator 3 view .LVU152
+ 106:Toeplitz_FFT.c ****     m++;
+ 700              	 .loc 2 106 23 is_stmt 0 discriminator 3 view .LVU153
+ 701 003c 59F82600 	 ldr r0,[r9,r6,lsl#2]
+ 702 0040 B847     	 blx r7
+ 703              	.LVL50:
+ 704 0042 0B4B     	 ldr r3,.L42+4
+ 705 0044 5146     	 mov r1,r10
+ 706 0046 9847     	 blx r3
+ 707              	.LVL51:
+ 106:Toeplitz_FFT.c ****     m++;
+ 708              	 .loc 2 106 13 discriminator 3 view .LVU154
+ 709 0048 44F83600 	 str r0,[r4,r6,lsl#3]
+ 710 004c 4BF836A0 	 str r10,[fp,r6,lsl#3]
+ 107:Toeplitz_FFT.c ****   }
+ 711              	 .loc 2 107 5 is_stmt 1 discriminator 3 view .LVU155
+ 107:Toeplitz_FFT.c ****   }
+ 712              	 .loc 2 107 6 is_stmt 0 discriminator 3 view .LVU156
+ 713 0050 0136     	 adds r6,r6,#1
+ 714              	.LVL52:
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 715              	 .loc 2 105 30 is_stmt 1 discriminator 3 view .LVU157
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 716              	 .loc 2 105 30 is_stmt 0 discriminator 3 view .LVU158
+ 717 0052 E1E7     	 b .L38
+ 718              	.LVL53:
+ 719              	.L41:
+ 105:Toeplitz_FFT.c ****     circ[m] = col1[i] + 0*I;
+ 720              	 .loc 2 105 30 discriminator 3 view .LVU159
+ 721              	.LBE32:
+ 722              	.LBB33:
+ 110:Toeplitz_FFT.c ****     m++;
+ 723              	 .loc 2 110 5 is_stmt 1 discriminator 3 view .LVU160
+ 110:Toeplitz_FFT.c ****     m++;
+ 724              	 .loc 2 110 23 is_stmt 0 discriminator 3 view .LVU161
+ 725 0054 58F82500 	 ldr r0,[r8,r5,lsl#2]
+ 726 0058 B847     	 blx r7
+ 727              	.LVL54:
+ 728 005a 3146     	 mov r1,r6
+ 729 005c C847     	 blx r9
+ 730              	.LVL55:
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 731              	 .loc 2 109 34 discriminator 3 view .LVU162
+ 732 005e 013D     	 subs r5,r5,#1
+ 733              	.LVL56:
+ 110:Toeplitz_FFT.c ****     m++;
+ 734              	 .loc 2 110 13 discriminator 3 view .LVU163
+ 735 0060 44F8080C 	 str r0,[r4,#-8]
+ 736 0064 44F8046C 	 str r6,[r4,#-4]
+ 111:Toeplitz_FFT.c ****   }  
+ 737              	 .loc 2 111 5 is_stmt 1 discriminator 3 view .LVU164
+ 738              	.LVL57:
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 739              	 .loc 2 109 33 discriminator 3 view .LVU165
+ 109:Toeplitz_FFT.c ****     circ[m] = row1[i] + 0*I;
+ 740              	 .loc 2 109 33 is_stmt 0 discriminator 3 view .LVU166
+ 741 0068 E2E7     	 b .L40
+ 742              	.L43:
+ 743 006a 00BF     	 .align 2
+ 744              	.L42:
+ 745 006c 00000000 	 .word __aeabi_i2f
+ 746 0070 00000000 	 .word __aeabi_fadd
+ 747              	.LBE33:
+ 748              	 .cfi_endproc
+ 749              	.LFE12:
+ 751              	 .section .text.pad_key,"ax",%progbits
+ 752              	 .align 1
+ 753              	 .global pad_key
+ 754              	 .syntax unified
+ 755              	 .thumb
+ 756              	 .thumb_func
+ 757              	 .fpu softvfp
+ 759              	pad_key:
+ 760              	.LVL58:
+ 761              	.LFB13:
+ 114:Toeplitz_FFT.c **** 
+ 115:Toeplitz_FFT.c **** void pad_key(complex float *padded_key, int *key, int padLen, int keyLen){
+ 762              	 .loc 2 115 74 is_stmt 1 view-0
+ 763              	 .cfi_startproc
+ 764              	 
+ 765              	 
+ 116:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 766              	 .loc 2 116 3 view .LVU168
+ 767              	.LBB34:
+ 768              	 .loc 2 116 7 view .LVU169
+ 769              	 .loc 2 116 7 is_stmt 0 view .LVU170
+ 770              	.LBE34:
+ 115:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 771              	 .loc 2 115 74 view .LVU171
+ 772 0000 2DE9F14F 	 push {r0,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 773              	.LCFI11:
+ 774              	 .cfi_def_cfa_offset 40
+ 775              	 .cfi_offset 4,-36
+ 776              	 .cfi_offset 5,-32
+ 777              	 .cfi_offset 6,-28
+ 778              	 .cfi_offset 7,-24
+ 779              	 .cfi_offset 8,-20
+ 780              	 .cfi_offset 9,-16
+ 781              	 .cfi_offset 10,-12
+ 782              	 .cfi_offset 11,-8
+ 783              	 .cfi_offset 14,-4
+ 115:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 784              	 .loc 2 115 74 view .LVU172
+ 785 0004 1C46     	 mov r4,r3
+ 786              	.LBB35:
+ 117:Toeplitz_FFT.c ****     padded_key[i] = key[i] + 0*I;
+ 787              	 .loc 2 117 28 view .LVU173
+ 788 0006 DFF84CB0 	 ldr fp,.L47
+ 789 000a 134B     	 ldr r3,.L47+4
+ 790              	.LVL59:
+ 791              	 .loc 2 117 28 view .LVU174
+ 792              	.LBE35:
+ 115:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 793              	 .loc 2 115 74 view .LVU175
+ 794 000c 0646     	 mov r6,r0
+ 795 000e 8846     	 mov r8,r1
+ 796 0010 1746     	 mov r7,r2
+ 797              	.LBB36:
+ 116:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 798              	 .loc 2 116 11 view .LVU176
+ 799 0012 0025     	 movs r5,#0
+ 800              	 .loc 2 117 28 view .LVU177
+ 801 0014 4FF00009 	 mov r9,#0
+ 802              	 .loc 2 117 19 view .LVU178
+ 803 0018 00F1040A 	 add r10,r0,#4
+ 804              	.LVL60:
+ 805              	.L45:
+ 116:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 806              	 .loc 2 116 18 is_stmt 1 discriminator 1 view .LVU179
+ 116:Toeplitz_FFT.c ****   for(int i = 0; i < keyLen; i++){
+ 807              	 .loc 2 116 3 is_stmt 0 discriminator 1 view .LVU180
+ 808 001c A542     	 cmp r5,r4
+ 809 001e 0CDB     	 blt .L46
+ 810              	.LBE36:
+ 811              	.LBB37:
+ 118:Toeplitz_FFT.c ****   }
+ 119:Toeplitz_FFT.c ****   for(int i = keyLen; i < padLen; i++){
+ 120:Toeplitz_FFT.c ****     padded_key[i] = 0 + 0*I;
+ 812              	 .loc 2 120 19 view .LVU181
+ 813 0020 3A1B     	 subs r2,r7,r4
+ 814 0022 0E4B     	 ldr r3,.L47+8
+ 815 0024 D200     	 lsls r2,r2,#3
+ 816 0026 BC42     	 cmp r4,r7
+ 817 0028 C8BF     	 it gt
+ 818 002a 0022     	 movgt r2,#0
+ 819 002c 0021     	 movs r1,#0
+ 820 002e 06EBC400 	 add r0,r6,r4,lsl#3
+ 821              	.LBE37:
+ 121:Toeplitz_FFT.c ****   }
+ 122:Toeplitz_FFT.c **** }
+ 822              	 .loc 2 122 1 view .LVU182
+ 823 0032 01B0     	 add sp,sp,#4
+ 824              	.LCFI12:
+ 825              	 .cfi_remember_state
+ 826              	 .cfi_def_cfa_offset 36
+ 827              	 
+ 828 0034 BDE8F04F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 829              	.LCFI13:
+ 830              	 .cfi_restore 14
+ 831              	 .cfi_restore 11
+ 832              	 .cfi_restore 10
+ 833              	 .cfi_restore 9
+ 834              	 .cfi_restore 8
+ 835              	 .cfi_restore 7
+ 836              	 .cfi_restore 6
+ 837              	 .cfi_restore 5
+ 838              	 .cfi_restore 4
+ 839              	 .cfi_def_cfa_offset 0
+ 840              	.LVL61:
+ 841              	.LBB38:
+ 120:Toeplitz_FFT.c ****   }
+ 842              	 .loc 2 120 19 view .LVU183
+ 843 0038 1847     	 bx r3
+ 844              	.LVL62:
+ 845              	.L46:
+ 846              	.LCFI14:
+ 847              	 .cfi_restore_state
+ 120:Toeplitz_FFT.c ****   }
+ 848              	 .loc 2 120 19 view .LVU184
+ 849              	.LBE38:
+ 850              	.LBB39:
+ 117:Toeplitz_FFT.c ****   }
+ 851              	 .loc 2 117 5 is_stmt 1 discriminator 3 view .LVU185
+ 117:Toeplitz_FFT.c ****   }
+ 852              	 .loc 2 117 28 is_stmt 0 discriminator 3 view .LVU186
+ 853 003a 58F82500 	 ldr r0,[r8,r5,lsl#2]
+ 854 003e 9847     	 blx r3
+ 855              	.LVL63:
+ 856 0040 4946     	 mov r1,r9
+ 857 0042 D847     	 blx fp
+ 858              	.LVL64:
+ 116:Toeplitz_FFT.c ****     padded_key[i] = key[i] + 0*I;
+ 859              	 .loc 2 116 31 discriminator 3 view .LVU187
+ 860 0044 044B     	 ldr r3,.L47+4
+ 117:Toeplitz_FFT.c ****   }
+ 861              	 .loc 2 117 19 discriminator 3 view .LVU188
+ 862 0046 46F83500 	 str r0,[r6,r5,lsl#3]
+ 863 004a 4AF83590 	 str r9,[r10,r5,lsl#3]
+ 116:Toeplitz_FFT.c ****     padded_key[i] = key[i] + 0*I;
+ 864              	 .loc 2 116 30 is_stmt 1 discriminator 3 view .LVU189
+ 116:Toeplitz_FFT.c ****     padded_key[i] = key[i] + 0*I;
+ 865              	 .loc 2 116 31 is_stmt 0 discriminator 3 view .LVU190
+ 866 004e 0135     	 adds r5,r5,#1
+ 867              	.LVL65:
+ 116:Toeplitz_FFT.c ****     padded_key[i] = key[i] + 0*I;
+ 868              	 .loc 2 116 31 discriminator 3 view .LVU191
+ 869 0050 E4E7     	 b .L45
+ 870              	.L48:
+ 871 0052 00BF     	 .align 2
+ 872              	.L47:
+ 873 0054 00000000 	 .word __aeabi_fadd
+ 874 0058 00000000 	 .word __aeabi_i2f
+ 875 005c 00000000 	 .word memset
+ 876              	.LBE39:
+ 877              	 .cfi_endproc
+ 878              	.LFE13:
+ 880              	 .section .text.conj_array,"ax",%progbits
+ 881              	 .align 1
+ 882              	 .global conj_array
+ 883              	 .syntax unified
+ 884              	 .thumb
+ 885              	 .thumb_func
+ 886              	 .fpu softvfp
+ 888              	conj_array:
+ 889              	.LVL66:
+ 890              	.LFB14:
+ 123:Toeplitz_FFT.c **** 
+ 124:Toeplitz_FFT.c **** 
+ 125:Toeplitz_FFT.c **** void conj_array(float complex *arr, int N){
+ 891              	 .loc 2 125 43 is_stmt 1 view-0
+ 892              	 .cfi_startproc
+ 893              	 
+ 894              	 
+ 895              	 
+ 126:Toeplitz_FFT.c ****   for(int i = 0; i < N; i++){
+ 896              	 .loc 2 126 3 view .LVU193
+ 897              	.LBB40:
+ 898              	 .loc 2 126 7 view .LVU194
+ 899              	 .loc 2 126 7 is_stmt 0 view .LVU195
+ 900 0000 0430     	 adds r0,r0,#4
+ 901              	.LVL67:
+ 902              	 .loc 2 126 11 view .LVU196
+ 903 0002 0023     	 movs r3,#0
+ 904              	.LVL68:
+ 905              	.L50:
+ 906              	 .loc 2 126 18 is_stmt 1 discriminator 1 view .LVU197
+ 907              	 .loc 2 126 3 is_stmt 0 discriminator 1 view .LVU198
+ 908 0004 8B42     	 cmp r3,r1
+ 909 0006 00F10800 	 add r0,r0,#8
+ 910 000a 00DB     	 blt .L51
+ 911              	.LBE40:
+ 127:Toeplitz_FFT.c ****     arr[i] = conj(arr[i]);
+ 128:Toeplitz_FFT.c ****   }
+ 129:Toeplitz_FFT.c **** }
+ 912              	 .loc 2 129 1 view .LVU199
+ 913 000c 7047     	 bx lr
+ 914              	.L51:
+ 915              	.LBB41:
+ 127:Toeplitz_FFT.c ****     arr[i] = conj(arr[i]);
+ 916              	 .loc 2 127 5 is_stmt 1 discriminator 3 view .LVU200
+ 127:Toeplitz_FFT.c ****     arr[i] = conj(arr[i]);
+ 917              	 .loc 2 127 14 is_stmt 0 discriminator 3 view .LVU201
+ 918 000e 50F8082C 	 ldr r2,[r0,#-8]
+ 919 0012 02F10042 	 add r2,r2,#-2147483648
+ 127:Toeplitz_FFT.c ****     arr[i] = conj(arr[i]);
+ 920              	 .loc 2 127 12 discriminator 3 view .LVU202
+ 921 0016 40F8082C 	 str r2,[r0,#-8]
+ 126:Toeplitz_FFT.c ****   for(int i = 0; i < N; i++){
+ 922              	 .loc 2 126 25 is_stmt 1 discriminator 3 view .LVU203
+ 126:Toeplitz_FFT.c ****   for(int i = 0; i < N; i++){
+ 923              	 .loc 2 126 26 is_stmt 0 discriminator 3 view .LVU204
+ 924 001a 0133     	 adds r3,r3,#1
+ 925              	.LVL69:
+ 126:Toeplitz_FFT.c ****   for(int i = 0; i < N; i++){
+ 926              	 .loc 2 126 26 discriminator 3 view .LVU205
+ 927 001c F2E7     	 b .L50
+ 928              	.LBE41:
+ 929              	 .cfi_endproc
+ 930              	.LFE14:
+ 932              	 .section .text.reverse_bit,"ax",%progbits
+ 933              	 .align 1
+ 934              	 .global reverse_bit
+ 935              	 .syntax unified
+ 936              	 .thumb
+ 937              	 .thumb_func
+ 938              	 .fpu softvfp
+ 940              	reverse_bit:
+ 941              	.LVL70:
+ 942              	.LFB15:
+ 130:Toeplitz_FFT.c **** 
+ 131:Toeplitz_FFT.c **** 
+ 132:Toeplitz_FFT.c **** int reverse_bit(int num, int s) {
+ 943              	 .loc 2 132 33 is_stmt 1 view-0
+ 944              	 .cfi_startproc
+ 945              	 
+ 946              	 
+ 133:Toeplitz_FFT.c ****     int res = 0;
+ 947              	 .loc 2 133 5 view .LVU207
+ 134:Toeplitz_FFT.c ****     for (int i = 0; i < s; i++) {
+ 948              	 .loc 2 134 5 view .LVU208
+ 949              	.LBB42:
+ 950              	 .loc 2 134 10 view .LVU209
+ 951              	 .loc 2 134 14 is_stmt 0 view .LVU210
+ 952 0000 0023     	 movs r3,#0
+ 953              	.LBE42:
+ 132:Toeplitz_FFT.c ****     int res = 0;
+ 954              	 .loc 2 132 33 view .LVU211
+ 955 0002 70B5     	 push {r4,r5,r6,lr}
+ 956              	.LCFI15:
+ 957              	 .cfi_def_cfa_offset 16
+ 958              	 .cfi_offset 4,-16
+ 959              	 .cfi_offset 5,-12
+ 960              	 .cfi_offset 6,-8
+ 961              	 .cfi_offset 14,-4
+ 132:Toeplitz_FFT.c ****     int res = 0;
+ 962              	 .loc 2 132 33 view .LVU212
+ 963 0004 0246     	 mov r2,r0
+ 964              	.LBB43:
+ 135:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 136:Toeplitz_FFT.c ****             res |= 1 << (s - 1 - i);
+ 965              	 .loc 2 136 22 view .LVU213
+ 966 0006 4D1E     	 subs r5,r1,#1
+ 967              	.LBE43:
+ 133:Toeplitz_FFT.c ****     for (int i = 0; i < s; i++) {
+ 968              	 .loc 2 133 9 view .LVU214
+ 969 0008 1846     	 mov r0,r3
+ 970              	.LVL71:
+ 971              	.LBB44:
+ 972              	 .loc 2 136 22 view .LVU215
+ 973 000a 0126     	 movs r6,#1
+ 974              	.LVL72:
+ 975              	.L53:
+ 134:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 976              	 .loc 2 134 21 is_stmt 1 discriminator 1 view .LVU216
+ 134:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 977              	 .loc 2 134 5 is_stmt 0 discriminator 1 view .LVU217
+ 978 000c 8B42     	 cmp r3,r1
+ 979 000e 00DB     	 blt .L55
+ 980              	.LBE44:
+ 137:Toeplitz_FFT.c ****     }
+ 138:Toeplitz_FFT.c ****     return res;
+ 981              	 .loc 2 138 5 is_stmt 1 view .LVU218
+ 139:Toeplitz_FFT.c **** }
+ 982              	 .loc 2 139 1 is_stmt 0 view .LVU219
+ 983 0010 70BD     	 pop {r4,r5,r6,pc}
+ 984              	.L55:
+ 985              	.LBB45:
+ 135:Toeplitz_FFT.c ****             res |= 1 << (s - 1 - i);
+ 986              	 .loc 2 135 9 is_stmt 1 view .LVU220
+ 135:Toeplitz_FFT.c ****             res |= 1 << (s - 1 - i);
+ 987              	 .loc 2 135 13 is_stmt 0 view .LVU221
+ 988 0012 42FA03F4 	 asr r4,r2,r3
+ 135:Toeplitz_FFT.c ****             res |= 1 << (s - 1 - i);
+ 989              	 .loc 2 135 12 view .LVU222
+ 990 0016 E407     	 lsls r4,r4,#31
+ 136:Toeplitz_FFT.c ****     }
+ 991              	 .loc 2 136 13 is_stmt 1 view .LVU223
+ 136:Toeplitz_FFT.c ****     }
+ 992              	 .loc 2 136 22 is_stmt 0 view .LVU224
+ 993 0018 42BF     	 ittt mi
+ 994 001a EC1A     	 submi r4,r5,r3
+ 995 001c 06FA04F4 	 lslmi r4,r6,r4
+ 136:Toeplitz_FFT.c ****     }
+ 996              	 .loc 2 136 17 view .LVU225
+ 997 0020 2043     	 orrmi r0,r0,r4
+ 998              	.LVL73:
+ 134:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 999              	 .loc 2 134 28 is_stmt 1 view .LVU226
+ 134:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 1000              	 .loc 2 134 29 is_stmt 0 view .LVU227
+ 1001 0022 0133     	 adds r3,r3,#1
+ 1002              	.LVL74:
+ 134:Toeplitz_FFT.c ****         if (num & (1 << i))
+ 1003              	 .loc 2 134 29 view .LVU228
+ 1004 0024 F2E7     	 b .L53
+ 1005              	.LBE45:
+ 1006              	 .cfi_endproc
+ 1007              	.LFE15:
+ 1009              	 .section .text.reverse_array,"ax",%progbits
+ 1010              	 .align 1
+ 1011              	 .global reverse_array
+ 1012              	 .syntax unified
+ 1013              	 .thumb
+ 1014              	 .thumb_func
+ 1015              	 .fpu softvfp
+ 1017              	reverse_array:
+ 1018              	.LVL75:
+ 1019              	.LFB16:
+ 140:Toeplitz_FFT.c **** 
+ 141:Toeplitz_FFT.c **** void reverse_array(float complex *X, int N, int s){
+ 1020              	 .loc 2 141 51 is_stmt 1 view-0
+ 1021              	 .cfi_startproc
+ 1022              	 
+ 1023              	 
+ 142:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1024              	 .loc 2 142 5 view .LVU230
+ 1025              	.LBB46:
+ 1026              	 .loc 2 142 9 view .LVU231
+ 1027              	 .loc 2 142 9 is_stmt 0 view .LVU232
+ 1028              	.LBE46:
+ 141:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1029              	 .loc 2 141 51 view .LVU233
+ 1030 0000 2DE9F843 	 push {r3,r4,r5,r6,r7,r8,r9,lr}
+ 1031              	.LCFI16:
+ 1032              	 .cfi_def_cfa_offset 32
+ 1033              	 .cfi_offset 3,-32
+ 1034              	 .cfi_offset 4,-28
+ 1035              	 .cfi_offset 5,-24
+ 1036              	 .cfi_offset 6,-20
+ 1037              	 .cfi_offset 7,-16
+ 1038              	 .cfi_offset 8,-12
+ 1039              	 .cfi_offset 9,-8
+ 1040              	 .cfi_offset 14,-4
+ 1041              	.LBB50:
+ 1042              	.LBB47:
+ 143:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1043              	 .loc 2 143 18 view .LVU234
+ 1044 0004 114F     	 ldr r7,.L63
+ 1045              	.LBE47:
+ 1046              	.LBE50:
+ 141:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1047              	 .loc 2 141 51 view .LVU235
+ 1048 0006 0E46     	 mov r6,r1
+ 1049 0008 0546     	 mov r5,r0
+ 1050 000a 1146     	 mov r1,r2
+ 1051              	.LVL76:
+ 1052              	.LBB51:
+ 142:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1053              	 .loc 2 142 13 view .LVU236
+ 1054 000c 0024     	 movs r4,#0
+ 1055              	.LVL77:
+ 1056              	.L60:
+ 142:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1057              	 .loc 2 142 20 is_stmt 1 discriminator 1 view .LVU237
+ 142:Toeplitz_FFT.c ****     for(int i = 0; i < N; i ++){
+ 1058              	 .loc 2 142 5 is_stmt 0 discriminator 1 view .LVU238
+ 1059 000e B442     	 cmp r4,r6
+ 1060 0010 01DB     	 blt .L62
+ 1061              	.LBE51:
+ 144:Toeplitz_FFT.c ****         if(i < rb){
+ 145:Toeplitz_FFT.c ****           float complex tmp = X[i];
+ 146:Toeplitz_FFT.c ****             X[i] = X[rb];
+ 147:Toeplitz_FFT.c ****             X[rb] = tmp;
+ 148:Toeplitz_FFT.c ****         }
+ 149:Toeplitz_FFT.c ****     }
+ 150:Toeplitz_FFT.c **** }
+ 1062              	 .loc 2 150 1 view .LVU239
+ 1063 0012 BDE8F883 	 pop {r3,r4,r5,r6,r7,r8,r9,pc}
+ 1064              	.LVL78:
+ 1065              	.L62:
+ 1066              	.LBB52:
+ 1067              	.LBB49:
+ 143:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1068              	 .loc 2 143 9 is_stmt 1 view .LVU240
+ 143:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1069              	 .loc 2 143 18 is_stmt 0 view .LVU241
+ 1070 0016 2046     	 mov r0,r4
+ 1071 0018 B847     	 blx r7
+ 1072              	.LVL79:
+ 144:Toeplitz_FFT.c ****         if(i < rb){
+ 1073              	 .loc 2 144 9 is_stmt 1 view .LVU242
+ 144:Toeplitz_FFT.c ****         if(i < rb){
+ 1074              	 .loc 2 144 11 is_stmt 0 view .LVU243
+ 1075 001a 8442     	 cmp r4,r0
+ 1076 001c 13DA     	 bge .L61
+ 1077              	.LBB48:
+ 145:Toeplitz_FFT.c ****             X[i] = X[rb];
+ 1078              	 .loc 2 145 11 is_stmt 1 view .LVU244
+ 145:Toeplitz_FFT.c ****             X[i] = X[rb];
+ 1079              	 .loc 2 145 25 is_stmt 0 view .LVU245
+ 1080 001e 05EBC402 	 add r2,r5,r4,lsl#3
+ 146:Toeplitz_FFT.c ****             X[rb] = tmp;
+ 1081              	 .loc 2 146 21 view .LVU246
+ 1082 0022 05EBC003 	 add r3,r5,r0,lsl#3
+ 145:Toeplitz_FFT.c ****             X[i] = X[rb];
+ 1083              	 .loc 2 145 25 view .LVU247
+ 1084 0026 55F834E0 	 ldr lr,[r5,r4,lsl#3]
+ 1085 002a D2F804C0 	 ldr ip,[r2,#4]
+ 1086              	.LVL80:
+ 146:Toeplitz_FFT.c ****             X[rb] = tmp;
+ 1087              	 .loc 2 146 13 is_stmt 1 view .LVU248
+ 146:Toeplitz_FFT.c ****             X[rb] = tmp;
+ 1088              	 .loc 2 146 21 is_stmt 0 view .LVU249
+ 1089 002e 55F83090 	 ldr r9,[r5,r0,lsl#3]
+ 1090 0032 D3F80480 	 ldr r8,[r3,#4]
+ 146:Toeplitz_FFT.c ****             X[rb] = tmp;
+ 1091              	 .loc 2 146 18 view .LVU250
+ 1092 0036 45F83490 	 str r9,[r5,r4,lsl#3]
+ 1093 003a C2F80480 	 str r8,[r2,#4]
+ 147:Toeplitz_FFT.c ****         }
+ 1094              	 .loc 2 147 13 is_stmt 1 view .LVU251
+ 147:Toeplitz_FFT.c ****         }
+ 1095              	 .loc 2 147 19 is_stmt 0 view .LVU252
+ 1096 003e 45F830E0 	 str lr,[r5,r0,lsl#3]
+ 1097 0042 C3F804C0 	 str ip,[r3,#4]
+ 1098              	.LVL81:
+ 1099              	.L61:
+ 147:Toeplitz_FFT.c ****         }
+ 1100              	 .loc 2 147 19 view .LVU253
+ 1101              	.LBE48:
+ 1102              	.LBE49:
+ 142:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1103              	 .loc 2 142 27 is_stmt 1 discriminator 2 view .LVU254
+ 142:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1104              	 .loc 2 142 29 is_stmt 0 discriminator 2 view .LVU255
+ 1105 0046 0134     	 adds r4,r4,#1
+ 1106              	.LVL82:
+ 142:Toeplitz_FFT.c ****         int rb = reverse_bit(i,s);
+ 1107              	 .loc 2 142 29 discriminator 2 view .LVU256
+ 1108 0048 E1E7     	 b .L60
+ 1109              	.L64:
+ 1110 004a 00BF     	 .align 2
+ 1111              	.L63:
+ 1112 004c 00000000 	 .word reverse_bit
+ 1113              	.LBE52:
+ 1114              	 .cfi_endproc
+ 1115              	.LFE16:
+ 1117              	 .global __aeabi_ddiv
+ 1118              	 .global __aeabi_d2f
+ 1119              	 .global __aeabi_fsub
+ 1120              	 .global __aeabi_dsub
+ 1121              	 .global __aeabi_dcmple
+ 1122              	 .section .text.DIT_FFT,"ax",%progbits
+ 1123              	 .align 1
+ 1124              	 .global DIT_FFT
+ 1125              	 .syntax unified
+ 1126              	 .thumb
+ 1127              	 .thumb_func
+ 1128              	 .fpu softvfp
+ 1130              	DIT_FFT:
+ 1131              	.LVL83:
+ 1132              	.LFB17:
+ 151:Toeplitz_FFT.c **** 
+ 152:Toeplitz_FFT.c **** 
+ 153:Toeplitz_FFT.c **** //https://github.com/Swati-Verma671/Computation-of-DFT-using-Radix-2-DIT-FFT-algorithm/blob/main/co
+ 154:Toeplitz_FFT.c **** void DIT_FFT(float complex *X, int N){
+ 1133              	 .loc 2 154 38 is_stmt 1 view-0
+ 1134              	 .cfi_startproc
+ 1135              	 
+ 1136              	 
+ 155:Toeplitz_FFT.c ****     int s = round(log2(N));
+ 1137              	 .loc 2 155 5 view .LVU258
+ 154:Toeplitz_FFT.c ****     int s = round(log2(N));
+ 1138              	 .loc 2 154 38 is_stmt 0 view .LVU259
+ 1139 0000 2DE9F04F 	 push {r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 1140              	.LCFI17:
+ 1141              	 .cfi_def_cfa_offset 36
+ 1142              	 .cfi_offset 4,-36
+ 1143              	 .cfi_offset 5,-32
+ 1144              	 .cfi_offset 6,-28
+ 1145              	 .cfi_offset 7,-24
+ 1146              	 .cfi_offset 8,-20
+ 1147              	 .cfi_offset 9,-16
+ 1148              	 .cfi_offset 10,-12
+ 1149              	 .cfi_offset 11,-8
+ 1150              	 .cfi_offset 14,-4
+ 1151 0004 9BB0     	 sub sp,sp,#108
+ 1152              	.LCFI18:
+ 1153              	 .cfi_def_cfa_offset 144
+ 1154              	 .loc 2 155 19 view .LVU260
+ 1155 0006 964B     	 ldr r3,.L94+16
+ 154:Toeplitz_FFT.c ****     int s = round(log2(N));
+ 1156              	 .loc 2 154 38 view .LVU261
+ 1157 0008 0390     	 str r0,[sp,#12]
+ 1158 000a 0A91     	 str r1,[sp,#40]
+ 1159              	 .loc 2 155 19 view .LVU262
+ 1160 000c 0846     	 mov r0,r1
+ 1161              	.LVL84:
+ 1162              	 .loc 2 155 19 view .LVU263
+ 1163 000e 9847     	 blx r3
+ 1164              	.LVL85:
+ 1165              	 .loc 2 155 19 view .LVU264
+ 1166 0010 944B     	 ldr r3,.L94+20
+ 1167              	 .loc 2 155 13 view .LVU265
+ 1168 0012 954C     	 ldr r4,.L94+24
+ 1169              	 .loc 2 155 19 view .LVU266
+ 1170 0014 9847     	 blx r3
+ 1171              	.LVL86:
+ 1172              	 .loc 2 155 13 view .LVU267
+ 1173 0016 8EA3     	 adr r3,.L94
+ 1174 0018 D3E90023 	 ldrd r2,[r3]
+ 1175 001c A047     	 blx r4
+ 1176              	.LVL87:
+ 1177 001e 934B     	 ldr r3,.L94+28
+ 1178 0020 9847     	 blx r3
+ 1179              	.LVL88:
+ 1180              	 .loc 2 155 9 view .LVU268
+ 1181 0022 934B     	 ldr r3,.L94+32
+ 1182 0024 9847     	 blx r3
+ 1183              	.LVL89:
+ 156:Toeplitz_FFT.c ****     reverse_array(X,N,s);
+ 1184              	 .loc 2 156 5 view .LVU269
+ 1185 0026 934B     	 ldr r3,.L94+36
+ 155:Toeplitz_FFT.c ****     int s = round(log2(N));
+ 1186              	 .loc 2 155 9 view .LVU270
+ 1187 0028 0B90     	 str r0,[sp,#44]
+ 1188              	.LVL90:
+ 1189              	 .loc 2 156 5 is_stmt 1 view .LVU271
+ 1190 002a 0246     	 mov r2,r0
+ 1191 002c 0A99     	 ldr r1,[sp,#40]
+ 1192 002e 0398     	 ldr r0,[sp,#12]
+ 1193              	.LVL91:
+ 1194              	 .loc 2 156 5 is_stmt 0 view .LVU272
+ 1195 0030 9847     	 blx r3
+ 1196              	.LVL92:
+ 157:Toeplitz_FFT.c ****     for(int stage=1; stage <= s; stage++){
+ 1197              	 .loc 2 157 5 is_stmt 1 view .LVU273
+ 1198              	.LBB53:
+ 1199              	 .loc 2 157 9 view .LVU274
+ 1200              	 .loc 2 157 13 is_stmt 0 view .LVU275
+ 1201 0032 0123     	 movs r3,#1
+ 1202              	.LVL93:
+ 1203              	.L93:
+ 1204              	 .loc 2 157 39 discriminator 2 view .LVU276
+ 1205 0034 0693     	 str r3,[sp,#24]
+ 1206              	.LVL94:
+ 1207              	 .loc 2 157 22 is_stmt 1 discriminator 2 view .LVU277
+ 1208              	 .loc 2 157 5 is_stmt 0 discriminator 2 view .LVU278
+ 1209 0036 069B     	 ldr r3,[sp,#24]
+ 1210              	 .loc 2 157 5 discriminator 2 view .LVU279
+ 1211 0038 0B9A     	 ldr r2,[sp,#44]
+ 1212 003a 9342     	 cmp r3,r2
+ 1213 003c 02DD     	 ble .L84
+ 1214              	.LBE53:
+ 158:Toeplitz_FFT.c ****         int p = 0;
+ 159:Toeplitz_FFT.c ****         int q = 0 + pow(2,stage-1);
+ 160:Toeplitz_FFT.c ****         int n = 0;
+ 161:Toeplitz_FFT.c ****         while (n<=pow(2,(stage-1))-1 && q <=N)
+ 162:Toeplitz_FFT.c ****         {
+ 163:Toeplitz_FFT.c ****             float complex w = cexp(-2*I*PI*n/(pow(2,stage)));
+ 164:Toeplitz_FFT.c **** 
+ 165:Toeplitz_FFT.c ****             float complex y = X[p];
+ 166:Toeplitz_FFT.c ****             float complex z = X[q];
+ 167:Toeplitz_FFT.c **** 
+ 168:Toeplitz_FFT.c ****             uint32_t cycles = 20;
+ 169:Toeplitz_FFT.c **** 
+ 170:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 5; i++) {
+ 171:Toeplitz_FFT.c ****               asm volatile("nop");
+ 172:Toeplitz_FFT.c ****             }            
+ 173:Toeplitz_FFT.c ****             
+ 174:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 5; i++) {
+ 175:Toeplitz_FFT.c ****               asm volatile("nop");
+ 176:Toeplitz_FFT.c ****             }
+ 177:Toeplitz_FFT.c **** 
+ 178:Toeplitz_FFT.c ****             z *= w;
+ 179:Toeplitz_FFT.c **** 
+ 180:Toeplitz_FFT.c ****             trigger_high();
+ 181:Toeplitz_FFT.c **** 
+ 182:Toeplitz_FFT.c **** 
+ 183:Toeplitz_FFT.c **** 
+ 184:Toeplitz_FFT.c **** 
+ 185:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 5; i++) {
+ 186:Toeplitz_FFT.c ****               asm volatile("nop");
+ 187:Toeplitz_FFT.c ****             }
+ 188:Toeplitz_FFT.c ****             X[p] = y+z;
+ 189:Toeplitz_FFT.c **** 
+ 190:Toeplitz_FFT.c **** 
+ 191:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 5; i++) {
+ 192:Toeplitz_FFT.c ****               asm volatile("nop");
+ 193:Toeplitz_FFT.c ****             }
+ 194:Toeplitz_FFT.c **** 
+ 195:Toeplitz_FFT.c ****             X[q] = y-z;
+ 196:Toeplitz_FFT.c **** 
+ 197:Toeplitz_FFT.c **** 
+ 198:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 5; i++) {
+ 199:Toeplitz_FFT.c ****               asm volatile("nop");
+ 200:Toeplitz_FFT.c ****             }
+ 201:Toeplitz_FFT.c **** 
+ 202:Toeplitz_FFT.c **** 
+ 203:Toeplitz_FFT.c ****             trigger_low();
+ 204:Toeplitz_FFT.c **** 
+ 205:Toeplitz_FFT.c **** 
+ 206:Toeplitz_FFT.c ****             for(volatile int i = 0; i < 20; i++) {
+ 207:Toeplitz_FFT.c ****               asm volatile("nop");
+ 208:Toeplitz_FFT.c ****             }
+ 209:Toeplitz_FFT.c **** 
+ 210:Toeplitz_FFT.c ****             p++;
+ 211:Toeplitz_FFT.c ****             q++;
+ 212:Toeplitz_FFT.c ****             n++;
+ 213:Toeplitz_FFT.c ****             if(q % (int)pow(2,stage) == 0){
+ 214:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 215:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 216:Toeplitz_FFT.c ****                 n=0;
+ 217:Toeplitz_FFT.c ****             }
+ 218:Toeplitz_FFT.c ****         }
+ 219:Toeplitz_FFT.c ****     }
+ 220:Toeplitz_FFT.c **** }
+ 1215              	 .loc 2 220 1 view .LVU280
+ 1216 003e 1BB0     	 add sp,sp,#108
+ 1217              	.LCFI19:
+ 1218              	 .cfi_remember_state
+ 1219              	 .cfi_def_cfa_offset 36
+ 1220              	 
+ 1221 0040 BDE8F08F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,pc}
+ 1222              	.LVL95:
+ 1223              	.L84:
+ 1224              	.LCFI20:
+ 1225              	 .cfi_restore_state
+ 1226              	.LBB69:
+ 1227              	.LBB54:
+ 158:Toeplitz_FFT.c ****         int p = 0;
+ 1228              	 .loc 2 158 9 is_stmt 1 view .LVU281
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1229              	 .loc 2 159 9 view .LVU282
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1230              	 .loc 2 159 21 is_stmt 0 view .LVU283
+ 1231 0044 069B     	 ldr r3,[sp,#24]
+ 1232              	.LVL96:
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1233              	 .loc 2 159 21 view .LVU284
+ 1234 0046 8C4C     	 ldr r4,.L94+40
+ 1235 0048 581E     	 subs r0,r3,#1
+ 1236 004a 854B     	 ldr r3,.L94+16
+ 1237 004c 9847     	 blx r3
+ 1238              	.LVL97:
+ 1239 004e CDE90401 	 strd r0,[sp,#16]
+ 1240 0052 0246     	 mov r2,r0
+ 1241 0054 0B46     	 mov r3,r1
+ 1242 0056 0020     	 movs r0,#0
+ 1243 0058 4FF08041 	 mov r1,#1073741824
+ 1244 005c A047     	 blx r4
+ 1245              	.LVL98:
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1246              	 .loc 2 159 19 view .LVU285
+ 1247 005e 0022     	 movs r2,#0
+ 1248 0060 0023     	 movs r3,#0
+ 1249 0062 864C     	 ldr r4,.L94+44
+ 1250 0064 A047     	 blx r4
+ 1251              	.LVL99:
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1252              	 .loc 2 159 13 view .LVU286
+ 1253 0066 824B     	 ldr r3,.L94+32
+ 1254 0068 9847     	 blx r3
+ 1255              	.LVL100:
+ 158:Toeplitz_FFT.c ****         int p = 0;
+ 1256              	 .loc 2 158 13 view .LVU287
+ 1257 006a 4FF0000B 	 mov fp,#0
+ 159:Toeplitz_FFT.c ****         int n = 0;
+ 1258              	 .loc 2 159 13 view .LVU288
+ 1259 006e 0790     	 str r0,[sp,#28]
+ 1260              	.LVL101:
+ 160:Toeplitz_FFT.c ****         while (n<=pow(2,(stage-1))-1 && q <=N)
+ 1261              	 .loc 2 160 9 is_stmt 1 view .LVU289
+ 161:Toeplitz_FFT.c ****         {
+ 1262              	 .loc 2 161 9 view .LVU290
+ 1263              	.L67:
+ 158:Toeplitz_FFT.c ****         int q = 0 + pow(2,stage-1);
+ 1264              	 .loc 2 158 13 is_stmt 0 view .LVU291
+ 1265 0070 079C     	 ldr r4,[sp,#28]
+ 1266              	.LVL102:
+ 1267              	.L80:
+ 161:Toeplitz_FFT.c ****         {
+ 1268              	 .loc 2 161 15 is_stmt 1 view .LVU292
+ 161:Toeplitz_FFT.c ****         {
+ 1269              	 .loc 2 161 17 is_stmt 0 view .LVU293
+ 1270 0072 079B     	 ldr r3,[sp,#28]
+ 1271 0074 7A4D     	 ldr r5,.L94+16
+ 161:Toeplitz_FFT.c ****         {
+ 1272              	 .loc 2 161 19 view .LVU294
+ 1273 0076 804E     	 ldr r6,.L94+40
+ 161:Toeplitz_FFT.c ****         {
+ 1274              	 .loc 2 161 35 view .LVU295
+ 1275 0078 814F     	 ldr r7,.L94+48
+ 161:Toeplitz_FFT.c ****         {
+ 1276              	 .loc 2 161 17 view .LVU296
+ 1277 007a E01A     	 subs r0,r4,r3
+ 1278              	.LVL103:
+ 161:Toeplitz_FFT.c ****         {
+ 1279              	 .loc 2 161 17 view .LVU297
+ 1280 007c A847     	 blx r5
+ 1281              	.LVL104:
+ 161:Toeplitz_FFT.c ****         {
+ 1282              	 .loc 2 161 19 view .LVU298
+ 1283 007e DDE90423 	 ldrd r2,[sp,#16]
+ 161:Toeplitz_FFT.c ****         {
+ 1284              	 .loc 2 161 17 view .LVU299
+ 1285 0082 8046     	 mov r8,r0
+ 1286 0084 8946     	 mov r9,r1
+ 161:Toeplitz_FFT.c ****         {
+ 1287              	 .loc 2 161 19 view .LVU300
+ 1288 0086 0020     	 movs r0,#0
+ 1289 0088 4FF08041 	 mov r1,#1073741824
+ 1290 008c B047     	 blx r6
+ 1291              	.LVL105:
+ 161:Toeplitz_FFT.c ****         {
+ 1292              	 .loc 2 161 35 view .LVU301
+ 1293 008e 7D4B     	 ldr r3,.L94+52
+ 1294 0090 0022     	 movs r2,#0
+ 1295 0092 B847     	 blx r7
+ 1296              	.LVL106:
+ 161:Toeplitz_FFT.c ****         {
+ 1297              	 .loc 2 161 15 view .LVU302
+ 1298 0094 7C4F     	 ldr r7,.L94+56
+ 161:Toeplitz_FFT.c ****         {
+ 1299              	 .loc 2 161 35 view .LVU303
+ 1300 0096 0246     	 mov r2,r0
+ 1301 0098 0B46     	 mov r3,r1
+ 161:Toeplitz_FFT.c ****         {
+ 1302              	 .loc 2 161 15 view .LVU304
+ 1303 009a 4046     	 mov r0,r8
+ 1304 009c 4946     	 mov r1,r9
+ 1305 009e B847     	 blx r7
+ 1306              	.LVL107:
+ 1307 00a0 10B1     	 cbz r0,.L81
+ 161:Toeplitz_FFT.c ****         {
+ 1308              	 .loc 2 161 38 discriminator 1 view .LVU305
+ 1309 00a2 0A9B     	 ldr r3,[sp,#40]
+ 1310 00a4 9C42     	 cmp r4,r3
+ 1311 00a6 02DD     	 ble .L83
+ 1312              	.L81:
+ 1313              	.LBE54:
+ 157:Toeplitz_FFT.c ****         int p = 0;
+ 1314              	 .loc 2 157 34 is_stmt 1 discriminator 2 view .LVU306
+ 157:Toeplitz_FFT.c ****         int p = 0;
+ 1315              	 .loc 2 157 39 is_stmt 0 discriminator 2 view .LVU307
+ 1316 00a8 069B     	 ldr r3,[sp,#24]
+ 1317 00aa 0133     	 adds r3,r3,#1
+ 1318 00ac C2E7     	 b .L93
+ 1319              	.L83:
+ 1320              	.LBB68:
+ 1321              	.LBB55:
+ 163:Toeplitz_FFT.c **** 
+ 1322              	 .loc 2 163 13 is_stmt 1 view .LVU308
+ 163:Toeplitz_FFT.c **** 
+ 1323              	 .loc 2 163 47 is_stmt 0 view .LVU309
+ 1324 00ae 0698     	 ldr r0,[sp,#24]
+ 163:Toeplitz_FFT.c **** 
+ 1325              	 .loc 2 163 31 view .LVU310
+ 1326 00b0 DFF8D8A1 	 ldr r10,.L94+60
+ 163:Toeplitz_FFT.c **** 
+ 1327              	 .loc 2 163 47 view .LVU311
+ 1328 00b4 A847     	 blx r5
+ 1329              	.LVL108:
+ 1330 00b6 CDE90801 	 strd r0,[sp,#32]
+ 1331 00ba 0246     	 mov r2,r0
+ 1332 00bc 0B46     	 mov r3,r1
+ 1333 00be 0020     	 movs r0,#0
+ 1334 00c0 4FF08041 	 mov r1,#1073741824
+ 1335 00c4 B047     	 blx r6
+ 1336              	.LVL109:
+ 163:Toeplitz_FFT.c **** 
+ 1337              	 .loc 2 163 31 view .LVU312
+ 1338 00c6 0022     	 movs r2,#0
+ 163:Toeplitz_FFT.c **** 
+ 1339              	 .loc 2 163 47 view .LVU313
+ 1340 00c8 0646     	 mov r6,r0
+ 1341 00ca 0F46     	 mov r7,r1
+ 163:Toeplitz_FFT.c **** 
+ 1342              	 .loc 2 163 31 view .LVU314
+ 1343 00cc 4FF00043 	 mov r3,#-2147483648
+ 1344 00d0 4046     	 mov r0,r8
+ 1345 00d2 4946     	 mov r1,r9
+ 1346 00d4 D047     	 blx r10
+ 1347              	.LVL110:
+ 1348 00d6 644D     	 ldr r5,.L94+24
+ 1349 00d8 3246     	 mov r2,r6
+ 1350 00da 3B46     	 mov r3,r7
+ 1351 00dc A847     	 blx r5
+ 1352              	.LVL111:
+ 1353 00de 5EA3     	 adr r3,.L94+8
+ 1354 00e0 D3E90023 	 ldrd r2,[r3]
+ 1355 00e4 CDE90C01 	 strd r0,r1,[sp,#48]
+ 1356 00e8 4046     	 mov r0,r8
+ 1357 00ea 4946     	 mov r1,r9
+ 1358 00ec D047     	 blx r10
+ 1359              	.LVL112:
+ 1360 00ee 3246     	 mov r2,r6
+ 1361 00f0 3B46     	 mov r3,r7
+ 1362 00f2 A847     	 blx r5
+ 1363              	.LVL113:
+ 1364 00f4 0B46     	 mov r3,r1
+ 1365 00f6 0146     	 mov r1,r0
+ 1366 00f8 1846     	 mov r0,r3
+ 1367 00fa CDE90010 	 strd r1,r0,[sp]
+ 1368 00fe DDE90C23 	 ldrd r2,r3,[sp,#48]
+ 1369 0102 6349     	 ldr r1,.L94+64
+ 1370 0104 634D     	 ldr r5,.L94+68
+ 1371 0106 10A8     	 add r0,sp,#64
+ 1372 0108 8847     	 blx r1
+ 1373              	.LVL114:
+ 1374 010a DDE91001 	 ldrd r0,[sp,#64]
+ 1375 010e A847     	 blx r5
+ 1376              	.LVL115:
+ 1377 0110 0646     	 mov r6,r0
+ 1378 0112 DDE91201 	 ldrd r0,[sp,#72]
+ 1379 0116 A847     	 blx r5
+ 1380              	.LVL116:
+ 1381 0118 039B     	 ldr r3,[sp,#12]
+ 1382 011a 1D1D     	 adds r5,r3,#4
+ 1383 011c 53F83B80 	 ldr r8,[r3,fp,lsl#3]
+ 1384 0120 55F83B70 	 ldr r7,[r5,fp,lsl#3]
+ 1385 0124 53F83430 	 ldr r3,[r3,r4,lsl#3]
+ 1386 0128 0246     	 mov r2,r0
+ 1387              	.LVL117:
+ 165:Toeplitz_FFT.c ****             float complex z = X[q];
+ 1388              	 .loc 2 165 13 is_stmt 1 view .LVU315
+ 166:Toeplitz_FFT.c **** 
+ 1389              	 .loc 2 166 13 view .LVU316
+ 1390 012a 55F83400 	 ldr r0,[r5,r4,lsl#3]
+ 1391              	.LVL118:
+ 168:Toeplitz_FFT.c **** 
+ 1392              	 .loc 2 168 13 view .LVU317
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1393              	 .loc 2 170 13 view .LVU318
+ 1394              	.LBB56:
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1395              	 .loc 2 170 17 view .LVU319
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1396              	 .loc 2 170 30 is_stmt 0 view .LVU320
+ 1397 012e 0021     	 movs r1,#0
+ 1398              	.L87:
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1399              	 .loc 2 170 45 discriminator 3 view .LVU321
+ 1400 0130 1491     	 str r1,[sp,#80]
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1401              	 .loc 2 170 37 is_stmt 1 discriminator 3 view .LVU322
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1402              	 .loc 2 170 39 is_stmt 0 discriminator 3 view .LVU323
+ 1403 0132 1499     	 ldr r1,[sp,#80]
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1404              	 .loc 2 170 13 discriminator 3 view .LVU324
+ 1405 0134 0429     	 cmp r1,#4
+ 1406 0136 73DD     	 ble .L69
+ 1407              	.LBE56:
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1408              	 .loc 2 174 13 is_stmt 1 view .LVU325
+ 1409              	.LBB57:
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1410              	 .loc 2 174 17 view .LVU326
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1411              	 .loc 2 174 30 is_stmt 0 view .LVU327
+ 1412 0138 0021     	 movs r1,#0
+ 1413              	.L88:
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1414              	 .loc 2 174 45 discriminator 3 view .LVU328
+ 1415 013a 1591     	 str r1,[sp,#84]
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1416              	 .loc 2 174 37 is_stmt 1 discriminator 3 view .LVU329
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1417              	 .loc 2 174 39 is_stmt 0 discriminator 3 view .LVU330
+ 1418 013c 1599     	 ldr r1,[sp,#84]
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1419              	 .loc 2 174 13 discriminator 3 view .LVU331
+ 1420 013e 0429     	 cmp r1,#4
+ 1421 0140 72DD     	 ble .L71
+ 1422              	.LBE57:
+ 178:Toeplitz_FFT.c **** 
+ 1423              	 .loc 2 178 13 is_stmt 1 view .LVU332
+ 178:Toeplitz_FFT.c **** 
+ 1424              	 .loc 2 178 15 is_stmt 0 view .LVU333
+ 1425 0142 3146     	 mov r1,r6
+ 1426 0144 0090     	 str r0,[sp]
+ 1427 0146 544E     	 ldr r6,.L94+72
+ 1428              	.LVL119:
+ 178:Toeplitz_FFT.c **** 
+ 1429              	 .loc 2 178 15 view .LVU334
+ 1430 0148 0EA8     	 add r0,sp,#56
+ 1431              	.LVL120:
+ 178:Toeplitz_FFT.c **** 
+ 1432              	 .loc 2 178 15 view .LVU335
+ 1433 014a B047     	 blx r6
+ 1434              	.LVL121:
+ 180:Toeplitz_FFT.c **** 
+ 1435              	 .loc 2 180 13 view .LVU336
+ 1436 014c 534B     	 ldr r3,.L94+76
+ 178:Toeplitz_FFT.c **** 
+ 1437              	 .loc 2 178 15 view .LVU337
+ 1438 014e DDF83890 	 ldr r9,[sp,#56]
+ 1439 0152 0F9E     	 ldr r6,[sp,#60]
+ 1440              	.LVL122:
+ 180:Toeplitz_FFT.c **** 
+ 1441              	 .loc 2 180 13 is_stmt 1 view .LVU338
+ 1442 0154 9847     	 blx r3
+ 1443              	.LVL123:
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1444              	 .loc 2 185 13 view .LVU339
+ 1445              	.LBB58:
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1446              	 .loc 2 185 17 view .LVU340
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1447              	 .loc 2 185 30 is_stmt 0 view .LVU341
+ 1448 0156 0023     	 movs r3,#0
+ 1449              	.L89:
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1450              	 .loc 2 185 45 discriminator 3 view .LVU342
+ 1451 0158 1693     	 str r3,[sp,#88]
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1452              	 .loc 2 185 37 is_stmt 1 discriminator 3 view .LVU343
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1453              	 .loc 2 185 39 is_stmt 0 discriminator 3 view .LVU344
+ 1454 015a 169B     	 ldr r3,[sp,#88]
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1455              	 .loc 2 185 13 discriminator 3 view .LVU345
+ 1456 015c 042B     	 cmp r3,#4
+ 1457 015e 67DD     	 ble .L73
+ 1458              	.LBE58:
+ 188:Toeplitz_FFT.c **** 
+ 1459              	 .loc 2 188 13 is_stmt 1 view .LVU346
+ 188:Toeplitz_FFT.c **** 
+ 1460              	 .loc 2 188 21 is_stmt 0 view .LVU347
+ 1461 0160 DFF83CA1 	 ldr r10,.L94+80
+ 1462 0164 4946     	 mov r1,r9
+ 1463 0166 4046     	 mov r0,r8
+ 1464 0168 D047     	 blx r10
+ 1465              	.LVL124:
+ 188:Toeplitz_FFT.c **** 
+ 1466              	 .loc 2 188 18 view .LVU348
+ 1467 016a 039B     	 ldr r3,[sp,#12]
+ 188:Toeplitz_FFT.c **** 
+ 1468              	 .loc 2 188 21 view .LVU349
+ 1469 016c 3146     	 mov r1,r6
+ 188:Toeplitz_FFT.c **** 
+ 1470              	 .loc 2 188 18 view .LVU350
+ 1471 016e 43F83B00 	 str r0,[r3,fp,lsl#3]
+ 188:Toeplitz_FFT.c **** 
+ 1472              	 .loc 2 188 21 view .LVU351
+ 1473 0172 3846     	 mov r0,r7
+ 1474 0174 D047     	 blx r10
+ 1475              	.LVL125:
+ 188:Toeplitz_FFT.c **** 
+ 1476              	 .loc 2 188 18 view .LVU352
+ 1477 0176 45F83B00 	 str r0,[r5,fp,lsl#3]
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1478              	 .loc 2 191 13 is_stmt 1 view .LVU353
+ 1479              	.LBB59:
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1480              	 .loc 2 191 17 view .LVU354
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1481              	 .loc 2 191 30 is_stmt 0 view .LVU355
+ 1482 017a 0023     	 movs r3,#0
+ 1483              	.L90:
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1484              	 .loc 2 191 45 discriminator 3 view .LVU356
+ 1485 017c 1793     	 str r3,[sp,#92]
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1486              	 .loc 2 191 37 is_stmt 1 discriminator 3 view .LVU357
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1487              	 .loc 2 191 39 is_stmt 0 discriminator 3 view .LVU358
+ 1488 017e 179B     	 ldr r3,[sp,#92]
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1489              	 .loc 2 191 13 discriminator 3 view .LVU359
+ 1490 0180 042B     	 cmp r3,#4
+ 1491 0182 59DD     	 ble .L75
+ 1492              	.LBE59:
+ 195:Toeplitz_FFT.c **** 
+ 1493              	 .loc 2 195 13 is_stmt 1 view .LVU360
+ 195:Toeplitz_FFT.c **** 
+ 1494              	 .loc 2 195 21 is_stmt 0 view .LVU361
+ 1495 0184 DFF81CA1 	 ldr r10,.L94+84
+ 1496 0188 4946     	 mov r1,r9
+ 1497 018a 4046     	 mov r0,r8
+ 1498 018c D047     	 blx r10
+ 1499              	.LVL126:
+ 195:Toeplitz_FFT.c **** 
+ 1500              	 .loc 2 195 18 view .LVU362
+ 1501 018e 039B     	 ldr r3,[sp,#12]
+ 195:Toeplitz_FFT.c **** 
+ 1502              	 .loc 2 195 21 view .LVU363
+ 1503 0190 3146     	 mov r1,r6
+ 195:Toeplitz_FFT.c **** 
+ 1504              	 .loc 2 195 18 view .LVU364
+ 1505 0192 43F83400 	 str r0,[r3,r4,lsl#3]
+ 195:Toeplitz_FFT.c **** 
+ 1506              	 .loc 2 195 21 view .LVU365
+ 1507 0196 3846     	 mov r0,r7
+ 1508 0198 D047     	 blx r10
+ 1509              	.LVL127:
+ 195:Toeplitz_FFT.c **** 
+ 1510              	 .loc 2 195 18 view .LVU366
+ 1511 019a 45F83400 	 str r0,[r5,r4,lsl#3]
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1512              	 .loc 2 198 13 is_stmt 1 view .LVU367
+ 1513              	.LBB60:
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1514              	 .loc 2 198 17 view .LVU368
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1515              	 .loc 2 198 30 is_stmt 0 view .LVU369
+ 1516 019e 0023     	 movs r3,#0
+ 1517              	.L91:
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1518              	 .loc 2 198 45 discriminator 3 view .LVU370
+ 1519 01a0 1893     	 str r3,[sp,#96]
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1520              	 .loc 2 198 37 is_stmt 1 discriminator 3 view .LVU371
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1521              	 .loc 2 198 39 is_stmt 0 discriminator 3 view .LVU372
+ 1522 01a2 189B     	 ldr r3,[sp,#96]
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1523              	 .loc 2 198 13 discriminator 3 view .LVU373
+ 1524 01a4 042B     	 cmp r3,#4
+ 1525 01a6 4BDD     	 ble .L77
+ 1526              	.LBE60:
+ 203:Toeplitz_FFT.c **** 
+ 1527              	 .loc 2 203 13 is_stmt 1 view .LVU374
+ 1528 01a8 3F4B     	 ldr r3,.L94+88
+ 1529 01aa 9847     	 blx r3
+ 1530              	.LVL128:
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1531              	 .loc 2 206 13 view .LVU375
+ 1532              	.LBB61:
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1533              	 .loc 2 206 17 view .LVU376
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1534              	 .loc 2 206 30 is_stmt 0 view .LVU377
+ 1535 01ac 0023     	 movs r3,#0
+ 1536              	.L92:
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1537              	 .loc 2 206 46 discriminator 3 view .LVU378
+ 1538 01ae 1993     	 str r3,[sp,#100]
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1539              	 .loc 2 206 37 is_stmt 1 discriminator 3 view .LVU379
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1540              	 .loc 2 206 39 is_stmt 0 discriminator 3 view .LVU380
+ 1541 01b0 199B     	 ldr r3,[sp,#100]
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1542              	 .loc 2 206 13 discriminator 3 view .LVU381
+ 1543 01b2 132B     	 cmp r3,#19
+ 1544 01b4 48DD     	 ble .L79
+ 1545              	.LBE61:
+ 210:Toeplitz_FFT.c ****             q++;
+ 1546              	 .loc 2 210 13 is_stmt 1 view .LVU382
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1547              	 .loc 2 213 25 is_stmt 0 view .LVU383
+ 1548 01b6 DDE90823 	 ldrd r2,[sp,#32]
+ 1549 01ba 2F4E     	 ldr r6,.L94+40
+ 1550              	.LVL129:
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1551              	 .loc 2 213 20 view .LVU384
+ 1552 01bc 2C4D     	 ldr r5,.L94+32
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1553              	 .loc 2 213 25 view .LVU385
+ 1554 01be 0020     	 movs r0,#0
+ 1555 01c0 4FF08041 	 mov r1,#1073741824
+ 1556 01c4 B047     	 blx r6
+ 1557              	.LVL130:
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1558              	 .loc 2 213 20 view .LVU386
+ 1559 01c6 A847     	 blx r5
+ 1560              	.LVL131:
+ 211:Toeplitz_FFT.c ****             n++;
+ 1561              	 .loc 2 211 14 view .LVU387
+ 1562 01c8 0134     	 adds r4,r4,#1
+ 1563              	.LVL132:
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1564              	 .loc 2 213 18 view .LVU388
+ 1565 01ca 94FBF0F3 	 sdiv r3,r4,r0
+ 1566 01ce 03FB1040 	 mls r0,r3,r0,r4
+ 210:Toeplitz_FFT.c ****             q++;
+ 1567              	 .loc 2 210 14 view .LVU389
+ 1568 01d2 0BF1010B 	 add fp,fp,#1
+ 1569              	.LVL133:
+ 211:Toeplitz_FFT.c ****             n++;
+ 1570              	 .loc 2 211 13 is_stmt 1 view .LVU390
+ 212:Toeplitz_FFT.c ****             if(q % (int)pow(2,stage) == 0){
+ 1571              	 .loc 2 212 13 view .LVU391
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1572              	 .loc 2 213 13 view .LVU392
+ 213:Toeplitz_FFT.c ****                 p = p + pow(2,stage-1);
+ 1573              	 .loc 2 213 15 is_stmt 0 view .LVU393
+ 1574 01d6 0028     	 cmp r0,#0
+ 1575 01d8 7FF44BAF 	 bne .L80
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1576              	 .loc 2 214 17 is_stmt 1 view .LVU394
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1577              	 .loc 2 214 25 is_stmt 0 view .LVU395
+ 1578 01dc DDE90423 	 ldrd r2,[sp,#16]
+ 1579 01e0 0020     	 movs r0,#0
+ 1580 01e2 4FF08041 	 mov r1,#1073741824
+ 1581 01e6 B047     	 blx r6
+ 1582              	.LVL134:
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1583              	 .loc 2 214 23 view .LVU396
+ 1584 01e8 DFF87480 	 ldr r8,.L94+16
+ 1585              	.LVL135:
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1586              	 .loc 2 214 23 view .LVU397
+ 1587 01ec 234F     	 ldr r7,.L94+44
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1588              	 .loc 2 214 25 view .LVU398
+ 1589 01ee 8146     	 mov r9,r0
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1590              	 .loc 2 214 25 view .LVU399
+ 1591 01f0 8A46     	 mov r10,r1
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1592              	 .loc 2 214 23 view .LVU400
+ 1593 01f2 5846     	 mov r0,fp
+ 1594 01f4 C047     	 blx r8
+ 1595              	.LVL136:
+ 1596 01f6 4A46     	 mov r2,r9
+ 1597 01f8 5346     	 mov r3,r10
+ 1598 01fa B847     	 blx r7
+ 1599              	.LVL137:
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1600              	 .loc 2 214 19 view .LVU401
+ 1601 01fc A847     	 blx r5
+ 1602              	.LVL138:
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1603              	 .loc 2 215 25 view .LVU402
+ 1604 01fe DDE90423 	 ldrd r2,[sp,#16]
+ 214:Toeplitz_FFT.c ****                 q = q + pow(2,stage-1);
+ 1605              	 .loc 2 214 19 view .LVU403
+ 1606 0202 8346     	 mov fp,r0
+ 1607              	.LVL139:
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1608              	 .loc 2 215 17 is_stmt 1 view .LVU404
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1609              	 .loc 2 215 25 is_stmt 0 view .LVU405
+ 1610 0204 4FF08041 	 mov r1,#1073741824
+ 1611 0208 0020     	 movs r0,#0
+ 1612              	.LVL140:
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1613              	 .loc 2 215 25 view .LVU406
+ 1614 020a B047     	 blx r6
+ 1615              	.LVL141:
+ 1616 020c 8146     	 mov r9,r0
+ 1617 020e 8A46     	 mov r10,r1
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1618              	 .loc 2 215 23 view .LVU407
+ 1619 0210 2046     	 mov r0,r4
+ 1620 0212 C047     	 blx r8
+ 1621              	.LVL142:
+ 1622 0214 4A46     	 mov r2,r9
+ 1623 0216 5346     	 mov r3,r10
+ 1624 0218 B847     	 blx r7
+ 1625              	.LVL143:
+ 215:Toeplitz_FFT.c ****                 n=0;
+ 1626              	 .loc 2 215 19 view .LVU408
+ 1627 021a A847     	 blx r5
+ 1628              	.LVL144:
+ 1629 021c 0790     	 str r0,[sp,#28]
+ 1630              	.LVL145:
+ 216:Toeplitz_FFT.c ****             }
+ 1631              	 .loc 2 216 17 is_stmt 1 view .LVU409
+ 216:Toeplitz_FFT.c ****             }
+ 1632              	 .loc 2 216 17 is_stmt 0 view .LVU410
+ 1633 021e 27E7     	 b .L67
+ 1634              	.LVL146:
+ 1635              	.L69:
+ 1636              	.LBB62:
+ 171:Toeplitz_FFT.c ****             }            
+ 1637              	 .loc 2 171 15 is_stmt 1 discriminator 3 view .LVU411
+ 1638              	 .syntax unified
+ 1639              	
+ 1640 0220 00BF     	 nop
+ 1641              	
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1642              	 .loc 2 170 44 discriminator 3 view .LVU412
+ 170:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1643              	 .loc 2 170 45 is_stmt 0 discriminator 3 view .LVU413
+ 1644              	 .thumb
+ 1645              	 .syntax unified
+ 1646 0222 1499     	 ldr r1,[sp,#80]
+ 1647 0224 0131     	 adds r1,r1,#1
+ 1648 0226 83E7     	 b .L87
+ 1649              	.L71:
+ 1650              	.LBE62:
+ 1651              	.LBB63:
+ 175:Toeplitz_FFT.c ****             }
+ 1652              	 .loc 2 175 15 is_stmt 1 discriminator 3 view .LVU414
+ 1653              	 .syntax unified
+ 1654              	
+ 1655 0228 00BF     	 nop
+ 1656              	
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1657              	 .loc 2 174 44 discriminator 3 view .LVU415
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1658              	 .loc 2 174 45 is_stmt 0 discriminator 3 view .LVU416
+ 1659              	 .thumb
+ 1660              	 .syntax unified
+ 1661 022a 1599     	 ldr r1,[sp,#84]
+ 1662 022c 0131     	 adds r1,r1,#1
+ 1663 022e 84E7     	 b .L88
+ 1664              	.LVL147:
+ 1665              	.L73:
+ 174:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1666              	 .loc 2 174 45 discriminator 3 view .LVU417
+ 1667              	.LBE63:
+ 1668              	.LBB64:
+ 186:Toeplitz_FFT.c ****             }
+ 1669              	 .loc 2 186 15 is_stmt 1 discriminator 3 view .LVU418
+ 1670              	 .syntax unified
+ 1671              	
+ 1672 0230 00BF     	 nop
+ 1673              	
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1674              	 .loc 2 185 44 discriminator 3 view .LVU419
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1675              	 .loc 2 185 45 is_stmt 0 discriminator 3 view .LVU420
+ 1676              	 .thumb
+ 1677              	 .syntax unified
+ 1678 0232 169B     	 ldr r3,[sp,#88]
+ 1679 0234 0133     	 adds r3,r3,#1
+ 1680 0236 8FE7     	 b .L89
+ 1681              	.L75:
+ 185:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1682              	 .loc 2 185 45 discriminator 3 view .LVU421
+ 1683              	.LBE64:
+ 1684              	.LBB65:
+ 192:Toeplitz_FFT.c ****             }
+ 1685              	 .loc 2 192 15 is_stmt 1 discriminator 3 view .LVU422
+ 1686              	 .syntax unified
+ 1687              	
+ 1688 0238 00BF     	 nop
+ 1689              	
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1690              	 .loc 2 191 44 discriminator 3 view .LVU423
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1691              	 .loc 2 191 45 is_stmt 0 discriminator 3 view .LVU424
+ 1692              	 .thumb
+ 1693              	 .syntax unified
+ 1694 023a 179B     	 ldr r3,[sp,#92]
+ 1695 023c 0133     	 adds r3,r3,#1
+ 1696 023e 9DE7     	 b .L90
+ 1697              	.L77:
+ 191:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1698              	 .loc 2 191 45 discriminator 3 view .LVU425
+ 1699              	.LBE65:
+ 1700              	.LBB66:
+ 199:Toeplitz_FFT.c ****             }
+ 1701              	 .loc 2 199 15 is_stmt 1 discriminator 3 view .LVU426
+ 1702              	 .syntax unified
+ 1703              	
+ 1704 0240 00BF     	 nop
+ 1705              	
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1706              	 .loc 2 198 44 discriminator 3 view .LVU427
+ 198:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1707              	 .loc 2 198 45 is_stmt 0 discriminator 3 view .LVU428
+ 1708              	 .thumb
+ 1709              	 .syntax unified
+ 1710 0242 189B     	 ldr r3,[sp,#96]
+ 1711 0244 0133     	 adds r3,r3,#1
+ 1712 0246 ABE7     	 b .L91
+ 1713              	.L79:
+ 1714              	.LBE66:
+ 1715              	.LBB67:
+ 207:Toeplitz_FFT.c ****             }
+ 1716              	 .loc 2 207 15 is_stmt 1 discriminator 3 view .LVU429
+ 1717              	 .syntax unified
+ 1718              	
+ 1719 0248 00BF     	 nop
+ 1720              	
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1721              	 .loc 2 206 45 discriminator 3 view .LVU430
+ 206:Toeplitz_FFT.c ****               asm volatile("nop");
+ 1722              	 .loc 2 206 46 is_stmt 0 discriminator 3 view .LVU431
+ 1723              	 .thumb
+ 1724              	 .syntax unified
+ 1725 024a 199B     	 ldr r3,[sp,#100]
+ 1726 024c 0133     	 adds r3,r3,#1
+ 1727 024e AEE7     	 b .L92
+ 1728              	.L95:
+ 1729              	 .align 3
+ 1730              	.L94:
+ 1731 0250 EF39FAFE 	 .word -17155601
+ 1732 0254 422EE63F 	 .word 1072049730
+ 1733 0258 182D4454 	 .word 1413754136
+ 1734 025c FB2119C0 	 .word -1072094725
+ 1735 0260 00000000 	 .word __aeabi_i2d
+ 1736 0264 00000000 	 .word log
+ 1737 0268 00000000 	 .word __aeabi_ddiv
+ 1738 026c 00000000 	 .word round
+ 1739 0270 00000000 	 .word __aeabi_d2iz
+ 1740 0274 00000000 	 .word reverse_array
+ 1741 0278 00000000 	 .word pow
+ 1742 027c 00000000 	 .word __aeabi_dadd
+ 1743 0280 00000000 	 .word __aeabi_dsub
+ 1744 0284 0000F03F 	 .word 1072693248
+ 1745 0288 00000000 	 .word __aeabi_dcmple
+ 1746 028c 00000000 	 .word __aeabi_dmul
+ 1747 0290 00000000 	 .word cexp
+ 1748 0294 00000000 	 .word __aeabi_d2f
+ 1749 0298 00000000 	 .word __mulsc3
+ 1750 029c 00000000 	 .word trigger_high
+ 1751 02a0 00000000 	 .word __aeabi_fadd
+ 1752 02a4 00000000 	 .word __aeabi_fsub
+ 1753 02a8 00000000 	 .word trigger_low
+ 1754              	.LBE67:
+ 1755              	.LBE55:
+ 1756              	.LBE68:
+ 1757              	.LBE69:
+ 1758              	 .cfi_endproc
+ 1759              	.LFE17:
+ 1761              	 .global __aeabi_fdiv
+ 1762              	 .section .text.DIT_IFFT,"ax",%progbits
+ 1763              	 .align 1
+ 1764              	 .global DIT_IFFT
+ 1765              	 .syntax unified
+ 1766              	 .thumb
+ 1767              	 .thumb_func
+ 1768              	 .fpu softvfp
+ 1770              	DIT_IFFT:
+ 1771              	.LVL148:
+ 1772              	.LFB18:
+ 221:Toeplitz_FFT.c **** 
+ 222:Toeplitz_FFT.c **** void DIT_IFFT(float complex *X, int N){
+ 1773              	 .loc 2 222 39 is_stmt 1 view-0
+ 1774              	 .cfi_startproc
+ 1775              	 
+ 1776              	 
+ 223:Toeplitz_FFT.c ****     conj_array(X, N);
+ 1777              	 .loc 2 223 5 view .LVU433
+ 222:Toeplitz_FFT.c ****     conj_array(X, N);
+ 1778              	 .loc 2 222 39 is_stmt 0 view .LVU434
+ 1779 0000 2DE9F047 	 push {r4,r5,r6,r7,r8,r9,r10,lr}
+ 1780              	.LCFI21:
+ 1781              	 .cfi_def_cfa_offset 32
+ 1782              	 .cfi_offset 4,-32
+ 1783              	 .cfi_offset 5,-28
+ 1784              	 .cfi_offset 6,-24
+ 1785              	 .cfi_offset 7,-20
+ 1786              	 .cfi_offset 8,-16
+ 1787              	 .cfi_offset 9,-12
+ 1788              	 .cfi_offset 10,-8
+ 1789              	 .cfi_offset 14,-4
+ 222:Toeplitz_FFT.c ****     conj_array(X, N);
+ 1790              	 .loc 2 222 39 view .LVU435
+ 1791 0004 0446     	 mov r4,r0
+ 1792              	 .loc 2 223 5 view .LVU436
+ 1793 0006 134E     	 ldr r6,.L99
+ 1794              	.LBB70:
+ 224:Toeplitz_FFT.c ****     DIT_FFT(X,N);
+ 225:Toeplitz_FFT.c ****     conj_array(X,N);
+ 226:Toeplitz_FFT.c **** 
+ 227:Toeplitz_FFT.c ****     for(int i = 0; i < N; i++){
+ 228:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1795              	 .loc 2 228 18 view .LVU437
+ 1796 0008 DFF84CA0 	 ldr r10,.L99+4
+ 1797 000c DFF84C90 	 ldr r9,.L99+8
+ 1798              	.LBE70:
+ 223:Toeplitz_FFT.c ****     DIT_FFT(X,N);
+ 1799              	 .loc 2 223 5 view .LVU438
+ 1800 0010 B047     	 blx r6
+ 1801              	.LVL149:
+ 224:Toeplitz_FFT.c ****     DIT_FFT(X,N);
+ 1802              	 .loc 2 224 5 is_stmt 1 view .LVU439
+ 222:Toeplitz_FFT.c ****     conj_array(X, N);
+ 1803              	 .loc 2 222 39 is_stmt 0 view .LVU440
+ 1804 0012 0D46     	 mov r5,r1
+ 224:Toeplitz_FFT.c ****     DIT_FFT(X,N);
+ 1805              	 .loc 2 224 5 view .LVU441
+ 1806 0014 124B     	 ldr r3,.L99+12
+ 1807 0016 2046     	 mov r0,r4
+ 1808 0018 9847     	 blx r3
+ 1809              	.LVL150:
+ 225:Toeplitz_FFT.c **** 
+ 1810              	 .loc 2 225 5 is_stmt 1 view .LVU442
+ 1811 001a 2946     	 mov r1,r5
+ 1812 001c 2046     	 mov r0,r4
+ 1813 001e B047     	 blx r6
+ 1814              	.LVL151:
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1815              	 .loc 2 227 5 view .LVU443
+ 1816              	.LBB71:
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1817              	 .loc 2 227 9 view .LVU444
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1818              	 .loc 2 227 13 is_stmt 0 view .LVU445
+ 1819 0020 0027     	 movs r7,#0
+ 1820              	.LVL152:
+ 1821              	.L97:
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1822              	 .loc 2 227 20 is_stmt 1 discriminator 1 view .LVU446
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1823              	 .loc 2 227 5 is_stmt 0 discriminator 1 view .LVU447
+ 1824 0022 AF42     	 cmp r7,r5
+ 1825 0024 04F10804 	 add r4,r4,#8
+ 1826 0028 01DB     	 blt .L98
+ 1827              	.LBE71:
+ 229:Toeplitz_FFT.c ****     }
+ 230:Toeplitz_FFT.c **** }
+ 1828              	 .loc 2 230 1 view .LVU448
+ 1829 002a BDE8F087 	 pop {r4,r5,r6,r7,r8,r9,r10,pc}
+ 1830              	.LVL153:
+ 1831              	.L98:
+ 1832              	.LBB72:
+ 228:Toeplitz_FFT.c ****     }
+ 1833              	 .loc 2 228 7 is_stmt 1 discriminator 3 view .LVU449
+ 228:Toeplitz_FFT.c ****     }
+ 1834              	 .loc 2 228 18 is_stmt 0 discriminator 3 view .LVU450
+ 1835 002e 2846     	 mov r0,r5
+ 1836 0030 D047     	 blx r10
+ 1837              	.LVL154:
+ 1838 0032 0146     	 mov r1,r0
+ 1839 0034 0646     	 mov r6,r0
+ 1840 0036 54F8040C 	 ldr r0,[r4,#-4]
+ 1841 003a C847     	 blx r9
+ 1842              	.LVL155:
+ 1843 003c 3146     	 mov r1,r6
+ 1844 003e 8046     	 mov r8,r0
+ 1845 0040 54F8080C 	 ldr r0,[r4,#-8]
+ 1846 0044 C847     	 blx r9
+ 1847              	.LVL156:
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1848              	 .loc 2 227 28 discriminator 3 view .LVU451
+ 1849 0046 0137     	 adds r7,r7,#1
+ 1850              	.LVL157:
+ 228:Toeplitz_FFT.c ****     }
+ 1851              	 .loc 2 228 12 discriminator 3 view .LVU452
+ 1852 0048 44F8080C 	 str r0,[r4,#-8]
+ 1853 004c 44F8048C 	 str r8,[r4,#-4]
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1854              	 .loc 2 227 27 is_stmt 1 discriminator 3 view .LVU453
+ 1855              	.LVL158:
+ 227:Toeplitz_FFT.c ****       X[i] = X[i]/N;
+ 1856              	 .loc 2 227 27 is_stmt 0 discriminator 3 view .LVU454
+ 1857 0050 E7E7     	 b .L97
+ 1858              	.L100:
+ 1859 0052 00BF     	 .align 2
+ 1860              	.L99:
+ 1861 0054 00000000 	 .word conj_array
+ 1862 0058 00000000 	 .word __aeabi_i2f
+ 1863 005c 00000000 	 .word __aeabi_fdiv
+ 1864 0060 00000000 	 .word DIT_FFT
+ 1865              	.LBE72:
+ 1866              	 .cfi_endproc
+ 1867              	.LFE18:
+ 1869              	 .global __aeabi_f2d
+ 1870              	 .section .text.Toeplitz_hash_fft_butterfly,"ax",%progbits
+ 1871              	 .align 1
+ 1872              	 .global Toeplitz_hash_fft_butterfly
+ 1873              	 .syntax unified
+ 1874              	 .thumb
+ 1875              	 .thumb_func
+ 1876              	 .fpu softvfp
+ 1878              	Toeplitz_hash_fft_butterfly:
+ 1879              	.LVL159:
+ 1880              	.LFB19:
+ 231:Toeplitz_FFT.c **** 
+ 232:Toeplitz_FFT.c **** 
+ 233:Toeplitz_FFT.c **** void Toeplitz_hash_fft_butterfly(int* input_key, int* output_key, int* row1, int *col1, int rowLen,
+ 1881              	 .loc 2 233 112 is_stmt 1 view-0
+ 1882              	 .cfi_startproc
+ 1883              	 
+ 1884              	 
+ 234:Toeplitz_FFT.c **** 
+ 235:Toeplitz_FFT.c ****     int circulant_size = rowLen + colLen - 1;
+ 1885              	 .loc 2 235 5 view .LVU456
+ 233:Toeplitz_FFT.c **** 
+ 1886              	 .loc 2 233 112 is_stmt 0 view .LVU457
+ 1887 0000 2DE9F04F 	 push {r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 1888              	.LCFI22:
+ 1889              	 .cfi_def_cfa_offset 36
+ 1890              	 .cfi_offset 4,-36
+ 1891              	 .cfi_offset 5,-32
+ 1892              	 .cfi_offset 6,-28
+ 1893              	 .cfi_offset 7,-24
+ 1894              	 .cfi_offset 8,-20
+ 1895              	 .cfi_offset 9,-16
+ 1896              	 .cfi_offset 10,-12
+ 1897              	 .cfi_offset 11,-8
+ 1898              	 .cfi_offset 14,-4
+ 1899 0004 89B0     	 sub sp,sp,#36
+ 1900              	.LCFI23:
+ 1901              	 .cfi_def_cfa_offset 72
+ 233:Toeplitz_FFT.c **** 
+ 1902              	 .loc 2 233 112 view .LVU458
+ 1903 0006 DDE91289 	 ldrd r8,r9,[sp,#72]
+ 1904 000a 9B46     	 mov fp,r3
+ 1905              	 .loc 2 235 33 view .LVU459
+ 1906 000c 08EB0903 	 add r3,r8,r9
+ 1907              	.LVL160:
+ 1908              	 .loc 2 235 9 view .LVU460
+ 1909 0010 5E1E     	 subs r6,r3,#1
+ 236:Toeplitz_FFT.c ****     float complex *circ = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 1910              	 .loc 2 236 43 view .LVU461
+ 1911 0012 F700     	 lsls r7,r6,#3
+ 233:Toeplitz_FFT.c **** 
+ 1912              	 .loc 2 233 112 view .LVU462
+ 1913 0014 CDE90301 	 strd r0,r1,[sp,#12]
+ 1914              	 .loc 2 236 43 view .LVU463
+ 1915 0018 394D     	 ldr r5,.L106
+ 235:Toeplitz_FFT.c ****     float complex *circ = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 1916              	 .loc 2 235 9 view .LVU464
+ 1917 001a 0593     	 str r3,[sp,#20]
+ 1918              	.LVL161:
+ 1919              	 .loc 2 236 5 is_stmt 1 view .LVU465
+ 1920              	 .loc 2 236 43 is_stmt 0 view .LVU466
+ 1921 001c 3846     	 mov r0,r7
+ 1922              	.LVL162:
+ 233:Toeplitz_FFT.c **** 
+ 1923              	 .loc 2 233 112 view .LVU467
+ 1924 001e 9246     	 mov r10,r2
+ 1925              	 .loc 2 236 43 view .LVU468
+ 1926 0020 A847     	 blx r5
+ 1927              	.LVL163:
+ 1928              	 .loc 2 236 43 view .LVU469
+ 1929 0022 0446     	 mov r4,r0
+ 1930              	.LVL164:
+ 237:Toeplitz_FFT.c ****     float complex *padded_key = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 1931              	 .loc 2 237 5 is_stmt 1 view .LVU470
+ 1932              	 .loc 2 237 49 is_stmt 0 view .LVU471
+ 1933 0024 3846     	 mov r0,r7
+ 1934              	.LVL165:
+ 1935              	 .loc 2 237 49 view .LVU472
+ 1936 0026 A847     	 blx r5
+ 1937              	.LVL166:
+ 1938              	.LBB73:
+ 238:Toeplitz_FFT.c ****    // double complex u[circulant_size];
+ 239:Toeplitz_FFT.c ****    // double complex cx[circulant_size];
+ 240:Toeplitz_FFT.c **** 
+ 241:Toeplitz_FFT.c ****     for(int i=0; i < circulant_size; i++){
+ 242:Toeplitz_FFT.c ****       circ[i] = 0 + 0*I;
+ 1939              	 .loc 2 242 15 view .LVU473
+ 1940 0028 059B     	 ldr r3,[sp,#20]
+ 1941 002a 002B     	 cmp r3,#0
+ 1942 002c CCBF     	 ite gt
+ 1943 002e 3A46     	 movgt r2,r7
+ 1944 0030 0022     	 movle r2,#0
+ 1945              	.LBE73:
+ 237:Toeplitz_FFT.c ****     float complex *padded_key = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 1946              	 .loc 2 237 49 view .LVU474
+ 1947 0032 0546     	 mov r5,r0
+ 1948              	.LVL167:
+ 241:Toeplitz_FFT.c ****       circ[i] = 0 + 0*I;
+ 1949              	 .loc 2 241 5 is_stmt 1 view .LVU475
+ 1950              	.LBB74:
+ 241:Toeplitz_FFT.c ****       circ[i] = 0 + 0*I;
+ 1951              	 .loc 2 241 9 view .LVU476
+ 1952              	 .loc 2 242 15 is_stmt 0 view .LVU477
+ 1953 0034 334B     	 ldr r3,.L106+4
+ 1954 0036 0592     	 str r2,[sp,#20]
+ 1955 0038 0021     	 movs r1,#0
+ 1956 003a 2046     	 mov r0,r4
+ 1957              	.LVL168:
+ 1958              	 .loc 2 242 15 view .LVU478
+ 1959 003c 9847     	 blx r3
+ 1960              	.LVL169:
+ 243:Toeplitz_FFT.c ****       padded_key[i] = 0 + 0*I;
+ 1961              	 .loc 2 243 21 view .LVU479
+ 1962 003e 059A     	 ldr r2,[sp,#20]
+ 1963 0040 304B     	 ldr r3,.L106+4
+ 1964              	.LBE74:
+ 244:Toeplitz_FFT.c ****     //  u[i] = 0 + 0*I;
+ 245:Toeplitz_FFT.c ****     //  cx[i] = 0 + 0*I;
+ 246:Toeplitz_FFT.c **** 
+ 247:Toeplitz_FFT.c ****     }
+ 248:Toeplitz_FFT.c **** 
+ 249:Toeplitz_FFT.c ****     embed_toeplitz_on_circulant(circ, row1, col1, rowLen, colLen, circulant_size); //embed to next 
+ 250:Toeplitz_FFT.c ****     pad_key(padded_key, input_key, circulant_size, rowLen);
+ 1965              	 .loc 2 250 5 view .LVU480
+ 1966 0042 314F     	 ldr r7,.L106+8
+ 1967              	.LBB75:
+ 243:Toeplitz_FFT.c ****       padded_key[i] = 0 + 0*I;
+ 1968              	 .loc 2 243 21 view .LVU481
+ 1969 0044 0021     	 movs r1,#0
+ 1970 0046 2846     	 mov r0,r5
+ 1971 0048 9847     	 blx r3
+ 1972              	.LVL170:
+ 243:Toeplitz_FFT.c ****       padded_key[i] = 0 + 0*I;
+ 1973              	 .loc 2 243 21 view .LVU482
+ 1974              	.LBE75:
+ 249:Toeplitz_FFT.c ****     pad_key(padded_key, input_key, circulant_size, rowLen);
+ 1975              	 .loc 2 249 5 is_stmt 1 view .LVU483
+ 1976 004a 4346     	 mov r3,r8
+ 1977 004c 5A46     	 mov r2,fp
+ 1978 004e 5146     	 mov r1,r10
+ 1979 0050 2046     	 mov r0,r4
+ 1980 0052 DFF8B8A0 	 ldr r10,.L106+12
+ 1981              	.LVL171:
+ 1982              	.LBB76:
+ 251:Toeplitz_FFT.c **** 
+ 252:Toeplitz_FFT.c ****     DIT_FFT(circ,circulant_size);
+ 253:Toeplitz_FFT.c ****     DIT_FFT(padded_key,circulant_size);
+ 254:Toeplitz_FFT.c ****     for(int i = 0; i < circulant_size; i++){
+ 255:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 1983              	 .loc 2 255 25 is_stmt 0 view .LVU484
+ 1984 0056 DFF8B8B0 	 ldr fp,.L106+16
+ 1985              	.LVL172:
+ 1986              	 .loc 2 255 25 view .LVU485
+ 1987              	.LBE76:
+ 249:Toeplitz_FFT.c ****     pad_key(padded_key, input_key, circulant_size, rowLen);
+ 1988              	 .loc 2 249 5 view .LVU486
+ 1989 005a CDE90096 	 strd r9,r6,[sp]
+ 1990 005e D047     	 blx r10
+ 1991              	.LVL173:
+ 250:Toeplitz_FFT.c **** 
+ 1992              	 .loc 2 250 5 is_stmt 1 view .LVU487
+ 1993 0060 4346     	 mov r3,r8
+ 1994 0062 3246     	 mov r2,r6
+ 1995 0064 0399     	 ldr r1,[sp,#12]
+ 1996 0066 2846     	 mov r0,r5
+ 1997 0068 B847     	 blx r7
+ 1998              	.LVL174:
+ 252:Toeplitz_FFT.c ****     DIT_FFT(padded_key,circulant_size);
+ 1999              	 .loc 2 252 5 view .LVU488
+ 2000 006a 2A4F     	 ldr r7,.L106+20
+ 2001 006c 3146     	 mov r1,r6
+ 2002 006e 2046     	 mov r0,r4
+ 2003 0070 B847     	 blx r7
+ 2004              	.LVL175:
+ 253:Toeplitz_FFT.c ****     for(int i = 0; i < circulant_size; i++){
+ 2005              	 .loc 2 253 5 view .LVU489
+ 2006 0072 3146     	 mov r1,r6
+ 2007 0074 2846     	 mov r0,r5
+ 2008 0076 B847     	 blx r7
+ 2009              	.LVL176:
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2010              	 .loc 2 254 5 view .LVU490
+ 2011              	.LBB77:
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2012              	 .loc 2 254 9 view .LVU491
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2013              	 .loc 2 254 9 is_stmt 0 view .LVU492
+ 2014 0078 A846     	 mov r8,r5
+ 2015 007a 2746     	 mov r7,r4
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2016              	 .loc 2 254 13 view .LVU493
+ 2017 007c 4FF0000A 	 mov r10,#0
+ 2018              	.LVL177:
+ 2019              	.L102:
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2020              	 .loc 2 254 20 is_stmt 1 discriminator 1 view .LVU494
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2021              	 .loc 2 254 5 is_stmt 0 discriminator 1 view .LVU495
+ 2022 0080 B245     	 cmp r10,r6
+ 2023 0082 07F10807 	 add r7,r7,#8
+ 2024 0086 08F10808 	 add r8,r8,#8
+ 2025 008a 14DB     	 blt .L103
+ 2026              	.LBE77:
+ 256:Toeplitz_FFT.c ****     }
+ 257:Toeplitz_FFT.c **** 
+ 258:Toeplitz_FFT.c ****     DIT_IFFT(circ, circulant_size);
+ 2027              	 .loc 2 258 5 is_stmt 1 view .LVU496
+ 2028 008c 3146     	 mov r1,r6
+ 2029 008e 224B     	 ldr r3,.L106+24
+ 2030              	.LBB78:
+ 2031              	.LBB79:
+ 259:Toeplitz_FFT.c **** 
+ 260:Toeplitz_FFT.c **** 
+ 261:Toeplitz_FFT.c ****     for(int i = 0; i < colLen; i++){
+ 262:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2032              	 .loc 2 262 41 is_stmt 0 view .LVU497
+ 2033 0090 DFF888A0 	 ldr r10,.L106+28
+ 2034              	.LVL178:
+ 2035              	 .loc 2 262 25 view .LVU498
+ 2036 0094 224E     	 ldr r6,.L106+32
+ 2037              	.LVL179:
+ 2038              	 .loc 2 262 11 view .LVU499
+ 2039 0096 234F     	 ldr r7,.L106+36
+ 2040              	.LBE79:
+ 2041              	.LBE78:
+ 258:Toeplitz_FFT.c **** 
+ 2042              	 .loc 2 258 5 view .LVU500
+ 2043 0098 2046     	 mov r0,r4
+ 2044 009a 9847     	 blx r3
+ 2045              	.LVL180:
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2046              	 .loc 2 261 5 is_stmt 1 view .LVU501
+ 2047              	.LBB81:
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2048              	 .loc 2 261 9 view .LVU502
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2049              	 .loc 2 261 13 is_stmt 0 view .LVU503
+ 2050 009c 4FF00008 	 mov r8,#0
+ 2051              	.LVL181:
+ 2052              	.L104:
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2053              	 .loc 2 261 20 is_stmt 1 discriminator 1 view .LVU504
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2054              	 .loc 2 261 5 is_stmt 0 discriminator 1 view .LVU505
+ 2055 00a0 C845     	 cmp r8,r9
+ 2056 00a2 1CDB     	 blt .L105
+ 2057              	.LBE81:
+ 263:Toeplitz_FFT.c ****       output_key[i] = bit_rounded%2; 
+ 264:Toeplitz_FFT.c ****     }
+ 265:Toeplitz_FFT.c ****     free(circ);
+ 2058              	 .loc 2 265 5 is_stmt 1 view .LVU506
+ 2059 00a4 2046     	 mov r0,r4
+ 2060 00a6 204C     	 ldr r4,.L106+40
+ 2061              	.LVL182:
+ 2062              	 .loc 2 265 5 is_stmt 0 view .LVU507
+ 2063 00a8 A047     	 blx r4
+ 2064              	.LVL183:
+ 266:Toeplitz_FFT.c ****     free(padded_key);
+ 2065              	 .loc 2 266 5 is_stmt 1 view .LVU508
+ 2066 00aa 2846     	 mov r0,r5
+ 2067 00ac 2346     	 mov r3,r4
+ 267:Toeplitz_FFT.c **** }
+ 2068              	 .loc 2 267 1 is_stmt 0 view .LVU509
+ 2069 00ae 09B0     	 add sp,sp,#36
+ 2070              	.LCFI24:
+ 2071              	 .cfi_remember_state
+ 2072              	 .cfi_def_cfa_offset 36
+ 2073              	 
+ 2074 00b0 BDE8F04F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 2075              	.LCFI25:
+ 2076              	 .cfi_restore 14
+ 2077              	 .cfi_restore 11
+ 2078              	 .cfi_restore 10
+ 2079              	 .cfi_restore 9
+ 2080              	 .cfi_restore 8
+ 2081              	 .cfi_restore 7
+ 2082              	 .cfi_restore 6
+ 2083              	 .cfi_restore 5
+ 2084              	 .cfi_restore 4
+ 2085              	 .cfi_def_cfa_offset 0
+ 2086              	.LVL184:
+ 266:Toeplitz_FFT.c ****     free(padded_key);
+ 2087              	 .loc 2 266 5 view .LVU510
+ 2088 00b4 1847     	 bx r3
+ 2089              	.LVL185:
+ 2090              	.L103:
+ 2091              	.LCFI26:
+ 2092              	 .cfi_restore_state
+ 2093              	.LBB82:
+ 255:Toeplitz_FFT.c ****     }
+ 2094              	 .loc 2 255 7 is_stmt 1 discriminator 3 view .LVU511
+ 255:Toeplitz_FFT.c ****     }
+ 2095              	 .loc 2 255 25 is_stmt 0 discriminator 3 view .LVU512
+ 2096 00b6 58F8043C 	 ldr r3,[r8,#-4]
+ 2097 00ba 0093     	 str r3,[sp]
+ 2098 00bc 58F8083C 	 ldr r3,[r8,#-8]
+ 2099 00c0 57F8042C 	 ldr r2,[r7,#-4]
+ 2100 00c4 57F8081C 	 ldr r1,[r7,#-8]
+ 2101 00c8 06A8     	 add r0,sp,#24
+ 2102 00ca D847     	 blx fp
+ 2103              	.LVL186:
+ 255:Toeplitz_FFT.c ****     }
+ 2104              	 .loc 2 255 15 discriminator 3 view .LVU513
+ 2105 00cc 069B     	 ldr r3,[sp,#24]
+ 2106 00ce 47F8083C 	 str r3,[r7,#-8]
+ 2107 00d2 079B     	 ldr r3,[sp,#28]
+ 2108 00d4 47F8043C 	 str r3,[r7,#-4]
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2109              	 .loc 2 254 40 is_stmt 1 discriminator 3 view .LVU514
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2110              	 .loc 2 254 41 is_stmt 0 discriminator 3 view .LVU515
+ 2111 00d8 0AF1010A 	 add r10,r10,#1
+ 2112              	.LVL187:
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2113              	 .loc 2 254 41 discriminator 3 view .LVU516
+ 2114 00dc D0E7     	 b .L102
+ 2115              	.LVL188:
+ 2116              	.L105:
+ 254:Toeplitz_FFT.c ****       circ[i] = circ[i] * padded_key[i];
+ 2117              	 .loc 2 254 41 discriminator 3 view .LVU517
+ 2118              	.LBE82:
+ 2119              	.LBB83:
+ 2120              	.LBB80:
+ 262:Toeplitz_FFT.c ****       output_key[i] = bit_rounded%2; 
+ 2121              	 .loc 2 262 7 is_stmt 1 discriminator 3 view .LVU518
+ 262:Toeplitz_FFT.c ****       output_key[i] = bit_rounded%2; 
+ 2122              	 .loc 2 262 41 is_stmt 0 discriminator 3 view .LVU519
+ 2123 00de 54F83800 	 ldr r0,[r4,r8,lsl#3]
+ 2124 00e2 D047     	 blx r10
+ 2125              	.LVL189:
+ 262:Toeplitz_FFT.c ****       output_key[i] = bit_rounded%2; 
+ 2126              	 .loc 2 262 25 discriminator 3 view .LVU520
+ 2127 00e4 B047     	 blx r6
+ 2128              	.LVL190:
+ 263:Toeplitz_FFT.c ****     }
+ 2129              	 .loc 2 263 7 is_stmt 1 discriminator 3 view .LVU521
+ 262:Toeplitz_FFT.c ****       output_key[i] = bit_rounded%2; 
+ 2130              	 .loc 2 262 11 is_stmt 0 discriminator 3 view .LVU522
+ 2131 00e6 B847     	 blx r7
+ 2132              	.LVL191:
+ 263:Toeplitz_FFT.c ****     }
+ 2133              	 .loc 2 263 34 discriminator 3 view .LVU523
+ 2134 00e8 0028     	 cmp r0,#0
+ 2135 00ea 00F00100 	 and r0,r0,#1
+ 263:Toeplitz_FFT.c ****     }
+ 2136              	 .loc 2 263 21 discriminator 3 view .LVU524
+ 2137 00ee 049B     	 ldr r3,[sp,#16]
+ 263:Toeplitz_FFT.c ****     }
+ 2138              	 .loc 2 263 34 discriminator 3 view .LVU525
+ 2139 00f0 B8BF     	 it lt
+ 2140 00f2 4042     	 rsblt r0,r0,#0
+ 263:Toeplitz_FFT.c ****     }
+ 2141              	 .loc 2 263 21 discriminator 3 view .LVU526
+ 2142 00f4 43F82800 	 str r0,[r3,r8,lsl#2]
+ 2143              	.LBE80:
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2144              	 .loc 2 261 32 is_stmt 1 discriminator 3 view .LVU527
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2145              	 .loc 2 261 33 is_stmt 0 discriminator 3 view .LVU528
+ 2146 00f8 08F10108 	 add r8,r8,#1
+ 2147              	.LVL192:
+ 261:Toeplitz_FFT.c ****       int bit_rounded = round(creal(circ[i]));
+ 2148              	 .loc 2 261 33 discriminator 3 view .LVU529
+ 2149 00fc D0E7     	 b .L104
+ 2150              	.L107:
+ 2151 00fe 00BF     	 .align 2
+ 2152              	.L106:
+ 2153 0100 00000000 	 .word malloc
+ 2154 0104 00000000 	 .word memset
+ 2155 0108 00000000 	 .word pad_key
+ 2156 010c 00000000 	 .word embed_toeplitz_on_circulant
+ 2157 0110 00000000 	 .word __mulsc3
+ 2158 0114 00000000 	 .word DIT_FFT
+ 2159 0118 00000000 	 .word DIT_IFFT
+ 2160 011c 00000000 	 .word __aeabi_f2d
+ 2161 0120 00000000 	 .word round
+ 2162 0124 00000000 	 .word __aeabi_d2iz
+ 2163 0128 00000000 	 .word free
+ 2164              	.LBE83:
+ 2165              	 .cfi_endproc
+ 2166              	.LFE19:
+ 2168              	 .section .text.decimalToBinary,"ax",%progbits
+ 2169              	 .align 1
+ 2170              	 .global decimalToBinary
+ 2171              	 .syntax unified
+ 2172              	 .thumb
+ 2173              	 .thumb_func
+ 2174              	 .fpu softvfp
+ 2176              	decimalToBinary:
+ 2177              	.LVL193:
+ 2178              	.LFB20:
+ 268:Toeplitz_FFT.c **** 
+ 269:Toeplitz_FFT.c **** void decimalToBinary(int num, int *binaryNum, int len) {   
+ 2179              	 .loc 2 269 56 is_stmt 1 view-0
+ 2180              	 .cfi_startproc
+ 2181              	 
+ 2182              	 
+ 2183              	 
+ 270:Toeplitz_FFT.c ****   if (num == 0) {
+ 2184              	 .loc 2 270 3 view .LVU531
+ 2185              	 .loc 2 270 6 is_stmt 0 view .LVU532
+ 2186 0000 18B1     	 cbz r0,.L108
+ 2187              	.LVL194:
+ 2188              	.LBB86:
+ 2189              	.LBI86:
+ 269:Toeplitz_FFT.c ****   if (num == 0) {
+ 2190              	 .loc 2 269 6 is_stmt 1 view .LVU533
+ 2191              	.LBB87:
+ 271:Toeplitz_FFT.c ****       return;
+ 272:Toeplitz_FFT.c ****   }
+ 273:Toeplitz_FFT.c ****  int i=len-1;
+ 2192              	 .loc 2 273 2 view .LVU534
+ 274:Toeplitz_FFT.c ****  
+ 275:Toeplitz_FFT.c ****  for ( ;num > 0; ){
+ 2193              	 .loc 2 275 2 view .LVU535
+ 2194 0002 01EB8202 	 add r2,r1,r2,lsl#2
+ 2195              	.LVL195:
+ 2196              	.L110:
+ 2197              	 .loc 2 275 9 view .LVU536
+ 2198              	 .loc 2 275 2 is_stmt 0 view .LVU537
+ 2199 0006 0028     	 cmp r0,#0
+ 2200 0008 00DC     	 bgt .L111
+ 2201              	.LVL196:
+ 2202              	.L108:
+ 2203              	 .loc 2 275 2 view .LVU538
+ 2204              	.LBE87:
+ 2205              	.LBE86:
+ 276:Toeplitz_FFT.c ****     binaryNum[i--] = num % 2;
+ 277:Toeplitz_FFT.c ****     num /= 2;
+ 278:Toeplitz_FFT.c ****  }
+ 279:Toeplitz_FFT.c **** }
+ 2206              	 .loc 2 279 1 view .LVU539
+ 2207 000a 7047     	 bx lr
+ 2208              	.LVL197:
+ 2209              	.L111:
+ 2210              	.LBB89:
+ 2211              	.LBB88:
+ 276:Toeplitz_FFT.c ****     binaryNum[i--] = num % 2;
+ 2212              	 .loc 2 276 5 is_stmt 1 view .LVU540
+ 276:Toeplitz_FFT.c ****     binaryNum[i--] = num % 2;
+ 2213              	 .loc 2 276 26 is_stmt 0 view .LVU541
+ 2214 000c 00F00103 	 and r3,r0,#1
+ 276:Toeplitz_FFT.c ****     binaryNum[i--] = num % 2;
+ 2215              	 .loc 2 276 20 view .LVU542
+ 2216 0010 42F8043D 	 str r3,[r2,#-4]!
+ 277:Toeplitz_FFT.c ****  }
+ 2217              	 .loc 2 277 5 is_stmt 1 view .LVU543
+ 277:Toeplitz_FFT.c ****  }
+ 2218              	 .loc 2 277 9 is_stmt 0 view .LVU544
+ 2219 0014 4010     	 asrs r0,r0,#1
+ 2220              	.LVL198:
+ 277:Toeplitz_FFT.c ****  }
+ 2221              	 .loc 2 277 9 view .LVU545
+ 2222 0016 F6E7     	 b .L110
+ 2223              	.LBE88:
+ 2224              	.LBE89:
+ 2225              	 .cfi_endproc
+ 2226              	.LFE20:
+ 2228              	 .section .text.binary_char_to_int,"ax",%progbits
+ 2229              	 .align 1
+ 2230              	 .global binary_char_to_int
+ 2231              	 .syntax unified
+ 2232              	 .thumb
+ 2233              	 .thumb_func
+ 2234              	 .fpu softvfp
+ 2236              	binary_char_to_int:
+ 2237              	.LVL199:
+ 2238              	.LFB21:
+ 280:Toeplitz_FFT.c **** 
+ 281:Toeplitz_FFT.c **** void binary_char_to_int(char *char_arr, int *int_arr, int len){
+ 2239              	 .loc 2 281 63 is_stmt 1 view-0
+ 2240              	 .cfi_startproc
+ 2241              	 
+ 2242              	 
+ 282:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 2243              	 .loc 2 282 3 view .LVU547
+ 2244              	.LBB90:
+ 2245              	 .loc 2 282 7 view .LVU548
+ 2246              	 .loc 2 282 7 is_stmt 0 view .LVU549
+ 2247              	.LBE90:
+ 281:Toeplitz_FFT.c ****   for(int i = 0; i < len; i++){
+ 2248              	 .loc 2 281 63 view .LVU550
+ 2249 0000 10B5     	 push {r4,lr}
+ 2250              	.LCFI27:
+ 2251              	 .cfi_def_cfa_offset 8
+ 2252              	 .cfi_offset 4,-8
+ 2253              	 .cfi_offset 14,-4
+ 2254              	.LBB91:
+ 2255              	 .loc 2 282 11 view .LVU551
+ 2256 0002 0023     	 movs r3,#0
+ 2257              	.LVL200:
+ 2258              	.L114:
+ 2259              	 .loc 2 282 18 is_stmt 1 discriminator 1 view .LVU552
+ 2260              	 .loc 2 282 3 is_stmt 0 discriminator 1 view .LVU553
+ 2261 0004 9342     	 cmp r3,r2
+ 2262 0006 00DB     	 blt .L115
+ 2263              	.LBE91:
+ 283:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 284:Toeplitz_FFT.c ****   }
+ 285:Toeplitz_FFT.c **** }
+ 2264              	 .loc 2 285 1 view .LVU554
+ 2265 0008 10BD     	 pop {r4,pc}
+ 2266              	.L115:
+ 2267              	.LBB92:
+ 283:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2268              	 .loc 2 283 5 is_stmt 1 discriminator 3 view .LVU555
+ 283:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2269              	 .loc 2 283 26 is_stmt 0 discriminator 3 view .LVU556
+ 2270 000a C45C     	 ldrb r4,[r0,r3]
+ 283:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2271              	 .loc 2 283 30 discriminator 3 view .LVU557
+ 2272 000c 303C     	 subs r4,r4,#48
+ 283:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2273              	 .loc 2 283 16 discriminator 3 view .LVU558
+ 2274 000e 41F82340 	 str r4,[r1,r3,lsl#2]
+ 282:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2275              	 .loc 2 282 27 is_stmt 1 discriminator 3 view .LVU559
+ 282:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2276              	 .loc 2 282 28 is_stmt 0 discriminator 3 view .LVU560
+ 2277 0012 0133     	 adds r3,r3,#1
+ 2278              	.LVL201:
+ 282:Toeplitz_FFT.c ****     int_arr[i] = char_arr[i] - '0';
+ 2279              	 .loc 2 282 28 discriminator 3 view .LVU561
+ 2280 0014 F6E7     	 b .L114
+ 2281              	.LBE92:
+ 2282              	 .cfi_endproc
+ 2283              	.LFE21:
+ 2285              	 .section .rodata.take_base_10_input.str1.1,"aMS",%progbits,1
+ 2286              	.LC1:
+ 2287 0000 0A00     	 .ascii "\012\000"
+ 2288              	 .section .text.take_base_10_input,"ax",%progbits
+ 2289              	 .align 1
+ 2290              	 .global take_base_10_input
+ 2291              	 .syntax unified
+ 2292              	 .thumb
+ 2293              	 .thumb_func
+ 2294              	 .fpu softvfp
+ 2296              	take_base_10_input:
+ 2297              	.LVL202:
+ 2298              	.LFB22:
+ 286:Toeplitz_FFT.c **** 
+ 287:Toeplitz_FFT.c **** /*
+ 288:Toeplitz_FFT.c **** void generate_binary_list(int arr[], int length) {
+ 289:Toeplitz_FFT.c ****   for (int i = 0; i < length; i++) {
+ 290:Toeplitz_FFT.c ****       arr[i] = rand() % 2;  // Generates either 0 or 1
+ 291:Toeplitz_FFT.c ****   }
+ 292:Toeplitz_FFT.c **** }
+ 293:Toeplitz_FFT.c **** */
+ 294:Toeplitz_FFT.c **** //////////////////////////
+ 295:Toeplitz_FFT.c **** /// END FFT STUFF ////////
+ 296:Toeplitz_FFT.c **** 
+ 297:Toeplitz_FFT.c **** //Should not need num
+ 298:Toeplitz_FFT.c **** void take_base_10_input(int *arr, int arrLen, int num){
+ 2299              	 .loc 2 298 55 is_stmt 1 view-0
+ 2300              	 .cfi_startproc
+ 2301              	 
+ 2302              	 
+ 299:Toeplitz_FFT.c **** 
+ 300:Toeplitz_FFT.c ****     char arr_char[32];
+ 2303              	 .loc 2 300 5 view .LVU563
+ 301:Toeplitz_FFT.c ****     my_read(arr_char, 32);
+ 2304              	 .loc 2 301 5 view .LVU564
+ 298:Toeplitz_FFT.c **** 
+ 2305              	 .loc 2 298 55 is_stmt 0 view .LVU565
+ 2306 0000 70B5     	 push {r4,r5,r6,lr}
+ 2307              	.LCFI28:
+ 2308              	 .cfi_def_cfa_offset 16
+ 2309              	 .cfi_offset 4,-16
+ 2310              	 .cfi_offset 5,-12
+ 2311              	 .cfi_offset 6,-8
+ 2312              	 .cfi_offset 14,-4
+ 2313 0002 88B0     	 sub sp,sp,#32
+ 2314              	.LCFI29:
+ 2315              	 .cfi_def_cfa_offset 48
+ 298:Toeplitz_FFT.c **** 
+ 2316              	 .loc 2 298 55 view .LVU566
+ 2317 0004 0446     	 mov r4,r0
+ 2318 0006 0D46     	 mov r5,r1
+ 2319              	 .loc 2 301 5 view .LVU567
+ 2320 0008 6846     	 mov r0,sp
+ 2321              	.LVL203:
+ 2322              	 .loc 2 301 5 view .LVU568
+ 2323 000a 2021     	 movs r1,#32
+ 2324              	.LVL204:
+ 2325              	 .loc 2 301 5 view .LVU569
+ 2326 000c 084B     	 ldr r3,.L117
+ 298:Toeplitz_FFT.c **** 
+ 2327              	 .loc 2 298 55 view .LVU570
+ 2328 000e 1646     	 mov r6,r2
+ 2329              	 .loc 2 301 5 view .LVU571
+ 2330 0010 9847     	 blx r3
+ 2331              	.LVL205:
+ 302:Toeplitz_FFT.c ****     my_puts("\n");
+ 2332              	 .loc 2 302 5 is_stmt 1 view .LVU572
+ 2333 0012 0848     	 ldr r0,.L117+4
+ 2334 0014 084B     	 ldr r3,.L117+8
+ 2335 0016 9847     	 blx r3
+ 2336              	.LVL206:
+ 303:Toeplitz_FFT.c ****     //int num = atoi(arr_char);
+ 304:Toeplitz_FFT.c ****     //num = char_to_int(arr_char,5);
+ 305:Toeplitz_FFT.c ****     decimalToBinary(num, arr, arrLen);
+ 2337              	 .loc 2 305 5 view .LVU573
+ 2338 0018 2A46     	 mov r2,r5
+ 2339 001a 2146     	 mov r1,r4
+ 2340 001c 3046     	 mov r0,r6
+ 2341 001e 074B     	 ldr r3,.L117+12
+ 2342 0020 9847     	 blx r3
+ 2343              	.LVL207:
+ 306:Toeplitz_FFT.c ****     print_int_array_serial(arr, arrLen);
+ 2344              	 .loc 2 306 5 view .LVU574
+ 2345 0022 074B     	 ldr r3,.L117+16
+ 2346 0024 2946     	 mov r1,r5
+ 2347 0026 2046     	 mov r0,r4
+ 2348 0028 9847     	 blx r3
+ 2349              	.LVL208:
+ 307:Toeplitz_FFT.c **** }
+ 2350              	 .loc 2 307 1 is_stmt 0 view .LVU575
+ 2351 002a 08B0     	 add sp,sp,#32
+ 2352              	.LCFI30:
+ 2353              	 .cfi_def_cfa_offset 16
+ 2354              	 
+ 2355 002c 70BD     	 pop {r4,r5,r6,pc}
+ 2356              	.LVL209:
+ 2357              	.L118:
+ 2358              	 .loc 2 307 1 view .LVU576
+ 2359 002e 00BF     	 .align 2
+ 2360              	.L117:
+ 2361 0030 00000000 	 .word my_read
+ 2362 0034 00000000 	 .word .LC1
+ 2363 0038 00000000 	 .word my_puts
+ 2364 003c 00000000 	 .word decimalToBinary
+ 2365 0040 00000000 	 .word print_int_array_serial
+ 2366              	 .cfi_endproc
+ 2367              	.LFE22:
+ 2369              	 .section .text.take_base_2_input,"ax",%progbits
+ 2370              	 .align 1
+ 2371              	 .global take_base_2_input
+ 2372              	 .syntax unified
+ 2373              	 .thumb
+ 2374              	 .thumb_func
+ 2375              	 .fpu softvfp
+ 2377              	take_base_2_input:
+ 2378              	.LVL210:
+ 2379              	.LFB23:
+ 308:Toeplitz_FFT.c **** 
+ 309:Toeplitz_FFT.c **** 
+ 310:Toeplitz_FFT.c **** void take_base_2_input(int *arr_int, int arrLen){
+ 2380              	 .loc 2 310 49 is_stmt 1 view-0
+ 2381              	 .cfi_startproc
+ 2382              	 
+ 2383              	 
+ 311:Toeplitz_FFT.c ****   int maxlen = 1024;
+ 2384              	 .loc 2 311 3 view .LVU578
+ 312:Toeplitz_FFT.c ****   char arr_char[maxlen];
+ 2385              	 .loc 2 312 3 view .LVU579
+ 310:Toeplitz_FFT.c ****   int maxlen = 1024;
+ 2386              	 .loc 2 310 49 is_stmt 0 view .LVU580
+ 2387 0000 B0B5     	 push {r4,r5,r7,lr}
+ 2388              	.LCFI31:
+ 2389              	 .cfi_def_cfa_offset 16
+ 2390              	 .cfi_offset 4,-16
+ 2391              	 .cfi_offset 5,-12
+ 2392              	 .cfi_offset 7,-8
+ 2393              	 .cfi_offset 14,-4
+ 2394 0002 00AF     	 add r7,sp,#0
+ 2395              	.LCFI32:
+ 2396              	 .cfi_def_cfa_register 7
+ 2397              	 .loc 2 312 8 view .LVU581
+ 2398 0004 ADF5806D 	 sub sp,sp,#1024
+ 2399              	.LVL211:
+ 313:Toeplitz_FFT.c ****   my_read(arr_char, maxlen);
+ 2400              	 .loc 2 313 3 is_stmt 1 view .LVU582
+ 310:Toeplitz_FFT.c ****   int maxlen = 1024;
+ 2401              	 .loc 2 310 49 is_stmt 0 view .LVU583
+ 2402 0008 0446     	 mov r4,r0
+ 2403 000a 0D46     	 mov r5,r1
+ 2404              	 .loc 2 313 3 view .LVU584
+ 2405 000c 6846     	 mov r0,sp
+ 2406              	.LVL212:
+ 2407              	 .loc 2 313 3 view .LVU585
+ 2408 000e 4FF48061 	 mov r1,#1024
+ 2409              	.LVL213:
+ 2410              	 .loc 2 313 3 view .LVU586
+ 2411 0012 084B     	 ldr r3,.L120
+ 2412 0014 9847     	 blx r3
+ 2413              	.LVL214:
+ 314:Toeplitz_FFT.c ****   my_puts("\n");
+ 2414              	 .loc 2 314 3 is_stmt 1 view .LVU587
+ 2415 0016 0848     	 ldr r0,.L120+4
+ 2416 0018 084B     	 ldr r3,.L120+8
+ 2417 001a 9847     	 blx r3
+ 2418              	.LVL215:
+ 315:Toeplitz_FFT.c ****   binary_char_to_int(arr_char, arr_int, arrLen);
+ 2419              	 .loc 2 315 3 view .LVU588
+ 2420 001c 2A46     	 mov r2,r5
+ 2421 001e 2146     	 mov r1,r4
+ 2422 0020 6846     	 mov r0,sp
+ 2423 0022 074B     	 ldr r3,.L120+12
+ 2424 0024 9847     	 blx r3
+ 2425              	.LVL216:
+ 316:Toeplitz_FFT.c ****   print_int_array_serial(arr_int, arrLen);
+ 2426              	 .loc 2 316 3 view .LVU589
+ 2427 0026 074B     	 ldr r3,.L120+16
+ 2428 0028 2946     	 mov r1,r5
+ 2429 002a 2046     	 mov r0,r4
+ 2430 002c 9847     	 blx r3
+ 2431              	.LVL217:
+ 317:Toeplitz_FFT.c **** 
+ 318:Toeplitz_FFT.c **** }
+ 2432              	 .loc 2 318 1 is_stmt 0 view .LVU590
+ 2433 002e BD46     	 mov sp,r7
+ 2434              	.LCFI33:
+ 2435              	 .cfi_def_cfa_register 13
+ 2436              	.LVL218:
+ 2437              	 .loc 2 318 1 view .LVU591
+ 2438              	 
+ 2439 0030 B0BD     	 pop {r4,r5,r7,pc}
+ 2440              	.LVL219:
+ 2441              	.L121:
+ 2442              	 .loc 2 318 1 view .LVU592
+ 2443 0032 00BF     	 .align 2
+ 2444              	.L120:
+ 2445 0034 00000000 	 .word my_read
+ 2446 0038 00000000 	 .word .LC1
+ 2447 003c 00000000 	 .word my_puts
+ 2448 0040 00000000 	 .word binary_char_to_int
+ 2449 0044 00000000 	 .word print_int_array_serial
+ 2450              	 .cfi_endproc
+ 2451              	.LFE23:
+ 2453              	 .section .rodata.Toeplitz_setup.str1.1,"aMS",%progbits,1
+ 2454              	.LC2:
+ 2455 0000 546F6570 	 .ascii "Toeplitz Privacy Amplifification\012\000"
+ 2455      6C69747A 
+ 2455      20507269 
+ 2455      76616379 
+ 2455      20416D70 
+ 2456              	.LC3:
+ 2457 0022 0A0A00   	 .ascii "\012\012\000"
+ 2458              	.LC4:
+ 2459 0025 44656669 	 .ascii "Define Toeplitz Matrix\012\000"
+ 2459      6E652054 
+ 2459      6F65706C 
+ 2459      69747A20 
+ 2459      4D617472 
+ 2460              	.LC5:
+ 2461 003d 0A506C65 	 .ascii "\012Please enter row spec (Max 32 Bits): \012\000"
+ 2461      61736520 
+ 2461      656E7465 
+ 2461      7220726F 
+ 2461      77207370 
+ 2462              	.LC6:
+ 2463 0065 0A506C65 	 .ascii "\012Please enter col spec (Max 32 Hex Bits): \012\000"
+ 2463      61736520 
+ 2463      656E7465 
+ 2463      7220636F 
+ 2463      6C207370 
+ 2464              	 .section .text.Toeplitz_setup,"ax",%progbits
+ 2465              	 .align 1
+ 2466              	 .global Toeplitz_setup
+ 2467              	 .syntax unified
+ 2468              	 .thumb
+ 2469              	 .thumb_func
+ 2470              	 .fpu softvfp
+ 2472              	Toeplitz_setup:
+ 2473              	.LVL220:
+ 2474              	.LFB24:
+ 319:Toeplitz_FFT.c **** 
+ 320:Toeplitz_FFT.c **** void Toeplitz_setup(int *row1, int *col1, int rowLen, int colLen){
+ 2475              	 .loc 2 320 66 is_stmt 1 view-0
+ 2476              	 .cfi_startproc
+ 2477              	 
+ 2478              	 
+ 321:Toeplitz_FFT.c ****     delay_2_ms();
+ 2479              	 .loc 2 321 5 view .LVU594
+ 2480              	.LBB96:
+ 2481              	.LBI96:
+  31:Toeplitz_FFT.c **** {
+ 2482              	 .loc 2 31 13 view .LVU595
+ 2483              	.LBE96:
+  33:Toeplitz_FFT.c ****     ;
+ 2484              	 .loc 2 33 3 view .LVU596
+ 2485              	.LBB101:
+ 2486              	.LBB97:
+  33:Toeplitz_FFT.c ****     ;
+ 2487              	 .loc 2 33 8 view .LVU597
+ 2488              	.LBE97:
+ 2489              	.LBE101:
+ 320:Toeplitz_FFT.c ****     delay_2_ms();
+ 2490              	 .loc 2 320 66 is_stmt 0 view .LVU598
+ 2491 0000 2DE9F341 	 push {r0,r1,r4,r5,r6,r7,r8,lr}
+ 2492              	.LCFI34:
+ 2493              	 .cfi_def_cfa_offset 32
+ 2494              	 .cfi_offset 4,-24
+ 2495              	 .cfi_offset 5,-20
+ 2496              	 .cfi_offset 6,-16
+ 2497              	 .cfi_offset 7,-12
+ 2498              	 .cfi_offset 8,-8
+ 2499              	 .cfi_offset 14,-4
+ 320:Toeplitz_FFT.c ****     delay_2_ms();
+ 2500              	 .loc 2 320 66 view .LVU599
+ 2501 0004 1E46     	 mov r6,r3
+ 2502              	.LBB102:
+ 2503              	.LBB98:
+  33:Toeplitz_FFT.c ****     ;
+ 2504              	 .loc 2 33 30 view .LVU600
+ 2505 0006 0023     	 movs r3,#0
+ 2506              	.LVL221:
+  33:Toeplitz_FFT.c ****     ;
+ 2507              	 .loc 2 33 30 view .LVU601
+ 2508              	.LBE98:
+ 2509              	.LBE102:
+ 320:Toeplitz_FFT.c ****     delay_2_ms();
+ 2510              	 .loc 2 320 66 view .LVU602
+ 2511 0008 9046     	 mov r8,r2
+ 2512 000a 0746     	 mov r7,r0
+ 2513 000c 0D46     	 mov r5,r1
+ 2514              	.LBB103:
+ 2515              	.LBB99:
+  33:Toeplitz_FFT.c ****     ;
+ 2516              	 .loc 2 33 30 view .LVU603
+ 2517 000e 0193     	 str r3,[sp,#4]
+  33:Toeplitz_FFT.c ****     ;
+ 2518              	 .loc 2 33 3 view .LVU604
+ 2519 0010 40F6FE72 	 movw r2,#4094
+ 2520              	.LVL222:
+ 2521              	.L123:
+  33:Toeplitz_FFT.c ****     ;
+ 2522              	 .loc 2 33 35 is_stmt 1 view .LVU605
+  33:Toeplitz_FFT.c ****     ;
+ 2523              	 .loc 2 33 37 is_stmt 0 view .LVU606
+ 2524 0014 019B     	 ldr r3,[sp,#4]
+  33:Toeplitz_FFT.c ****     ;
+ 2525              	 .loc 2 33 3 view .LVU607
+ 2526 0016 9342     	 cmp r3,r2
+ 2527 0018 15D9     	 bls .L124
+ 2528              	.LBE99:
+ 2529              	.LBE103:
+ 322:Toeplitz_FFT.c ****     my_puts("Toeplitz Privacy Amplifification\n");
+ 2530              	 .loc 2 322 5 is_stmt 1 view .LVU608
+ 2531 001a 0D4C     	 ldr r4,.L125
+ 2532 001c 0D48     	 ldr r0,.L125+4
+ 2533              	.LVL223:
+ 2534              	 .loc 2 322 5 is_stmt 0 view .LVU609
+ 2535 001e A047     	 blx r4
+ 2536              	.LVL224:
+ 323:Toeplitz_FFT.c ****     my_puts("\n\n");
+ 2537              	 .loc 2 323 5 is_stmt 1 view .LVU610
+ 2538 0020 0D48     	 ldr r0,.L125+8
+ 2539 0022 A047     	 blx r4
+ 2540              	.LVL225:
+ 324:Toeplitz_FFT.c **** 
+ 325:Toeplitz_FFT.c ****     //Give them one last warning
+ 326:Toeplitz_FFT.c ****     my_puts("Define Toeplitz Matrix\n");
+ 2541              	 .loc 2 326 5 view .LVU611
+ 2542 0024 0D48     	 ldr r0,.L125+12
+ 2543 0026 A047     	 blx r4
+ 2544              	.LVL226:
+ 327:Toeplitz_FFT.c **** 
+ 328:Toeplitz_FFT.c ****    // trigger_low();
+ 329:Toeplitz_FFT.c **** 
+ 330:Toeplitz_FFT.c ****     //Get password
+ 331:Toeplitz_FFT.c ****     int row_int = 89435;
+ 2545              	 .loc 2 331 5 view .LVU612
+ 332:Toeplitz_FFT.c ****     my_puts("\nPlease enter row spec (Max 32 Bits): \n");
+ 2546              	 .loc 2 332 5 view .LVU613
+ 2547 0028 0D48     	 ldr r0,.L125+16
+ 2548 002a A047     	 blx r4
+ 2549              	.LVL227:
+ 333:Toeplitz_FFT.c ****     take_base_2_input(row1, rowLen);
+ 2550              	 .loc 2 333 5 view .LVU614
+ 2551 002c 4146     	 mov r1,r8
+ 2552 002e 3846     	 mov r0,r7
+ 2553 0030 0C4F     	 ldr r7,.L125+20
+ 2554              	.LVL228:
+ 2555              	 .loc 2 333 5 is_stmt 0 view .LVU615
+ 2556 0032 B847     	 blx r7
+ 2557              	.LVL229:
+ 334:Toeplitz_FFT.c **** 
+ 335:Toeplitz_FFT.c **** 
+ 336:Toeplitz_FFT.c ****    // trigger_low();
+ 337:Toeplitz_FFT.c **** 
+ 338:Toeplitz_FFT.c ****     int col_int = 5547;
+ 2558              	 .loc 2 338 5 is_stmt 1 view .LVU616
+ 339:Toeplitz_FFT.c ****     my_puts("\nPlease enter col spec (Max 32 Hex Bits): \n");
+ 2559              	 .loc 2 339 5 view .LVU617
+ 2560 0034 0C48     	 ldr r0,.L125+24
+ 2561 0036 A047     	 blx r4
+ 2562              	.LVL230:
+ 340:Toeplitz_FFT.c ****     take_base_2_input(col1, colLen);
+ 2563              	 .loc 2 340 5 view .LVU618
+ 2564 0038 3146     	 mov r1,r6
+ 2565 003a 2846     	 mov r0,r5
+ 2566 003c 3B46     	 mov r3,r7
+ 341:Toeplitz_FFT.c **** }
+ 2567              	 .loc 2 341 1 is_stmt 0 view .LVU619
+ 2568 003e 02B0     	 add sp,sp,#8
+ 2569              	.LCFI35:
+ 2570              	 .cfi_remember_state
+ 2571              	 .cfi_def_cfa_offset 24
+ 2572              	 
+ 2573 0040 BDE8F041 	 pop {r4,r5,r6,r7,r8,lr}
+ 2574              	.LCFI36:
+ 2575              	 .cfi_restore 14
+ 2576              	 .cfi_restore 8
+ 2577              	 .cfi_restore 7
+ 2578              	 .cfi_restore 6
+ 2579              	 .cfi_restore 5
+ 2580              	 .cfi_restore 4
+ 2581              	 .cfi_def_cfa_offset 0
+ 2582              	.LVL231:
+ 340:Toeplitz_FFT.c ****     take_base_2_input(col1, colLen);
+ 2583              	 .loc 2 340 5 view .LVU620
+ 2584 0044 1847     	 bx r3
+ 2585              	.LVL232:
+ 2586              	.L124:
+ 2587              	.LCFI37:
+ 2588              	 .cfi_restore_state
+ 2589              	.LBB104:
+ 2590              	.LBB100:
+  34:Toeplitz_FFT.c ****   }
+ 2591              	 .loc 2 34 5 is_stmt 1 view .LVU621
+  33:Toeplitz_FFT.c ****     ;
+ 2592              	 .loc 2 33 46 view .LVU622
+  33:Toeplitz_FFT.c ****     ;
+ 2593              	 .loc 2 33 47 is_stmt 0 view .LVU623
+ 2594 0046 019B     	 ldr r3,[sp,#4]
+ 2595 0048 0133     	 adds r3,r3,#1
+ 2596 004a 0193     	 str r3,[sp,#4]
+ 2597 004c E2E7     	 b .L123
+ 2598              	.L126:
+ 2599 004e 00BF     	 .align 2
+ 2600              	.L125:
+ 2601 0050 00000000 	 .word my_puts
+ 2602 0054 00000000 	 .word .LC2
+ 2603 0058 22000000 	 .word .LC3
+ 2604 005c 25000000 	 .word .LC4
+ 2605 0060 3D000000 	 .word .LC5
+ 2606 0064 00000000 	 .word take_base_2_input
+ 2607 0068 65000000 	 .word .LC6
+ 2608              	.LBE100:
+ 2609              	.LBE104:
+ 2610              	 .cfi_endproc
+ 2611              	.LFE24:
+ 2613              	 .section .rodata.main.str1.1,"aMS",%progbits,1
+ 2614              	.LC7:
+ 2615 0000 0A506C65 	 .ascii "\012Please enter input key (Max 32 Hex Bits): \012\000"
+ 2615      61736520 
+ 2615      656E7465 
+ 2615      7220696E 
+ 2615      70757420 
+ 2616              	 .section .text.startup.main,"ax",%progbits
+ 2617              	 .align 1
+ 2618              	 .global main
+ 2619              	 .syntax unified
+ 2620              	 .thumb
+ 2621              	 .thumb_func
+ 2622              	 .fpu softvfp
+ 2624              	main:
+ 2625              	.LFB25:
+ 342:Toeplitz_FFT.c **** 
+ 343:Toeplitz_FFT.c **** 
+ 344:Toeplitz_FFT.c **** 
+ 345:Toeplitz_FFT.c **** int main(void)
+ 346:Toeplitz_FFT.c **** {
+ 2626              	 .loc 2 346 1 is_stmt 1 view-0
+ 2627              	 .cfi_startproc
+ 2628              	 
+ 2629              	 
+ 347:Toeplitz_FFT.c ****     platform_init();
+ 2630              	 .loc 2 347 5 view .LVU625
+ 346:Toeplitz_FFT.c ****     platform_init();
+ 2631              	 .loc 2 346 1 is_stmt 0 view .LVU626
+ 2632 0000 2DE9F84F 	 push {r3,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 2633              	.LCFI38:
+ 2634              	 .cfi_def_cfa_offset 40
+ 2635              	 .cfi_offset 3,-40
+ 2636              	 .cfi_offset 4,-36
+ 2637              	 .cfi_offset 5,-32
+ 2638              	 .cfi_offset 6,-28
+ 2639              	 .cfi_offset 7,-24
+ 2640              	 .cfi_offset 8,-20
+ 2641              	 .cfi_offset 9,-16
+ 2642              	 .cfi_offset 10,-12
+ 2643              	 .cfi_offset 11,-8
+ 2644              	 .cfi_offset 14,-4
+ 2645              	 .loc 2 347 5 view .LVU627
+ 2646 0004 1A4B     	 ldr r3,.L131
+ 2647              	.LBB105:
+ 348:Toeplitz_FFT.c ****     init_uart();
+ 349:Toeplitz_FFT.c ****     trigger_setup();
+ 350:Toeplitz_FFT.c **** 
+ 351:Toeplitz_FFT.c ****     //trigger_low();
+ 352:Toeplitz_FFT.c **** 
+ 353:Toeplitz_FFT.c **** 
+ 354:Toeplitz_FFT.c ****     //Memory allocation Uncomment if want full PA working
+ 355:Toeplitz_FFT.c **** 
+ 356:Toeplitz_FFT.c ****     /*
+ 357:Toeplitz_FFT.c ****     int rowLen = 5;
+ 358:Toeplitz_FFT.c ****     int colLen = 4;
+ 359:Toeplitz_FFT.c ****     int *row1 = (int*)malloc(rowLen * sizeof(int));
+ 360:Toeplitz_FFT.c ****     int *col1 = (int*)malloc(colLen * sizeof(int));
+ 361:Toeplitz_FFT.c **** 
+ 362:Toeplitz_FFT.c ****     for(int i = 0; i < rowLen; i++){
+ 363:Toeplitz_FFT.c ****       row1[i] = 0;
+ 364:Toeplitz_FFT.c ****     }
+ 365:Toeplitz_FFT.c ****     for(int i = 0; i < colLen; i++){
+ 366:Toeplitz_FFT.c ****       col1[i] = 0;
+ 367:Toeplitz_FFT.c ****     }
+ 368:Toeplitz_FFT.c **** 
+ 369:Toeplitz_FFT.c ****     Toeplitz_setup(row1, col1, rowLen, colLen);
+ 370:Toeplitz_FFT.c ****    */
+ 371:Toeplitz_FFT.c **** 
+ 372:Toeplitz_FFT.c ****     int rowLen = 8;
+ 373:Toeplitz_FFT.c ****     int colLen = 1;
+ 374:Toeplitz_FFT.c ****     while(1){
+ 375:Toeplitz_FFT.c **** 
+ 376:Toeplitz_FFT.c **** 
+ 377:Toeplitz_FFT.c **** 
+ 378:Toeplitz_FFT.c ****       int *input_key = (int*)malloc(rowLen * sizeof(int));
+ 2648              	 .loc 2 378 30 view .LVU628
+ 2649 0006 1B4F     	 ldr r7,.L131+4
+ 2650              	.LBE105:
+ 347:Toeplitz_FFT.c ****     init_uart();
+ 2651              	 .loc 2 347 5 view .LVU629
+ 2652 0008 9847     	 blx r3
+ 2653              	.LVL233:
+ 348:Toeplitz_FFT.c ****     init_uart();
+ 2654              	 .loc 2 348 5 is_stmt 1 view .LVU630
+ 2655 000a 1B4B     	 ldr r3,.L131+8
+ 2656 000c 9847     	 blx r3
+ 2657              	.LVL234:
+ 349:Toeplitz_FFT.c **** 
+ 2658              	 .loc 2 349 5 view .LVU631
+ 2659 000e 1B4B     	 ldr r3,.L131+12
+ 2660 0010 9847     	 blx r3
+ 2661              	.LVL235:
+ 372:Toeplitz_FFT.c ****     int colLen = 1;
+ 2662              	 .loc 2 372 5 view .LVU632
+ 373:Toeplitz_FFT.c ****     while(1){
+ 2663              	 .loc 2 373 5 view .LVU633
+ 2664              	.LBB112:
+ 2665              	.LBB106:
+ 379:Toeplitz_FFT.c ****       //int *output_key_fft = (int*)malloc(colLen * sizeof(int));
+ 380:Toeplitz_FFT.c ****       for(int i = 0; i < rowLen; i++){
+ 381:Toeplitz_FFT.c ****         input_key[i] = 0;
+ 382:Toeplitz_FFT.c ****       }
+ 383:Toeplitz_FFT.c ****       //for(int i = 0; i < colLen; i++){
+ 384:Toeplitz_FFT.c ****       //  output_key_fft[i] = 0;
+ 385:Toeplitz_FFT.c ****       //}
+ 386:Toeplitz_FFT.c **** 
+ 387:Toeplitz_FFT.c ****       my_puts("\nPlease enter input key (Max 32 Hex Bits): \n");
+ 388:Toeplitz_FFT.c ****       take_base_2_input(input_key, rowLen);
+ 389:Toeplitz_FFT.c **** 
+ 390:Toeplitz_FFT.c ****       //Toeplitz_hash_fft_butterfly(input_key, output_key_fft, row1, col1, rowLen, colLen);
+ 391:Toeplitz_FFT.c **** 
+ 392:Toeplitz_FFT.c **** 
+ 393:Toeplitz_FFT.c ****       ///// JUST FFT ON SECRET KEY ///////////////
+ 394:Toeplitz_FFT.c **** 
+ 395:Toeplitz_FFT.c **** 
+ 396:Toeplitz_FFT.c **** 
+ 397:Toeplitz_FFT.c ****       int circulant_size = rowLen + colLen - 1;
+ 398:Toeplitz_FFT.c ****       float complex *padded_key = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 399:Toeplitz_FFT.c **** 
+ 400:Toeplitz_FFT.c ****       for(int i=0; i < circulant_size; i++){
+ 401:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2666              	 .loc 2 401 23 is_stmt 0 view .LVU634
+ 2667 0012 4FF00008 	 mov r8,#0
+ 2668              	.L129:
+ 2669              	.LBE106:
+ 2670              	.LBE112:
+ 374:Toeplitz_FFT.c **** 
+ 2671              	 .loc 2 374 5 is_stmt 1 view .LVU635
+ 2672              	.LBB113:
+ 378:Toeplitz_FFT.c ****       //int *output_key_fft = (int*)malloc(colLen * sizeof(int));
+ 2673              	 .loc 2 378 7 view .LVU636
+ 378:Toeplitz_FFT.c ****       //int *output_key_fft = (int*)malloc(colLen * sizeof(int));
+ 2674              	 .loc 2 378 30 is_stmt 0 view .LVU637
+ 2675 0016 2020     	 movs r0,#32
+ 2676 0018 B847     	 blx r7
+ 2677              	.LVL236:
+ 2678              	.LBB107:
+ 381:Toeplitz_FFT.c ****       }
+ 2679              	 .loc 2 381 22 view .LVU638
+ 2680 001a 2022     	 movs r2,#32
+ 2681 001c 0021     	 movs r1,#0
+ 2682 001e 184B     	 ldr r3,.L131+16
+ 2683              	.LBE107:
+ 2684              	.LBB108:
+ 402:Toeplitz_FFT.c ****         padded_key[i] += input_key[i]; 
+ 2685              	 .loc 2 402 23 view .LVU639
+ 2686 0020 DFF860A0 	 ldr r10,.L131+20
+ 2687 0024 DFF86090 	 ldr r9,.L131+24
+ 2688              	.LBE108:
+ 378:Toeplitz_FFT.c ****       //int *output_key_fft = (int*)malloc(colLen * sizeof(int));
+ 2689              	 .loc 2 378 30 view .LVU640
+ 2690 0028 0546     	 mov r5,r0
+ 2691              	.LVL237:
+ 380:Toeplitz_FFT.c ****         input_key[i] = 0;
+ 2692              	 .loc 2 380 7 is_stmt 1 view .LVU641
+ 2693              	.LBB109:
+ 380:Toeplitz_FFT.c ****         input_key[i] = 0;
+ 2694              	 .loc 2 380 11 view .LVU642
+ 380:Toeplitz_FFT.c ****         input_key[i] = 0;
+ 2695              	 .loc 2 380 22 view .LVU643
+ 381:Toeplitz_FFT.c ****       }
+ 2696              	 .loc 2 381 22 is_stmt 0 view .LVU644
+ 2697 002a 9847     	 blx r3
+ 2698              	.LVL238:
+ 381:Toeplitz_FFT.c ****       }
+ 2699              	 .loc 2 381 22 view .LVU645
+ 2700              	.LBE109:
+ 387:Toeplitz_FFT.c ****       take_base_2_input(input_key, rowLen);
+ 2701              	 .loc 2 387 7 is_stmt 1 view .LVU646
+ 2702 002c 1748     	 ldr r0,.L131+28
+ 2703 002e 184B     	 ldr r3,.L131+32
+ 2704 0030 9847     	 blx r3
+ 2705              	.LVL239:
+ 388:Toeplitz_FFT.c **** 
+ 2706              	 .loc 2 388 7 view .LVU647
+ 2707 0032 184B     	 ldr r3,.L131+36
+ 2708 0034 0821     	 movs r1,#8
+ 2709 0036 2846     	 mov r0,r5
+ 2710 0038 9847     	 blx r3
+ 2711              	.LVL240:
+ 397:Toeplitz_FFT.c ****       float complex *padded_key = (float complex*)malloc(circulant_size * sizeof(float complex));
+ 2712              	 .loc 2 397 7 view .LVU648
+ 398:Toeplitz_FFT.c **** 
+ 2713              	 .loc 2 398 7 view .LVU649
+ 398:Toeplitz_FFT.c **** 
+ 2714              	 .loc 2 398 51 is_stmt 0 view .LVU650
+ 2715 003a 4020     	 movs r0,#64
+ 2716 003c B847     	 blx r7
+ 2717              	.LVL241:
+ 2718              	.LBB110:
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2719              	 .loc 2 400 15 view .LVU651
+ 2720 003e 0024     	 movs r4,#0
+ 2721              	.LBE110:
+ 398:Toeplitz_FFT.c **** 
+ 2722              	 .loc 2 398 51 view .LVU652
+ 2723 0040 0646     	 mov r6,r0
+ 2724              	.LVL242:
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2725              	 .loc 2 400 7 is_stmt 1 view .LVU653
+ 2726              	.LBB111:
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2727              	 .loc 2 400 11 view .LVU654
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2728              	 .loc 2 400 20 view .LVU655
+ 401:Toeplitz_FFT.c ****         padded_key[i] += input_key[i]; 
+ 2729              	 .loc 2 401 23 is_stmt 0 view .LVU656
+ 2730 0042 00F1040B 	 add fp,r0,#4
+ 2731              	.LVL243:
+ 2732              	.L128:
+ 401:Toeplitz_FFT.c ****         padded_key[i] += input_key[i]; 
+ 2733              	 .loc 2 401 9 is_stmt 1 discriminator 3 view .LVU657
+ 401:Toeplitz_FFT.c ****         padded_key[i] += input_key[i]; 
+ 2734              	 .loc 2 401 23 is_stmt 0 discriminator 3 view .LVU658
+ 2735 0046 4BF83480 	 str r8,[fp,r4,lsl#3]
+ 2736              	 .loc 2 402 9 is_stmt 1 discriminator 3 view .LVU659
+ 2737              	 .loc 2 402 23 is_stmt 0 discriminator 3 view .LVU660
+ 2738 004a 55F82400 	 ldr r0,[r5,r4,lsl#2]
+ 2739 004e D047     	 blx r10
+ 2740              	.LVL244:
+ 2741 0050 0021     	 movs r1,#0
+ 2742 0052 C847     	 blx r9
+ 2743              	.LVL245:
+ 2744 0054 46F83400 	 str r0,[r6,r4,lsl#3]
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2745              	 .loc 2 400 40 is_stmt 1 discriminator 3 view .LVU661
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2746              	 .loc 2 400 41 is_stmt 0 discriminator 3 view .LVU662
+ 2747 0058 0134     	 adds r4,r4,#1
+ 2748              	.LVL246:
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2749              	 .loc 2 400 20 is_stmt 1 discriminator 3 view .LVU663
+ 400:Toeplitz_FFT.c ****         padded_key[i] = 0 + 0*I;
+ 2750              	 .loc 2 400 7 is_stmt 0 discriminator 3 view .LVU664
+ 2751 005a 082C     	 cmp r4,#8
+ 2752 005c F3D1     	 bne .L128
+ 2753              	.LBE111:
+ 403:Toeplitz_FFT.c ****       }
+ 404:Toeplitz_FFT.c ****       //pad_key(padded_key, input_key, circulant_size, rowLen);
+ 405:Toeplitz_FFT.c ****       
+ 406:Toeplitz_FFT.c ****       //trigger_high();
+ 407:Toeplitz_FFT.c ****       DIT_FFT(padded_key,circulant_size);
+ 2754              	 .loc 2 407 7 is_stmt 1 view .LVU665
+ 2755 005e 3046     	 mov r0,r6
+ 2756 0060 0D4B     	 ldr r3,.L131+40
+ 2757 0062 2146     	 mov r1,r4
+ 2758 0064 9847     	 blx r3
+ 2759              	.LVL247:
+ 408:Toeplitz_FFT.c **** 
+ 409:Toeplitz_FFT.c **** 
+ 410:Toeplitz_FFT.c ****       /////////////////////////////////////////////
+ 411:Toeplitz_FFT.c **** 
+ 412:Toeplitz_FFT.c **** 
+ 413:Toeplitz_FFT.c ****       //my_puts("\nCalculated P.A. key: \n");
+ 414:Toeplitz_FFT.c ****       //print_int_array_serial(output_key_fft, colLen);  
+ 415:Toeplitz_FFT.c **** 
+ 416:Toeplitz_FFT.c ****       free(input_key);
+ 2760              	 .loc 2 416 7 view .LVU666
+ 2761 0066 0D4B     	 ldr r3,.L131+44
+ 2762 0068 2846     	 mov r0,r5
+ 2763 006a 9847     	 blx r3
+ 2764              	.LVL248:
+ 2765              	.LBE113:
+ 374:Toeplitz_FFT.c **** 
+ 2766              	 .loc 2 374 10 view .LVU667
+ 374:Toeplitz_FFT.c **** 
+ 2767              	 .loc 2 374 13 is_stmt 0 view .LVU668
+ 2768 006c D3E7     	 b .L129
+ 2769              	.L132:
+ 2770 006e 00BF     	 .align 2
+ 2771              	.L131:
+ 2772 0070 00000000 	 .word platform_init
+ 2773 0074 00000000 	 .word malloc
+ 2774 0078 00000000 	 .word init_uart
+ 2775 007c 00000000 	 .word trigger_setup
+ 2776 0080 00000000 	 .word memset
+ 2777 0084 00000000 	 .word __aeabi_i2f
+ 2778 0088 00000000 	 .word __aeabi_fadd
+ 2779 008c 00000000 	 .word .LC7
+ 2780 0090 00000000 	 .word my_puts
+ 2781 0094 00000000 	 .word take_base_2_input
+ 2782 0098 00000000 	 .word DIT_FFT
+ 2783 009c 00000000 	 .word free
+ 2784              	 .cfi_endproc
+ 2785              	.LFE25:
+ 2787              	 .global pt
+ 2788              	 .global asciibuf
+ 2789              	 .global tmp
+ 2790              	 .global memory
+ 2791              	 .section .bss.asciibuf,"aw",%nobits
+ 2794              	asciibuf:
+ 2795 0000 00000000 	 .space 64
+ 2795      00000000 
+ 2795      00000000 
+ 2795      00000000 
+ 2795      00000000 
+ 2796              	 .section .bss.memory,"aw",%nobits
+ 2799              	memory:
+ 2800 0000 00000000 	 .space 64
+ 2800      00000000 
+ 2800      00000000 
+ 2800      00000000 
+ 2800      00000000 
+ 2801              	 .section .bss.pt,"aw",%nobits
+ 2804              	pt:
+ 2805 0000 00000000 	 .space 16
+ 2805      00000000 
+ 2805      00000000 
+ 2805      00000000 
+ 2806              	 .section .bss.tmp,"aw",%nobits
+ 2809              	tmp:
+ 2810 0000 00000000 	 .space 64
+ 2810      00000000 
+ 2810      00000000 
+ 2810      00000000 
+ 2810      00000000 
+ 2811              	 .text
+ 2812              	.Letext0:
+ 2813              	 .file 3 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 2814              	 .file 4 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Toeplitz_FFT.c
+    {standard input}:16     .text.led_ok:0000000000000000 $t
+    {standard input}:24     .text.led_ok:0000000000000000 led_ok
+    {standard input}:39     .text.led_error:0000000000000000 $t
+    {standard input}:46     .text.led_error:0000000000000000 led_error
+    {standard input}:57     .text.my_puts:0000000000000000 $t
+    {standard input}:64     .text.my_puts:0000000000000000 my_puts
+    {standard input}:109    .text.my_puts:0000000000000014 $d
+    {standard input}:114    .text.my_read:0000000000000000 $t
+    {standard input}:121    .text.my_read:0000000000000000 my_read
+    {standard input}:214    .text.my_read:0000000000000038 $d
+    {standard input}:223    .text.char_to_int:0000000000000000 $t
+    {standard input}:230    .text.char_to_int:0000000000000000 char_to_int
+    {standard input}:357    .text.char_to_int:000000000000006c $d
+    {standard input}:368    .text.int_to_char_arr:0000000000000000 $t
+    {standard input}:375    .text.int_to_char_arr:0000000000000000 int_to_char_arr
+    {standard input}:424    .text.long_delay:0000000000000000 $t
+    {standard input}:431    .text.long_delay:0000000000000000 long_delay
+    {standard input}:484    .text.print_int_array_serial:0000000000000000 $t
+    {standard input}:491    .text.print_int_array_serial:0000000000000000 print_int_array_serial
+    {standard input}:598    .text.print_int_array_serial:0000000000000040 $d
+    {standard input}:609    .text.embed_toeplitz_on_circulant:0000000000000000 $t
+    {standard input}:616    .text.embed_toeplitz_on_circulant:0000000000000000 embed_toeplitz_on_circulant
+    {standard input}:745    .text.embed_toeplitz_on_circulant:000000000000006c $d
+    {standard input}:752    .text.pad_key:0000000000000000 $t
+    {standard input}:759    .text.pad_key:0000000000000000 pad_key
+    {standard input}:873    .text.pad_key:0000000000000054 $d
+    {standard input}:881    .text.conj_array:0000000000000000 $t
+    {standard input}:888    .text.conj_array:0000000000000000 conj_array
+    {standard input}:933    .text.reverse_bit:0000000000000000 $t
+    {standard input}:940    .text.reverse_bit:0000000000000000 reverse_bit
+    {standard input}:1010   .text.reverse_array:0000000000000000 $t
+    {standard input}:1017   .text.reverse_array:0000000000000000 reverse_array
+    {standard input}:1112   .text.reverse_array:000000000000004c $d
+    {standard input}:1123   .text.DIT_FFT:0000000000000000 $t
+    {standard input}:1130   .text.DIT_FFT:0000000000000000 DIT_FFT
+    {standard input}:1731   .text.DIT_FFT:0000000000000250 $d
+    {standard input}:1763   .text.DIT_IFFT:0000000000000000 $t
+    {standard input}:1770   .text.DIT_IFFT:0000000000000000 DIT_IFFT
+    {standard input}:1861   .text.DIT_IFFT:0000000000000054 $d
+    {standard input}:1871   .text.Toeplitz_hash_fft_butterfly:0000000000000000 $t
+    {standard input}:1878   .text.Toeplitz_hash_fft_butterfly:0000000000000000 Toeplitz_hash_fft_butterfly
+    {standard input}:2153   .text.Toeplitz_hash_fft_butterfly:0000000000000100 $d
+    {standard input}:2169   .text.decimalToBinary:0000000000000000 $t
+    {standard input}:2176   .text.decimalToBinary:0000000000000000 decimalToBinary
+    {standard input}:2229   .text.binary_char_to_int:0000000000000000 $t
+    {standard input}:2236   .text.binary_char_to_int:0000000000000000 binary_char_to_int
+    {standard input}:2289   .text.take_base_10_input:0000000000000000 $t
+    {standard input}:2296   .text.take_base_10_input:0000000000000000 take_base_10_input
+    {standard input}:2361   .text.take_base_10_input:0000000000000030 $d
+    {standard input}:2370   .text.take_base_2_input:0000000000000000 $t
+    {standard input}:2377   .text.take_base_2_input:0000000000000000 take_base_2_input
+    {standard input}:2445   .text.take_base_2_input:0000000000000034 $d
+    {standard input}:2465   .text.Toeplitz_setup:0000000000000000 $t
+    {standard input}:2472   .text.Toeplitz_setup:0000000000000000 Toeplitz_setup
+    {standard input}:2601   .text.Toeplitz_setup:0000000000000050 $d
+    {standard input}:2617   .text.startup.main:0000000000000000 $t
+    {standard input}:2624   .text.startup.main:0000000000000000 main
+    {standard input}:2772   .text.startup.main:0000000000000070 $d
+    {standard input}:2804   .bss.pt:0000000000000000 pt
+    {standard input}:2794   .bss.asciibuf:0000000000000000 asciibuf
+    {standard input}:2809   .bss.tmp:0000000000000000 tmp
+    {standard input}:2799   .bss.memory:0000000000000000 memory
+    {standard input}:2795   .bss.asciibuf:0000000000000000 $d
+    {standard input}:2800   .bss.memory:0000000000000000 $d
+    {standard input}:2805   .bss.pt:0000000000000000 $d
+    {standard input}:2810   .bss.tmp:0000000000000000 $d
+                           .group:0000000000000000 wm4.0.0ec9be273080d86c743d99e5316a201d
+                           .group:0000000000000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:0000000000000000 wm4.hal.h.27.7074d56fee637e30bfe28f5452443c14
+                           .group:0000000000000000 wm4.ieeefp.h.77.f33a4dce62116f6f5175ff8bae57a54c
+                           .group:0000000000000000 wm4._newlib_version.h.4.1ef4e12f167f8b69d7c30054be56050d
+                           .group:0000000000000000 wm4.newlib.h.21.1ae2897bc09bbe4bc80ffb801fb02432
+                           .group:0000000000000000 wm4.features.h.22.026edb2397769f4ae13f35900dbdb560
+                           .group:0000000000000000 wm4.config.h.224.c701144a7b0518c6ee9b9b5465b79f81
+                           .group:0000000000000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:0000000000000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:0000000000000000 wm4.stddef.h.181.13772e73e5434e8cc4fafaaddad2b5da
+                           .group:0000000000000000 wm4.stddef.h.39.1bfffcccc3897d82880a055878218da6
+                           .group:0000000000000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:0000000000000000 wm4.stddef.h.155.3588ebfdd1e8c7ede80509bb9c3b8009
+                           .group:0000000000000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:0000000000000000 wm4._types.h.127.34941de1b2539d59d5cac00e0dd27a45
+                           .group:0000000000000000 wm4.reent.h.17.e292bf8b0bec6c96e131a54347145a30
+                           .group:0000000000000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:0000000000000000 wm4.reent.h.77.dcd6129ff07fe81bd5636db29abe53b2
+                           .group:0000000000000000 wm4.cdefs.h.49.3d0fe8ea14e93bda8c589d4f684b21b8
+                           .group:0000000000000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:0000000000000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:0000000000000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:0000000000000000 wm4.stddef.h.155.ba788add86a0e365f264484f110c3c29
+                           .group:0000000000000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:0000000000000000 wm4.types.h.40.8b6acba56cefbb11746718204edc8f5e
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:0000000000000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:0000000000000000 wm4._timeval.h.32.bec3221fa7a9bb0bdde696c9c57e47d2
+                           .group:0000000000000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:0000000000000000 wm4.select.h.19.97ca6fd0c752a0f3b6719fd314d361e6
+                           .group:0000000000000000 wm4.types.h.51.5571ec98f267d17d3c670b7a3ba33afa
+                           .group:0000000000000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:0000000000000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:0000000000000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:0000000000000000 wm4.stdio.h.81.932d0c162786b883f622b8d05c120c78
+                           .group:0000000000000000 wm4.math.h.13.97100c05caf9f40dd9f5a3cda48ccc01
+                           .group:0000000000000000 wm4.complex.h.9.e398adf3f8fc1220141cdf5a13c2daaf
+                           .group:0000000000000000 wm4.time.h.8.db4619001f026d0b4874c029fef0e91f
+                           .group:0000000000000000 wm4.time.h.2.4581ce0ffb6627cfc02162c94bf846c9
+                           .group:0000000000000000 wm4.time.h.25.0e6a0fdbc9955f5707ed54246ed2e089
+                           .group:0000000000000000 wm4.time.h.162.85256a1e684b58f061361067da714e0e
+
+UNDEFINED SYMBOLS
+putch
+getch
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_dadd
+__aeabi_d2iz
+pow
+sprintf
+__aeabi_i2f
+__aeabi_fadd
+memset
+__aeabi_ddiv
+__aeabi_d2f
+__aeabi_fsub
+__aeabi_dsub
+__aeabi_dcmple
+log
+round
+cexp
+__mulsc3
+trigger_high
+trigger_low
+__aeabi_fdiv
+__aeabi_f2d
+malloc
+free
+platform_init
+init_uart
+trigger_setup

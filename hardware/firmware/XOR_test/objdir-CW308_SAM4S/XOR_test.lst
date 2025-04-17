@@ -1,0 +1,1450 @@
+   1              	 .cpu cortex-m4
+   2              	 .eabi_attribute 20,1
+   3              	 .eabi_attribute 21,1
+   4              	 .eabi_attribute 23,3
+   5              	 .eabi_attribute 24,1
+   6              	 .eabi_attribute 25,1
+   7              	 .eabi_attribute 26,1
+   8              	 .eabi_attribute 30,4
+   9              	 .eabi_attribute 34,1
+  10              	 .eabi_attribute 18,4
+  11              	 .file "XOR_test.c"
+  12              	 .text
+  13              	.Ltext0:
+  14              	 .cfi_sections .debug_frame
+  15              	 .section .text.led_ok,"ax",%progbits
+  16              	 .align 1
+  17              	 .weak led_ok
+  18              	 .arch armv7e-m
+  19              	 .syntax unified
+  20              	 .thumb
+  21              	 .thumb_func
+  22              	 .fpu softvfp
+  24              	led_ok:
+  25              	.LVL0:
+  26              	.LFB0:
+  27              	 .file 1 ".././hal/hal.h"
+   1:.././hal/hal.h **** /*
+   2:.././hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:.././hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:.././hal/hal.h **** 
+   5:.././hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:.././hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:.././hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:.././hal/hal.h ****     (at your option) any later version.
+   9:.././hal/hal.h **** 
+  10:.././hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:.././hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:.././hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:.././hal/hal.h ****     GNU General Public License for more details.
+  14:.././hal/hal.h **** 
+  15:.././hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:.././hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:.././hal/hal.h **** */
+  18:.././hal/hal.h **** 
+  19:.././hal/hal.h **** #ifndef HAL_H_
+  20:.././hal/hal.h **** #define HAL_H_
+  21:.././hal/hal.h **** 
+  22:.././hal/hal.h **** #include <stdint.h>
+  23:.././hal/hal.h **** 
+  24:.././hal/hal.h **** void platform_init(void);
+  25:.././hal/hal.h **** 
+  26:.././hal/hal.h **** //PLATFORM Define Types
+  27:.././hal/hal.h **** #define CW301_AVR      1
+  28:.././hal/hal.h **** #define CW301_XMEGA    2
+  29:.././hal/hal.h **** #define CW303          3
+  30:.././hal/hal.h **** #define CW304          4
+  31:.././hal/hal.h **** #define CW308_MEGARF   8
+  32:.././hal/hal.h **** #define CW308_PIC24FJ  10
+  33:.././hal/hal.h **** #define CW308_SAM4L    11
+  34:.././hal/hal.h **** #define CW308_SI4010   12
+  35:.././hal/hal.h **** #define CW308_MPC5748G 13
+  36:.././hal/hal.h **** #define CW308_STM32F0  14
+  37:.././hal/hal.h **** #define CW308_STM32F1  15
+  38:.././hal/hal.h **** #define CW308_STM32F2  16
+  39:.././hal/hal.h **** #define CW308_STM32F3  17
+  40:.././hal/hal.h **** #define CW308_STM32F4  18
+  41:.././hal/hal.h **** #define CW308_CC2538   19
+  42:.././hal/hal.h **** #define CW308_K24F     20
+  43:.././hal/hal.h **** #define CW308_NRF52840 21
+  44:.././hal/hal.h **** #define CW308_AURIX    22
+  45:.././hal/hal.h **** #define CW308_SAML11   23
+  46:.././hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:.././hal/hal.h **** #define CW308_K82F     25
+  48:.././hal/hal.h **** #define CW308_LPC55S6X 26
+  49:.././hal/hal.h **** #define CW308_PSOC62   27
+  50:.././hal/hal.h **** #define CW308_IMXRT1062 28
+  51:.././hal/hal.h **** #define CW308_FE310    29
+  52:.././hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:.././hal/hal.h **** #define CW308_EFM32GG11  31
+  54:.././hal/hal.h **** #define CW308_STM32L5  32
+  55:.././hal/hal.h **** #define CW308_STM32L4  33
+  56:.././hal/hal.h **** #define CW308_RX65N  34
+  57:.././hal/hal.h **** #define CW308_MPC5676R 35
+  58:.././hal/hal.h **** #define CW308_NEORV32  36
+  59:.././hal/hal.h **** #define CW305_IBEX  37
+  60:.././hal/hal.h **** 
+  61:.././hal/hal.h **** //HAL_TYPE Define Types
+  62:.././hal/hal.h **** #define HAL_avr      1
+  63:.././hal/hal.h **** #define HAL_xmega    2
+  64:.././hal/hal.h **** #define HAL_pic24f   3
+  65:.././hal/hal.h **** #define HAL_sam4l    4
+  66:.././hal/hal.h **** #define HAL_stm32f0  5
+  67:.././hal/hal.h **** #define HAL_stm32f1  6
+  68:.././hal/hal.h **** #define HAL_stm32f2  7
+  69:.././hal/hal.h **** #define HAL_stm32f3  8
+  70:.././hal/hal.h **** #define HAL_stm32f4  9
+  71:.././hal/hal.h **** #define HAL_cc2538   10
+  72:.././hal/hal.h **** #define HAL_k24f     11
+  73:.././hal/hal.h **** #define HAL_nrf52840 12
+  74:.././hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:.././hal/hal.h **** #define HAL_aurix    14
+  76:.././hal/hal.h **** #define HAL_saml11   15
+  77:.././hal/hal.h **** #define HAL_efm32tg11b 16
+  78:.././hal/hal.h **** #define HAL_k82f     17
+  79:.././hal/hal.h **** #define HAL_lpc55s6x 18
+  80:.././hal/hal.h **** #define HAL_psoc62   19
+  81:.././hal/hal.h **** #define HAL_imxrt1062 20
+  82:.././hal/hal.h **** #define HAL_fe310    21
+  83:.././hal/hal.h **** #define HAL_efr32mg21a 22
+  84:.././hal/hal.h **** #define HAL_efm32gg11 23
+  85:.././hal/hal.h **** #define HAL_stm32l5 24
+  86:.././hal/hal.h **** #define HAL_stm32l4 25
+  87:.././hal/hal.h **** #define HAL_rx65n 26
+  88:.././hal/hal.h **** #define HAL_mpc5676r 27
+  89:.././hal/hal.h **** #define HAL_neorv32  28
+  90:.././hal/hal.h **** #define HAL_sam4s  29
+  91:.././hal/hal.h **** #define HAL_ibex  30
+  92:.././hal/hal.h **** 
+  93:.././hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:.././hal/hal.h ****     #include <avr/io.h>
+  95:.././hal/hal.h ****     #include <util/delay.h>
+  96:.././hal/hal.h ****     #include "avr/avr_hal.h"
+  97:.././hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:.././hal/hal.h ****     #include <avr/io.h>
+  99:.././hal/hal.h ****     #include <util/delay.h>
+ 100:.././hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:.././hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:.././hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:.././hal/hal.h ****     #include <xc.h>
+ 104:.././hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:.././hal/hal.h ****     #include "pic24f/uart.h"
+ 106:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:.././hal/hal.h ****     #include "sam4l/sam4l_hal.h"
+ 108:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:.././hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:.././hal/hal.h **** 	#include "stm32f1/stm32f1_hal.h"
+ 112:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:.././hal/hal.h **** 	#include "stm32f2/stm32f2_hal.h"
+ 114:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:.././hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:.././hal/hal.h **** 	#ifdef SECCAN
+ 117:.././hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:.././hal/hal.h **** 	#endif
+ 119:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:.././hal/hal.h **** 	#include "stm32f4/stm32f4_hal.h"
+ 121:.././hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:.././hal/hal.h **** 	#include "cc2538/cc2538_hal.h"
+ 123:.././hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:.././hal/hal.h ****     #include "k24f/k24f_hal.h"
+ 125:.././hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:.././hal/hal.h **** #include "k82f/k82f_hal.h"
+ 127:.././hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:.././hal/hal.h ****     #include "nrf52840/nrf52840_hal.h"   
+ 129:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:.././hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:.././hal/hal.h ****     void led_error(unsigned int status);
+ 132:.././hal/hal.h ****     void led_ok(unsigned int status);
+ 133:.././hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:.././hal/hal.h ****     #include "aurix/aurix_hal.h"
+ 135:.././hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:.././hal/hal.h ****      #include "saml11/saml11_hal.h"
+ 137:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:.././hal/hal.h ****      #include "efm32tg11b/efm32tg11b_hal.h"
+ 139:.././hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:.././hal/hal.h ****      #include "lpc55s6x/lpc55s6x_hal.h"
+ 141:.././hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:.././hal/hal.h ****     #include "psoc62/psoc62_hal.h"
+ 143:.././hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:.././hal/hal.h ****     #include "imxrt1062/imxrt1062_hal.h"
+ 145:.././hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:.././hal/hal.h ****     #include "fe310/fe310_hal.h"
+ 147:.././hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:.././hal/hal.h ****     #include "efr32mg21a/efr32mg21a_hal.h"
+ 149:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:.././hal/hal.h ****     #include "efm32gg11/efm32gg11_hal.h"
+ 151:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:.././hal/hal.h ****     #include "stm32l5/stm32l5_hal.h"
+ 153:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:.././hal/hal.h ****     #include "stm32l4/stm32l4_hal.h"
+ 155:.././hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:.././hal/hal.h ****     #include "rx65n/rx65n_hal.h"
+ 157:.././hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:.././hal/hal.h ****     #include "mpc5676r/MPC5676R_hal.h"
+ 159:.././hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:.././hal/hal.h ****     #include "neorv32/neorv32_hal.h"
+ 161:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:.././hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:.././hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:.././hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:.././hal/hal.h **** #else
+ 166:.././hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:.././hal/hal.h **** #endif
+ 168:.././hal/hal.h **** 
+ 169:.././hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:.././hal/hal.h ****     #undef trigger_setup
+ 171:.././hal/hal.h ****     #undef trigger_high
+ 172:.././hal/hal.h ****     #undef trigger_low
+ 173:.././hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:.././hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:.././hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:.././hal/hal.h ****     
+ 177:.././hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:.././hal/hal.h **** 
+ 179:.././hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:.././hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:.././hal/hal.h ****                                   }
+ 182:.././hal/hal.h **** 
+ 183:.././hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:.././hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:.././hal/hal.h ****                                 } \
+ 186:.././hal/hal.h ****                                   \
+ 187:.././hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:.././hal/hal.h ****                                   \
+ 189:.././hal/hal.h ****                                 /*Wait for done  */ \
+ 190:.././hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:.././hal/hal.h ****                                     ; \
+ 192:.././hal/hal.h ****                                 } \
+ 193:.././hal/hal.h ****                                   \
+ 194:.././hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:.././hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:.././hal/hal.h ****                                 }
+ 197:.././hal/hal.h ****     
+ 198:.././hal/hal.h **** #endif
+ 199:.././hal/hal.h **** 
+ 200:.././hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+ 201:.././hal/hal.h **** {
+  28              	 .loc 1 201 1 view-0
+  29              	 .cfi_startproc
+  30              	 
+  31              	 
+  32              	 
+ 202:.././hal/hal.h **** }
+  33              	 .loc 1 202 1 view .LVU1
+  34 0000 7047     	 bx lr
+  35              	 .cfi_endproc
+  36              	.LFE0:
+  38              	 .section .text.led_error,"ax",%progbits
+  39              	 .align 1
+  40              	 .weak led_error
+  41              	 .syntax unified
+  42              	 .thumb
+  43              	 .thumb_func
+  44              	 .fpu softvfp
+  46              	led_error:
+  47              	.LFB14:
+  48              	 .cfi_startproc
+  49              	 
+  50              	 
+  51              	 
+  52 0000 7047     	 bx lr
+  53              	 .cfi_endproc
+  54              	.LFE14:
+  56              	 .section .text.my_puts,"ax",%progbits
+  57              	 .align 1
+  58              	 .global my_puts
+  59              	 .syntax unified
+  60              	 .thumb
+  61              	 .thumb_func
+  62              	 .fpu softvfp
+  64              	my_puts:
+  65              	.LVL1:
+  66              	.LFB5:
+  67              	 .file 2 "XOR_test.c"
+   1:XOR_test.c    **** #include "hal.h"
+   2:XOR_test.c    **** #include <stdint.h>
+   3:XOR_test.c    **** #include <stdlib.h>
+   4:XOR_test.c    **** #include <stdio.h>
+   5:XOR_test.c    **** #include <math.h>
+   6:XOR_test.c    **** #include <complex.h>
+   7:XOR_test.c    **** #include <time.h>
+   8:XOR_test.c    **** 
+   9:XOR_test.c    **** #define IDLE 0
+  10:XOR_test.c    **** #define KEY 1
+  11:XOR_test.c    **** #define PLAIN 2
+  12:XOR_test.c    **** #define PI 3.1415926535897932384626433832795  // Value of Pi 
+  13:XOR_test.c    **** #define BUFLEN 64
+  14:XOR_test.c    **** 
+  15:XOR_test.c    **** uint8_t memory[BUFLEN];
+  16:XOR_test.c    **** uint8_t tmp[BUFLEN];
+  17:XOR_test.c    **** char asciibuf[BUFLEN];
+  18:XOR_test.c    **** uint8_t pt[16];
+  19:XOR_test.c    **** 
+  20:XOR_test.c    **** static void delay_2_ms(void);
+  21:XOR_test.c    **** 
+  22:XOR_test.c    **** void my_puts(char *c)
+  23:XOR_test.c    **** {
+  68              	 .loc 2 23 1 view-0
+  69              	 .cfi_startproc
+  70              	 
+  71              	 
+  72              	 .loc 2 23 1 is_stmt 0 view .LVU3
+  73 0000 38B5     	 push {r3,r4,r5,lr}
+  74              	.LCFI0:
+  75              	 .cfi_def_cfa_offset 16
+  76              	 .cfi_offset 3,-16
+  77              	 .cfi_offset 4,-12
+  78              	 .cfi_offset 5,-8
+  79              	 .cfi_offset 14,-4
+  80              	.LBB2:
+  24:XOR_test.c    ****   do {
+  25:XOR_test.c    ****     putch(*c);
+  81              	 .loc 2 25 5 view .LVU4
+  82 0002 044D     	 ldr r5,.L6
+  83              	.LBE2:
+  23:XOR_test.c    ****   do {
+  84              	 .loc 2 23 1 view .LVU5
+  85 0004 0446     	 mov r4,r0
+  86              	.LVL2:
+  87              	.L4:
+  24:XOR_test.c    ****   do {
+  88              	 .loc 2 24 3 is_stmt 1 discriminator 1 view .LVU6
+  89              	.LBB3:
+  90              	 .loc 2 25 5 discriminator 1 view .LVU7
+  91 0006 2078     	 ldrb r0,[r4]
+  92 0008 A847     	 blx r5
+  93              	.LVL3:
+  94              	.LBE3:
+  26:XOR_test.c    **** 
+  27:XOR_test.c    ****   } while (*++c);
+  95              	 .loc 2 27 11 discriminator 1 view .LVU8
+  96              	 .loc 2 27 3 is_stmt 0 discriminator 1 view .LVU9
+  97 000a 14F8013F 	 ldrb r3,[r4,#1]!
+  98              	.LVL4:
+  99              	 .loc 2 27 3 discriminator 1 view .LVU10
+ 100 000e 002B     	 cmp r3,#0
+ 101 0010 F9D1     	 bne .L4
+  28:XOR_test.c    **** }
+ 102              	 .loc 2 28 1 view .LVU11
+ 103 0012 38BD     	 pop {r3,r4,r5,pc}
+ 104              	.LVL5:
+ 105              	.L7:
+ 106              	 .loc 2 28 1 view .LVU12
+ 107              	 .align 2
+ 108              	.L6:
+ 109 0014 00000000 	 .word putch
+ 110              	 .cfi_endproc
+ 111              	.LFE5:
+ 113              	 .section .text.my_read,"ax",%progbits
+ 114              	 .align 1
+ 115              	 .global my_read
+ 116              	 .syntax unified
+ 117              	 .thumb
+ 118              	 .thumb_func
+ 119              	 .fpu softvfp
+ 121              	my_read:
+ 122              	.LVL6:
+ 123              	.LFB7:
+  29:XOR_test.c    **** 
+  30:XOR_test.c    **** static void delay_2_ms()
+  31:XOR_test.c    **** {
+  32:XOR_test.c    ****   for (volatile unsigned int i=0; i < 0xfff; i++ ){
+  33:XOR_test.c    ****     ;
+  34:XOR_test.c    ****   }
+  35:XOR_test.c    **** }
+  36:XOR_test.c    **** 
+  37:XOR_test.c    **** void my_read(char *buf, int len)
+  38:XOR_test.c    **** {
+ 124              	 .loc 2 38 1 is_stmt 1 view-0
+ 125              	 .cfi_startproc
+ 126              	 
+ 127              	 
+  39:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 128              	 .loc 2 39 3 view .LVU14
+ 129              	.LBB4:
+ 130              	 .loc 2 39 7 view .LVU15
+ 131              	 .loc 2 39 7 is_stmt 0 view .LVU16
+ 132              	.LBE4:
+  38:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 133              	 .loc 2 38 1 view .LVU17
+ 134 0000 2DE9F041 	 push {r4,r5,r6,r7,r8,lr}
+ 135              	.LCFI1:
+ 136              	 .cfi_def_cfa_offset 24
+ 137              	 .cfi_offset 4,-24
+ 138              	 .cfi_offset 5,-20
+ 139              	 .cfi_offset 6,-16
+ 140              	 .cfi_offset 7,-12
+ 141              	 .cfi_offset 8,-8
+ 142              	 .cfi_offset 14,-4
+ 143              	.LBB7:
+ 144              	.LBB5:
+  40:XOR_test.c    ****     while (buf[i] = getch(), buf[i] == '\0');
+ 145              	 .loc 2 40 21 view .LVU18
+ 146 0004 DFF83080 	 ldr r8,.L17
+ 147              	.LBE5:
+ 148              	.LBE7:
+  38:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 149              	 .loc 2 38 1 view .LVU19
+ 150 0008 0446     	 mov r4,r0
+ 151 000a 0E46     	 mov r6,r1
+ 152              	.LBB8:
+  39:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 153              	 .loc 2 39 11 view .LVU20
+ 154 000c 0025     	 movs r5,#0
+ 155              	.LVL7:
+ 156              	.L9:
+  39:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 157              	 .loc 2 39 18 is_stmt 1 discriminator 1 view .LVU21
+  39:XOR_test.c    ****   for(int i = 0; i < len; i++) {
+ 158              	 .loc 2 39 3 is_stmt 0 discriminator 1 view .LVU22
+ 159 000e B542     	 cmp r5,r6
+ 160 0010 0DDA     	 bge .L16
+ 161 0012 6719     	 adds r7,r4,r5
+ 162              	.L10:
+ 163              	.LBB6:
+ 164              	 .loc 2 40 45 is_stmt 1 discriminator 1 view .LVU23
+ 165              	 .loc 2 40 11 discriminator 1 view .LVU24
+ 166              	 .loc 2 40 21 is_stmt 0 discriminator 1 view .LVU25
+ 167 0014 C047     	 blx r8
+ 168              	.LVL8:
+ 169              	 .loc 2 40 19 discriminator 1 view .LVU26
+ 170 0016 C0B2     	 uxtb r0,r0
+ 171 0018 6055     	 strb r0,[r4,r5]
+ 172              	 .loc 2 40 11 discriminator 1 view .LVU27
+ 173 001a 0028     	 cmp r0,#0
+ 174 001c FAD0     	 beq .L10
+ 175              	.LBE6:
+  41:XOR_test.c    **** 
+  42:XOR_test.c    ****     if (buf[i] == '\n') {
+ 176              	 .loc 2 42 5 is_stmt 1 view .LVU28
+ 177              	 .loc 2 42 8 is_stmt 0 view .LVU29
+ 178 001e 0A28     	 cmp r0,#10
+ 179 0020 03D1     	 bne .L11
+  43:XOR_test.c    ****       buf[i] = '\0';
+ 180              	 .loc 2 43 7 is_stmt 1 view .LVU30
+ 181              	 .loc 2 43 14 is_stmt 0 view .LVU31
+ 182 0022 0023     	 movs r3,#0
+ 183 0024 3B70     	 strb r3,[r7]
+  44:XOR_test.c    ****       return;
+ 184              	 .loc 2 44 7 is_stmt 1 view .LVU32
+ 185              	.LVL9:
+ 186              	.L8:
+ 187              	 .loc 2 44 7 is_stmt 0 view .LVU33
+ 188              	.LBE8:
+  45:XOR_test.c    ****     }
+  46:XOR_test.c    ****   }
+  47:XOR_test.c    ****   buf[len - 1] = '\0';
+  48:XOR_test.c    **** }
+ 189              	 .loc 2 48 1 view .LVU34
+ 190 0026 BDE8F081 	 pop {r4,r5,r6,r7,r8,pc}
+ 191              	.LVL10:
+ 192              	.L11:
+ 193              	.LBB9:
+  39:XOR_test.c    ****     while (buf[i] = getch(), buf[i] == '\0');
+ 194              	 .loc 2 39 27 is_stmt 1 discriminator 2 view .LVU35
+  39:XOR_test.c    ****     while (buf[i] = getch(), buf[i] == '\0');
+ 195              	 .loc 2 39 28 is_stmt 0 discriminator 2 view .LVU36
+ 196 002a 0135     	 adds r5,r5,#1
+ 197              	.LVL11:
+  39:XOR_test.c    ****     while (buf[i] = getch(), buf[i] == '\0');
+ 198              	 .loc 2 39 28 discriminator 2 view .LVU37
+ 199 002c EFE7     	 b .L9
+ 200              	.L16:
+  39:XOR_test.c    ****     while (buf[i] = getch(), buf[i] == '\0');
+ 201              	 .loc 2 39 28 discriminator 2 view .LVU38
+ 202              	.LBE9:
+  47:XOR_test.c    **** }
+ 203              	 .loc 2 47 3 is_stmt 1 view .LVU39
+  47:XOR_test.c    **** }
+ 204              	 .loc 2 47 16 is_stmt 0 view .LVU40
+ 205 002e 3444     	 add r4,r4,r6
+ 206              	.LVL12:
+  47:XOR_test.c    **** }
+ 207              	 .loc 2 47 16 view .LVU41
+ 208 0030 0023     	 movs r3,#0
+ 209 0032 04F8013C 	 strb r3,[r4,#-1]
+ 210 0036 F6E7     	 b .L8
+ 211              	.L18:
+ 212              	 .align 2
+ 213              	.L17:
+ 214 0038 00000000 	 .word getch
+ 215              	 .cfi_endproc
+ 216              	.LFE7:
+ 218              	 .global __aeabi_i2d
+ 219              	 .global __aeabi_dmul
+ 220              	 .global __aeabi_dadd
+ 221              	 .global __aeabi_d2iz
+ 222              	 .section .text.char_to_int,"ax",%progbits
+ 223              	 .align 1
+ 224              	 .global char_to_int
+ 225              	 .syntax unified
+ 226              	 .thumb
+ 227              	 .thumb_func
+ 228              	 .fpu softvfp
+ 230              	char_to_int:
+ 231              	.LVL13:
+ 232              	.LFB8:
+  49:XOR_test.c    **** 
+  50:XOR_test.c    **** 
+  51:XOR_test.c    **** int char_to_int(char *c_arr, int len){
+ 233              	 .loc 2 51 38 is_stmt 1 view-0
+ 234              	 .cfi_startproc
+ 235              	 
+ 236              	 
+  52:XOR_test.c    ****   int num = 0;
+ 237              	 .loc 2 52 3 view .LVU43
+  53:XOR_test.c    ****   for(int i = 0; i < len; i++){
+ 238              	 .loc 2 53 3 view .LVU44
+ 239              	.LBB10:
+ 240              	 .loc 2 53 7 view .LVU45
+ 241              	 .loc 2 53 7 is_stmt 0 view .LVU46
+ 242              	.LBE10:
+  51:XOR_test.c    ****   int num = 0;
+ 243              	 .loc 2 51 38 view .LVU47
+ 244 0000 2DE9F74F 	 push {r0,r1,r2,r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 245              	.LCFI2:
+ 246              	 .cfi_def_cfa_offset 48
+ 247              	 .cfi_offset 4,-36
+ 248              	 .cfi_offset 5,-32
+ 249              	 .cfi_offset 6,-28
+ 250              	 .cfi_offset 7,-24
+ 251              	 .cfi_offset 8,-20
+ 252              	 .cfi_offset 9,-16
+ 253              	 .cfi_offset 10,-12
+ 254              	 .cfi_offset 11,-8
+ 255              	 .cfi_offset 14,-4
+ 256              	.LBB11:
+ 257              	 .loc 2 53 11 view .LVU48
+ 258 0004 0024     	 movs r4,#0
+  54:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 259              	 .loc 2 54 33 view .LVU49
+ 260 0006 194F     	 ldr r7,.L22
+ 261              	.LBE11:
+  51:XOR_test.c    ****   int num = 0;
+ 262              	 .loc 2 51 38 view .LVU50
+ 263 0008 0646     	 mov r6,r0
+ 264 000a 0D46     	 mov r5,r1
+  52:XOR_test.c    ****   for(int i = 0; i < len; i++){
+ 265              	 .loc 2 52 7 view .LVU51
+ 266 000c A046     	 mov r8,r4
+ 267              	.LVL14:
+ 268              	.L20:
+ 269              	.LBB12:
+  53:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 270              	 .loc 2 53 18 is_stmt 1 discriminator 1 view .LVU52
+  53:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 271              	 .loc 2 53 3 is_stmt 0 discriminator 1 view .LVU53
+ 272 000e AC42     	 cmp r4,r5
+ 273 0010 03DB     	 blt .L21
+ 274              	.LBE12:
+  55:XOR_test.c    ****   }
+  56:XOR_test.c    ****   return num;
+ 275              	 .loc 2 56 3 is_stmt 1 view .LVU54
+  57:XOR_test.c    **** }
+ 276              	 .loc 2 57 1 is_stmt 0 view .LVU55
+ 277 0012 4046     	 mov r0,r8
+ 278 0014 03B0     	 add sp,sp,#12
+ 279              	.LCFI3:
+ 280              	 .cfi_remember_state
+ 281              	 .cfi_def_cfa_offset 36
+ 282              	 
+ 283 0016 BDE8F08F 	 pop {r4,r5,r6,r7,r8,r9,r10,fp,pc}
+ 284              	.LVL15:
+ 285              	.L21:
+ 286              	.LCFI4:
+ 287              	 .cfi_restore_state
+ 288              	.LBB13:
+  54:XOR_test.c    ****   }
+ 289              	 .loc 2 54 5 is_stmt 1 discriminator 3 view .LVU56
+  54:XOR_test.c    ****   }
+ 290              	 .loc 2 54 23 is_stmt 0 discriminator 3 view .LVU57
+ 291 001a 305D     	 ldrb r0,[r6,r4]
+  54:XOR_test.c    ****   }
+ 292              	 .loc 2 54 33 discriminator 3 view .LVU58
+ 293 001c 3038     	 subs r0,r0,#48
+ 294 001e B847     	 blx r7
+ 295              	.LVL16:
+ 296 0020 8246     	 mov r10,r0
+  54:XOR_test.c    ****   }
+ 297              	 .loc 2 54 34 discriminator 3 view .LVU59
+ 298 0022 2046     	 mov r0,r4
+  54:XOR_test.c    ****   }
+ 299              	 .loc 2 54 33 discriminator 3 view .LVU60
+ 300 0024 8B46     	 mov fp,r1
+  54:XOR_test.c    ****   }
+ 301              	 .loc 2 54 34 discriminator 3 view .LVU61
+ 302 0026 B847     	 blx r7
+ 303              	.LVL17:
+ 304 0028 DFF844C0 	 ldr ip,.L22+4
+ 305 002c 0246     	 mov r2,r0
+ 306 002e 0B46     	 mov r3,r1
+ 307 0030 0020     	 movs r0,#0
+ 308 0032 1049     	 ldr r1,.L22+8
+ 309 0034 E047     	 blx ip
+ 310              	.LVL18:
+ 311 0036 0246     	 mov r2,r0
+ 312 0038 0B46     	 mov r3,r1
+  54:XOR_test.c    ****   }
+ 313              	 .loc 2 54 15 discriminator 3 view .LVU62
+ 314 003a 4046     	 mov r0,r8
+  54:XOR_test.c    ****   }
+ 315              	 .loc 2 54 34 discriminator 3 view .LVU63
+ 316 003c CDE90023 	 strd r2,[sp]
+  54:XOR_test.c    ****   }
+ 317              	 .loc 2 54 15 discriminator 3 view .LVU64
+ 318 0040 B847     	 blx r7
+ 319              	.LVL19:
+  54:XOR_test.c    ****   }
+ 320              	 .loc 2 54 33 discriminator 3 view .LVU65
+ 321 0042 DDE90023 	 ldrd r2,[sp]
+  54:XOR_test.c    ****   }
+ 322              	 .loc 2 54 15 discriminator 3 view .LVU66
+ 323 0046 8046     	 mov r8,r0
+ 324              	.LVL20:
+  54:XOR_test.c    ****   }
+ 325              	 .loc 2 54 15 discriminator 3 view .LVU67
+ 326 0048 8946     	 mov r9,r1
+  54:XOR_test.c    ****   }
+ 327              	 .loc 2 54 33 discriminator 3 view .LVU68
+ 328 004a 5046     	 mov r0,r10
+ 329 004c 5946     	 mov r1,fp
+ 330 004e DFF828B0 	 ldr fp,.L22+12
+ 331 0052 D847     	 blx fp
+ 332              	.LVL21:
+ 333 0054 0246     	 mov r2,r0
+ 334 0056 0B46     	 mov r3,r1
+  54:XOR_test.c    ****   }
+ 335              	 .loc 2 54 15 discriminator 3 view .LVU69
+ 336 0058 4046     	 mov r0,r8
+ 337 005a 4946     	 mov r1,r9
+ 338 005c DFF81C80 	 ldr r8,.L22+16
+ 339 0060 C047     	 blx r8
+ 340              	.LVL22:
+  54:XOR_test.c    ****   }
+ 341              	 .loc 2 54 9 discriminator 3 view .LVU70
+ 342 0062 074B     	 ldr r3,.L22+20
+ 343 0064 9847     	 blx r3
+ 344              	.LVL23:
+  53:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 345              	 .loc 2 53 28 discriminator 3 view .LVU71
+ 346 0066 0134     	 adds r4,r4,#1
+ 347              	.LVL24:
+  54:XOR_test.c    ****   }
+ 348              	 .loc 2 54 9 discriminator 3 view .LVU72
+ 349 0068 8046     	 mov r8,r0
+ 350              	.LVL25:
+  53:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 351              	 .loc 2 53 27 is_stmt 1 discriminator 3 view .LVU73
+  53:XOR_test.c    ****     num = num + (c_arr[i] - '0')*pow(10,i);
+ 352              	 .loc 2 53 27 is_stmt 0 discriminator 3 view .LVU74
+ 353 006a D0E7     	 b .L20
+ 354              	.L23:
+ 355              	 .align 2
+ 356              	.L22:
+ 357 006c 00000000 	 .word __aeabi_i2d
+ 358 0070 00000000 	 .word pow
+ 359 0074 00002440 	 .word 1076101120
+ 360 0078 00000000 	 .word __aeabi_dmul
+ 361 007c 00000000 	 .word __aeabi_dadd
+ 362 0080 00000000 	 .word __aeabi_d2iz
+ 363              	.LBE13:
+ 364              	 .cfi_endproc
+ 365              	.LFE8:
+ 367              	 .section .text.int_to_char_arr,"ax",%progbits
+ 368              	 .align 1
+ 369              	 .global int_to_char_arr
+ 370              	 .syntax unified
+ 371              	 .thumb
+ 372              	 .thumb_func
+ 373              	 .fpu softvfp
+ 375              	int_to_char_arr:
+ 376              	.LVL26:
+ 377              	.LFB9:
+  58:XOR_test.c    **** 
+  59:XOR_test.c    **** void int_to_char_arr(int *i_arr, char *c_arr, int len){
+ 378              	 .loc 2 59 55 is_stmt 1 view-0
+ 379              	 .cfi_startproc
+ 380              	 
+ 381              	 
+  60:XOR_test.c    ****   for(int i = 0; i < len; i++){
+ 382              	 .loc 2 60 3 view .LVU76
+ 383              	.LBB14:
+ 384              	 .loc 2 60 7 view .LVU77
+ 385              	 .loc 2 60 7 is_stmt 0 view .LVU78
+ 386              	.LBE14:
+  59:XOR_test.c    ****   for(int i = 0; i < len; i++){
+ 387              	 .loc 2 59 55 view .LVU79
+ 388 0000 10B5     	 push {r4,lr}
+ 389              	.LCFI5:
+ 390              	 .cfi_def_cfa_offset 8
+ 391              	 .cfi_offset 4,-8
+ 392              	 .cfi_offset 14,-4
+ 393              	.LBB15:
+ 394              	 .loc 2 60 11 view .LVU80
+ 395 0002 0023     	 movs r3,#0
+ 396              	.LVL27:
+ 397              	.L25:
+ 398              	 .loc 2 60 18 is_stmt 1 discriminator 1 view .LVU81
+ 399              	 .loc 2 60 3 is_stmt 0 discriminator 1 view .LVU82
+ 400 0004 9342     	 cmp r3,r2
+ 401 0006 00DB     	 blt .L26
+ 402              	.LBE15:
+  61:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+  62:XOR_test.c    ****   }
+  63:XOR_test.c    **** }
+ 403              	 .loc 2 63 1 view .LVU83
+ 404 0008 10BD     	 pop {r4,pc}
+ 405              	.L26:
+ 406              	.LBB16:
+  61:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 407              	 .loc 2 61 5 is_stmt 1 discriminator 3 view .LVU84
+  61:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 408              	 .loc 2 61 25 is_stmt 0 discriminator 3 view .LVU85
+ 409 000a 50F82340 	 ldr r4,[r0,r3,lsl#2]
+ 410 000e 3034     	 adds r4,r4,#48
+  61:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 411              	 .loc 2 61 14 discriminator 3 view .LVU86
+ 412 0010 CC54     	 strb r4,[r1,r3]
+  60:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 413              	 .loc 2 60 27 is_stmt 1 discriminator 3 view .LVU87
+  60:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 414              	 .loc 2 60 28 is_stmt 0 discriminator 3 view .LVU88
+ 415 0012 0133     	 adds r3,r3,#1
+ 416              	.LVL28:
+  60:XOR_test.c    ****     c_arr[i] = i_arr[i] + '0';
+ 417              	 .loc 2 60 28 discriminator 3 view .LVU89
+ 418 0014 F6E7     	 b .L25
+ 419              	.LBE16:
+ 420              	 .cfi_endproc
+ 421              	.LFE9:
+ 423              	 .section .text.long_delay,"ax",%progbits
+ 424              	 .align 1
+ 425              	 .global long_delay
+ 426              	 .syntax unified
+ 427              	 .thumb
+ 428              	 .thumb_func
+ 429              	 .fpu softvfp
+ 431              	long_delay:
+ 432              	.LFB10:
+  64:XOR_test.c    **** 
+  65:XOR_test.c    **** void long_delay(){
+ 433              	 .loc 2 65 18 is_stmt 1 view-0
+ 434              	 .cfi_startproc
+ 435              	 
+ 436              	 
+ 437              	 
+  66:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 438              	 .loc 2 66 3 view .LVU91
+ 439              	.LBB17:
+ 440              	 .loc 2 66 7 view .LVU92
+ 441              	.LVL29:
+ 442              	 .loc 2 66 18 view .LVU93
+ 443              	.LBE17:
+  65:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 444              	 .loc 2 65 18 is_stmt 0 view .LVU94
+ 445 0000 4FF47A73 	 mov r3,#1000
+ 446              	.LVL30:
+ 447              	.L28:
+ 448              	.LBB18:
+  67:XOR_test.c    ****     asm volatile(
+ 449              	 .loc 2 67 5 is_stmt 1 discriminator 3 view .LVU95
+ 450              	 .syntax unified
+ 451              	
+ 452 0004 00BF     	 nop
+ 453 0006 00BF     	 nop
+ 454 0008 00BF     	 nop
+ 455 000a 00BF     	 nop
+ 456 000c 00BF     	 nop
+ 457 000e 00BF     	 nop
+ 458 0010 00BF     	 nop
+ 459 0012 00BF     	 nop
+ 460 0014 00BF     	 nop
+ 461 0016 00BF     	 nop
+ 462              	 
+ 463              	
+  66:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 464              	 .loc 2 66 28 discriminator 3 view .LVU96
+ 465              	.LVL31:
+  66:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 466              	 .loc 2 66 18 discriminator 3 view .LVU97
+  66:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 467              	 .loc 2 66 3 is_stmt 0 discriminator 3 view .LVU98
+ 468              	 .thumb
+ 469              	 .syntax unified
+ 470 0018 013B     	 subs r3,r3,#1
+ 471              	.LVL32:
+  66:XOR_test.c    ****   for(int i = 0; i < 1000; i++){
+ 472              	 .loc 2 66 3 discriminator 3 view .LVU99
+ 473 001a F3D1     	 bne .L28
+ 474              	.LBE18:
+  68:XOR_test.c    ****     "nop"       "\n\t"
+  69:XOR_test.c    ****     "nop"       "\n\t"
+  70:XOR_test.c    ****     "nop"       "\n\t"
+  71:XOR_test.c    ****     "nop"       "\n\t"
+  72:XOR_test.c    ****     "nop"       "\n\t"
+  73:XOR_test.c    ****     "nop"       "\n\t"
+  74:XOR_test.c    ****     "nop"       "\n\t"
+  75:XOR_test.c    ****     "nop"       "\n\t"
+  76:XOR_test.c    ****     "nop"       "\n\t"
+  77:XOR_test.c    ****     "nop"       "\n\t"
+  78:XOR_test.c    ****     ::
+  79:XOR_test.c    ****     );
+  80:XOR_test.c    ****   }
+  81:XOR_test.c    **** }
+ 475              	 .loc 2 81 1 view .LVU100
+ 476 001c 7047     	 bx lr
+ 477              	 .cfi_endproc
+ 478              	.LFE10:
+ 480              	 .section .rodata.print_int_array_serial.str1.1,"aMS",%progbits,1
+ 481              	.LC0:
+ 482 0000 25642000 	 .ascii "%d \000"
+ 483              	 .section .text.print_int_array_serial,"ax",%progbits
+ 484              	 .align 1
+ 485              	 .global print_int_array_serial
+ 486              	 .syntax unified
+ 487              	 .thumb
+ 488              	 .thumb_func
+ 489              	 .fpu softvfp
+ 491              	print_int_array_serial:
+ 492              	.LVL33:
+ 493              	.LFB11:
+  82:XOR_test.c    **** 
+  83:XOR_test.c    **** 
+  84:XOR_test.c    **** void print_int_array_serial(const int *arr, int len) {
+ 494              	 .loc 2 84 54 is_stmt 1 view-0
+ 495              	 .cfi_startproc
+ 496              	 
+ 497              	 
+  85:XOR_test.c    ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 498              	 .loc 2 85 5 view .LVU102
+  86:XOR_test.c    ****     for (int i = 0; i < len; i++) {
+ 499              	 .loc 2 86 5 view .LVU103
+ 500              	.LBB19:
+ 501              	 .loc 2 86 10 view .LVU104
+ 502              	 .loc 2 86 10 is_stmt 0 view .LVU105
+ 503              	.LBE19:
+  84:XOR_test.c    ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 504              	 .loc 2 84 54 view .LVU106
+ 505 0000 2DE9F043 	 push {r4,r5,r6,r7,r8,r9,lr}
+ 506              	.LCFI6:
+ 507              	 .cfi_def_cfa_offset 28
+ 508              	 .cfi_offset 4,-28
+ 509              	 .cfi_offset 5,-24
+ 510              	 .cfi_offset 6,-20
+ 511              	 .cfi_offset 7,-16
+ 512              	 .cfi_offset 8,-12
+ 513              	 .cfi_offset 9,-8
+ 514              	 .cfi_offset 14,-4
+ 515              	.LBB25:
+  87:XOR_test.c    ****         // Convert integer to string
+  88:XOR_test.c    ****         sprintf(buffer, "%d ", arr[i]);
+ 516              	 .loc 2 88 9 view .LVU107
+ 517 0004 DFF83880 	 ldr r8,.L35
+ 518              	.LBB20:
+ 519              	.LBB21:
+  89:XOR_test.c    ****         
+  90:XOR_test.c    ****         // Send the string over serial
+  91:XOR_test.c    ****         for (char *ptr = buffer; *ptr != '\0'; ptr++) {
+  92:XOR_test.c    ****             putch(*ptr); // Send each character
+ 520              	 .loc 2 92 13 view .LVU108
+ 521 0008 DFF83890 	 ldr r9,.L35+4
+ 522              	.LBE21:
+ 523              	.LBE20:
+ 524              	.LBE25:
+  84:XOR_test.c    ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 525              	 .loc 2 84 54 view .LVU109
+ 526 000c 85B0     	 sub sp,sp,#20
+ 527              	.LCFI7:
+ 528              	 .cfi_def_cfa_offset 48
+  84:XOR_test.c    ****     char buffer[16]; // Temporary buffer to hold string representations of integers
+ 529              	 .loc 2 84 54 view .LVU110
+ 530 000e 0746     	 mov r7,r0
+ 531 0010 0E46     	 mov r6,r1
+ 532              	.LBB26:
+  86:XOR_test.c    ****         // Convert integer to string
+ 533              	 .loc 2 86 14 view .LVU111
+ 534 0012 0025     	 movs r5,#0
+ 535              	.LVL34:
+ 536              	.L31:
+  86:XOR_test.c    ****         // Convert integer to string
+ 537              	 .loc 2 86 21 is_stmt 1 discriminator 1 view .LVU112
+  86:XOR_test.c    ****         // Convert integer to string
+ 538              	 .loc 2 86 5 is_stmt 0 discriminator 1 view .LVU113
+ 539 0014 B542     	 cmp r5,r6
+ 540 0016 05DB     	 blt .L34
+ 541              	.LBE26:
+  93:XOR_test.c    ****         }
+  94:XOR_test.c    ****     }
+  95:XOR_test.c    ****     putch('\n'); // Add a newline for better readability
+ 542              	 .loc 2 95 5 is_stmt 1 view .LVU114
+ 543 0018 0A4B     	 ldr r3,.L35+4
+ 544 001a 0A20     	 movs r0,#10
+ 545 001c 9847     	 blx r3
+ 546              	.LVL35:
+  96:XOR_test.c    **** }
+ 547              	 .loc 2 96 1 is_stmt 0 view .LVU115
+ 548 001e 05B0     	 add sp,sp,#20
+ 549              	.LCFI8:
+ 550              	 .cfi_remember_state
+ 551              	 .cfi_def_cfa_offset 28
+ 552              	 
+ 553 0020 BDE8F083 	 pop {r4,r5,r6,r7,r8,r9,pc}
+ 554              	.LVL36:
+ 555              	.L34:
+ 556              	.LCFI9:
+ 557              	 .cfi_restore_state
+ 558              	.LBB27:
+  88:XOR_test.c    ****         
+ 559              	 .loc 2 88 9 is_stmt 1 view .LVU116
+ 560 0024 57F82520 	 ldr r2,[r7,r5,lsl#2]
+ 561 0028 074B     	 ldr r3,.L35+8
+ 562 002a 4146     	 mov r1,r8
+ 563 002c 6846     	 mov r0,sp
+ 564 002e 9847     	 blx r3
+ 565              	.LVL37:
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 566              	 .loc 2 91 9 view .LVU117
+ 567              	.LBB23:
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 568              	 .loc 2 91 14 view .LVU118
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 569              	 .loc 2 91 14 is_stmt 0 view .LVU119
+ 570 0030 6C46     	 mov r4,sp
+ 571              	.LVL38:
+ 572              	.L32:
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 573              	 .loc 2 91 34 is_stmt 1 discriminator 1 view .LVU120
+ 574 0032 14F8010B 	 ldrb r0,[r4],#1
+ 575              	.LVL39:
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 576              	 .loc 2 91 9 is_stmt 0 discriminator 1 view .LVU121
+ 577 0036 08B9     	 cbnz r0,.L33
+ 578              	.LBE23:
+  86:XOR_test.c    ****         // Convert integer to string
+ 579              	 .loc 2 86 30 is_stmt 1 discriminator 2 view .LVU122
+  86:XOR_test.c    ****         // Convert integer to string
+ 580              	 .loc 2 86 31 is_stmt 0 discriminator 2 view .LVU123
+ 581 0038 0135     	 adds r5,r5,#1
+ 582              	.LVL40:
+  86:XOR_test.c    ****         // Convert integer to string
+ 583              	 .loc 2 86 31 discriminator 2 view .LVU124
+ 584 003a EBE7     	 b .L31
+ 585              	.L33:
+ 586              	.LBB24:
+ 587              	.LBB22:
+  92:XOR_test.c    ****         }
+ 588              	 .loc 2 92 13 is_stmt 1 discriminator 3 view .LVU125
+ 589 003c C847     	 blx r9
+ 590              	.LVL41:
+ 591              	.LBE22:
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 592              	 .loc 2 91 48 discriminator 3 view .LVU126
+  91:XOR_test.c    ****             putch(*ptr); // Send each character
+ 593              	 .loc 2 91 48 is_stmt 0 discriminator 3 view .LVU127
+ 594 003e F8E7     	 b .L32
+ 595              	.L36:
+ 596              	 .align 2
+ 597              	.L35:
+ 598 0040 00000000 	 .word .LC0
+ 599 0044 00000000 	 .word putch
+ 600 0048 00000000 	 .word sprintf
+ 601              	.LBE24:
+ 602              	.LBE27:
+ 603              	 .cfi_endproc
+ 604              	.LFE11:
+ 606              	 .section .rodata.main.str1.1,"aMS",%progbits,1
+ 607              	.LC1:
+ 608 0000 53746172 	 .ascii "Start?\000"
+ 608      743F00
+ 609              	.LC2:
+ 610 0007 0A00     	 .ascii "\012\000"
+ 611              	 .section .text.startup.main,"ax",%progbits
+ 612              	 .align 1
+ 613              	 .global main
+ 614              	 .syntax unified
+ 615              	 .thumb
+ 616              	 .thumb_func
+ 617              	 .fpu softvfp
+ 619              	main:
+ 620              	.LFB12:
+  97:XOR_test.c    **** 
+  98:XOR_test.c    **** 
+  99:XOR_test.c    **** ////////////////////////
+ 100:XOR_test.c    **** /// FFT STUFF //////////
+ 101:XOR_test.c    **** 
+ 102:XOR_test.c    **** 
+ 103:XOR_test.c    **** 
+ 104:XOR_test.c    **** 
+ 105:XOR_test.c    **** int main(void)
+ 106:XOR_test.c    **** {
+ 621              	 .loc 2 106 1 is_stmt 1 view-0
+ 622              	 .cfi_startproc
+ 623              	 
+ 624              	 
+ 107:XOR_test.c    ****     platform_init();
+ 625              	 .loc 2 107 5 view .LVU129
+ 106:XOR_test.c    ****     platform_init();
+ 626              	 .loc 2 106 1 is_stmt 0 view .LVU130
+ 627 0000 2DE9FF47 	 push {r0,r1,r2,r3,r4,r5,r6,r7,r8,r9,r10,lr}
+ 628              	.LCFI10:
+ 629              	 .cfi_def_cfa_offset 48
+ 630              	 .cfi_offset 4,-32
+ 631              	 .cfi_offset 5,-28
+ 632              	 .cfi_offset 6,-24
+ 633              	 .cfi_offset 7,-20
+ 634              	 .cfi_offset 8,-16
+ 635              	 .cfi_offset 9,-12
+ 636              	 .cfi_offset 10,-8
+ 637              	 .cfi_offset 14,-4
+ 638              	 .loc 2 107 5 view .LVU131
+ 639 0004 254B     	 ldr r3,.L51
+ 108:XOR_test.c    ****     init_uart();
+ 109:XOR_test.c    ****     trigger_setup();
+ 110:XOR_test.c    **** 
+ 111:XOR_test.c    ****     int count = 0;
+ 112:XOR_test.c    ****     int a = 0;
+ 113:XOR_test.c    ****     int b = 0;
+ 114:XOR_test.c    **** 
+ 115:XOR_test.c    ****     my_puts("Start?");
+ 640              	 .loc 2 115 5 view .LVU132
+ 641 0006 264E     	 ldr r6,.L51+4
+ 642              	.LBB28:
+ 116:XOR_test.c    **** 
+ 117:XOR_test.c    ****     while(1){
+ 118:XOR_test.c    **** 
+ 119:XOR_test.c    ****         if (count%4 == 0){
+ 120:XOR_test.c    ****           a = 0;
+ 121:XOR_test.c    ****           b = 0;
+ 122:XOR_test.c    ****         }
+ 123:XOR_test.c    ****         else if (count%4 == 1){
+ 124:XOR_test.c    ****           a = 0;
+ 125:XOR_test.c    ****           b = 1;
+ 126:XOR_test.c    ****         }
+ 127:XOR_test.c    ****         else if (count%4 == 2){
+ 128:XOR_test.c    ****           a = 1;
+ 129:XOR_test.c    ****           b = 0;
+ 130:XOR_test.c    ****         }
+ 131:XOR_test.c    ****         else if (count%4 == 3){
+ 132:XOR_test.c    ****           a = 1;
+ 133:XOR_test.c    ****           b = 1;
+ 134:XOR_test.c    ****         }
+ 135:XOR_test.c    ****         char c[4];
+ 136:XOR_test.c    ****         char d[4];
+ 137:XOR_test.c    ****         c[0] = a-'0';
+ 138:XOR_test.c    ****         d[0] = b-'0';
+ 139:XOR_test.c    ****         my_puts(c);
+ 140:XOR_test.c    ****         my_puts(d);
+ 141:XOR_test.c    ****         my_puts("\n");
+ 643              	 .loc 2 141 9 view .LVU133
+ 644 0008 DFF89890 	 ldr r9,.L51+8
+ 142:XOR_test.c    **** 
+ 143:XOR_test.c    **** 
+ 144:XOR_test.c    ****         int xor;
+ 145:XOR_test.c    ****         trigger_high();
+ 645              	 .loc 2 145 9 view .LVU134
+ 646 000c DFF89880 	 ldr r8,.L51+12
+ 647              	.LBE28:
+ 107:XOR_test.c    ****     init_uart();
+ 648              	 .loc 2 107 5 view .LVU135
+ 649 0010 9847     	 blx r3
+ 650              	.LVL42:
+ 108:XOR_test.c    ****     trigger_setup();
+ 651              	 .loc 2 108 5 is_stmt 1 view .LVU136
+ 652 0012 264B     	 ldr r3,.L51+16
+ 653 0014 9847     	 blx r3
+ 654              	.LVL43:
+ 109:XOR_test.c    **** 
+ 655              	 .loc 2 109 5 view .LVU137
+ 656 0016 264B     	 ldr r3,.L51+20
+ 657 0018 9847     	 blx r3
+ 658              	.LVL44:
+ 111:XOR_test.c    ****     int a = 0;
+ 659              	 .loc 2 111 5 view .LVU138
+ 112:XOR_test.c    ****     int b = 0;
+ 660              	 .loc 2 112 5 view .LVU139
+ 113:XOR_test.c    **** 
+ 661              	 .loc 2 113 5 view .LVU140
+ 115:XOR_test.c    **** 
+ 662              	 .loc 2 115 5 view .LVU141
+ 663 001a 2648     	 ldr r0,.L51+24
+ 664 001c B047     	 blx r6
+ 665              	.LVL45:
+ 117:XOR_test.c    **** 
+ 666              	 .loc 2 117 5 view .LVU142
+ 667              	.LBB34:
+ 119:XOR_test.c    ****           a = 0;
+ 668              	 .loc 2 119 9 view .LVU143
+ 669              	.LBE34:
+ 111:XOR_test.c    ****     int a = 0;
+ 670              	 .loc 2 111 9 is_stmt 0 view .LVU144
+ 671 001e 0024     	 movs r4,#0
+ 672              	.LBB35:
+ 121:XOR_test.c    ****         }
+ 673              	 .loc 2 121 13 view .LVU145
+ 674 0020 A246     	 mov r10,r4
+ 120:XOR_test.c    ****           b = 0;
+ 675              	 .loc 2 120 13 view .LVU146
+ 676 0022 2546     	 mov r5,r4
+ 677              	.LBB29:
+ 146:XOR_test.c    ****         for(volatile int i = 0; i < 5; i++) {
+ 678              	 .loc 2 146 26 view .LVU147
+ 679 0024 2746     	 mov r7,r4
+ 680              	.LVL46:
+ 681              	.L38:
+ 682              	 .loc 2 146 26 view .LVU148
+ 683              	.LBE29:
+ 135:XOR_test.c    ****         char d[4];
+ 684              	 .loc 2 135 9 is_stmt 1 view .LVU149
+ 136:XOR_test.c    ****         c[0] = a-'0';
+ 685              	 .loc 2 136 9 view .LVU150
+ 137:XOR_test.c    ****         d[0] = b-'0';
+ 686              	 .loc 2 137 9 view .LVU151
+ 137:XOR_test.c    ****         d[0] = b-'0';
+ 687              	 .loc 2 137 17 is_stmt 0 view .LVU152
+ 688 0026 A5F13003 	 sub r3,r5,#48
+ 137:XOR_test.c    ****         d[0] = b-'0';
+ 689              	 .loc 2 137 14 view .LVU153
+ 690 002a 8DF80030 	 strb r3,[sp]
+ 138:XOR_test.c    ****         my_puts(c);
+ 691              	 .loc 2 138 9 is_stmt 1 view .LVU154
+ 139:XOR_test.c    ****         my_puts(d);
+ 692              	 .loc 2 139 9 is_stmt 0 view .LVU155
+ 693 002e 6846     	 mov r0,sp
+ 138:XOR_test.c    ****         my_puts(c);
+ 694              	 .loc 2 138 17 view .LVU156
+ 695 0030 AAF13003 	 sub r3,r10,#48
+ 138:XOR_test.c    ****         my_puts(c);
+ 696              	 .loc 2 138 14 view .LVU157
+ 697 0034 8DF80430 	 strb r3,[sp,#4]
+ 139:XOR_test.c    ****         my_puts(d);
+ 698              	 .loc 2 139 9 is_stmt 1 view .LVU158
+ 699 0038 B047     	 blx r6
+ 700              	.LVL47:
+ 140:XOR_test.c    ****         my_puts("\n");
+ 701              	 .loc 2 140 9 view .LVU159
+ 702 003a 01A8     	 add r0,sp,#4
+ 703 003c B047     	 blx r6
+ 704              	.LVL48:
+ 141:XOR_test.c    **** 
+ 705              	 .loc 2 141 9 view .LVU160
+ 706 003e 4846     	 mov r0,r9
+ 707 0040 B047     	 blx r6
+ 708              	.LVL49:
+ 144:XOR_test.c    ****         trigger_high();
+ 709              	 .loc 2 144 9 view .LVU161
+ 145:XOR_test.c    ****         for(volatile int i = 0; i < 5; i++) {
+ 710              	 .loc 2 145 9 view .LVU162
+ 711 0042 C047     	 blx r8
+ 712              	.LVL50:
+ 713              	 .loc 2 146 9 view .LVU163
+ 714              	.LBB30:
+ 715              	 .loc 2 146 13 view .LVU164
+ 716              	 .loc 2 146 26 is_stmt 0 view .LVU165
+ 717 0044 0297     	 str r7,[sp,#8]
+ 718              	.L40:
+ 719              	 .loc 2 146 33 is_stmt 1 discriminator 1 view .LVU166
+ 720              	 .loc 2 146 35 is_stmt 0 discriminator 1 view .LVU167
+ 721 0046 029B     	 ldr r3,[sp,#8]
+ 722              	 .loc 2 146 9 discriminator 1 view .LVU168
+ 723 0048 042B     	 cmp r3,#4
+ 724 004a 1CDD     	 ble .L41
+ 725              	.LBE30:
+ 147:XOR_test.c    ****           asm volatile("nop");
+ 148:XOR_test.c    ****         }
+ 149:XOR_test.c    ****         xor = a ^ b;
+ 726              	 .loc 2 149 9 is_stmt 1 view .LVU169
+ 727              	.LVL51:
+ 150:XOR_test.c    ****         for(volatile int i = 0; i < 5; i++) {
+ 728              	 .loc 2 150 9 view .LVU170
+ 729              	.LBB31:
+ 730              	 .loc 2 150 13 view .LVU171
+ 731              	 .loc 2 150 26 is_stmt 0 view .LVU172
+ 732 004c 0397     	 str r7,[sp,#12]
+ 733              	.L42:
+ 734              	 .loc 2 150 33 is_stmt 1 discriminator 1 view .LVU173
+ 735              	 .loc 2 150 35 is_stmt 0 discriminator 1 view .LVU174
+ 736 004e 039B     	 ldr r3,[sp,#12]
+ 737              	 .loc 2 150 9 discriminator 1 view .LVU175
+ 738 0050 042B     	 cmp r3,#4
+ 739 0052 1DDD     	 ble .L43
+ 740              	.LBE31:
+ 151:XOR_test.c    ****           asm volatile("nop");
+ 152:XOR_test.c    ****         }
+ 153:XOR_test.c    ****         trigger_low();
+ 741              	 .loc 2 153 9 is_stmt 1 view .LVU176
+ 742 0054 184B     	 ldr r3,.L51+28
+ 154:XOR_test.c    ****         xor = 0;
+ 155:XOR_test.c    ****         count++;
+ 743              	 .loc 2 155 14 is_stmt 0 view .LVU177
+ 744 0056 0134     	 adds r4,r4,#1
+ 153:XOR_test.c    ****         xor = 0;
+ 745              	 .loc 2 153 9 view .LVU178
+ 746 0058 9847     	 blx r3
+ 747              	.LVL52:
+ 154:XOR_test.c    ****         xor = 0;
+ 748              	 .loc 2 154 9 is_stmt 1 view .LVU179
+ 749              	 .loc 2 155 9 view .LVU180
+ 750              	 .loc 2 155 9 is_stmt 0 view .LVU181
+ 751              	.LBE35:
+ 117:XOR_test.c    **** 
+ 752              	 .loc 2 117 10 is_stmt 1 view .LVU182
+ 117:XOR_test.c    **** 
+ 753              	 .loc 2 117 5 view .LVU183
+ 754              	.LBB36:
+ 119:XOR_test.c    ****           a = 0;
+ 755              	 .loc 2 119 9 view .LVU184
+ 119:XOR_test.c    ****           a = 0;
+ 756              	 .loc 2 119 12 is_stmt 0 view .LVU185
+ 757 005a 14F00303 	 ands r3,r4,#3
+ 758 005e 01D1     	 bne .L49
+ 121:XOR_test.c    ****         }
+ 759              	 .loc 2 121 13 view .LVU186
+ 760 0060 1D46     	 mov r5,r3
+ 761              	.LVL53:
+ 121:XOR_test.c    ****         }
+ 762              	 .loc 2 121 13 view .LVU187
+ 763 0062 06E0     	 b .L50
+ 764              	.LVL54:
+ 765              	.L49:
+ 123:XOR_test.c    ****           a = 0;
+ 766              	 .loc 2 123 14 is_stmt 1 view .LVU188
+ 123:XOR_test.c    ****           a = 0;
+ 767              	 .loc 2 123 17 is_stmt 0 view .LVU189
+ 768 0064 012B     	 cmp r3,#1
+ 769 0066 06D0     	 beq .L45
+ 127:XOR_test.c    ****           a = 1;
+ 770              	 .loc 2 127 14 is_stmt 1 view .LVU190
+ 127:XOR_test.c    ****           a = 1;
+ 771              	 .loc 2 127 17 is_stmt 0 view .LVU191
+ 772 0068 022B     	 cmp r3,#2
+ 773 006a 07D0     	 beq .L46
+ 131:XOR_test.c    ****           a = 1;
+ 774              	 .loc 2 131 14 is_stmt 1 view .LVU192
+ 131:XOR_test.c    ****           a = 1;
+ 775              	 .loc 2 131 17 is_stmt 0 view .LVU193
+ 776 006c 032B     	 cmp r3,#3
+ 777 006e 08D1     	 bne .L47
+ 133:XOR_test.c    ****         }
+ 778              	 .loc 2 133 13 view .LVU194
+ 779 0070 0125     	 movs r5,#1
+ 780              	.LVL55:
+ 781              	.L50:
+ 120:XOR_test.c    ****           b = 0;
+ 782              	 .loc 2 120 13 view .LVU195
+ 783 0072 2B46     	 mov r3,r5
+ 784 0074 00E0     	 b .L39
+ 785              	.LVL56:
+ 786              	.L45:
+ 124:XOR_test.c    ****           b = 1;
+ 787              	 .loc 2 124 13 view .LVU196
+ 788 0076 0025     	 movs r5,#0
+ 789              	.LVL57:
+ 790              	.L39:
+ 120:XOR_test.c    ****           b = 0;
+ 791              	 .loc 2 120 13 view .LVU197
+ 792 0078 9A46     	 mov r10,r3
+ 793              	.LVL58:
+ 120:XOR_test.c    ****           b = 0;
+ 794              	 .loc 2 120 13 view .LVU198
+ 795 007a D4E7     	 b .L38
+ 796              	.LVL59:
+ 797              	.L46:
+ 129:XOR_test.c    ****         }
+ 798              	 .loc 2 129 13 view .LVU199
+ 799 007c 0023     	 movs r3,#0
+ 128:XOR_test.c    ****           b = 0;
+ 800              	 .loc 2 128 13 view .LVU200
+ 801 007e 0125     	 movs r5,#1
+ 802              	.LVL60:
+ 128:XOR_test.c    ****           b = 0;
+ 803              	 .loc 2 128 13 view .LVU201
+ 804 0080 FAE7     	 b .L39
+ 805              	.LVL61:
+ 806              	.L47:
+ 128:XOR_test.c    ****           b = 0;
+ 807              	 .loc 2 128 13 view .LVU202
+ 808 0082 5346     	 mov r3,r10
+ 809 0084 F8E7     	 b .L39
+ 810              	.LVL62:
+ 811              	.L41:
+ 812              	.LBB32:
+ 147:XOR_test.c    ****         }
+ 813              	 .loc 2 147 11 is_stmt 1 discriminator 3 view .LVU203
+ 814              	 .syntax unified
+ 815              	
+ 816 0086 00BF     	 nop
+ 817              	
+ 146:XOR_test.c    ****           asm volatile("nop");
+ 818              	 .loc 2 146 40 discriminator 3 view .LVU204
+ 146:XOR_test.c    ****           asm volatile("nop");
+ 819              	 .loc 2 146 41 is_stmt 0 discriminator 3 view .LVU205
+ 820              	 .thumb
+ 821              	 .syntax unified
+ 822 0088 029B     	 ldr r3,[sp,#8]
+ 823 008a 0133     	 adds r3,r3,#1
+ 824 008c 0293     	 str r3,[sp,#8]
+ 825 008e DAE7     	 b .L40
+ 826              	.LVL63:
+ 827              	.L43:
+ 146:XOR_test.c    ****           asm volatile("nop");
+ 828              	 .loc 2 146 41 discriminator 3 view .LVU206
+ 829              	.LBE32:
+ 830              	.LBB33:
+ 151:XOR_test.c    ****         }
+ 831              	 .loc 2 151 11 is_stmt 1 discriminator 3 view .LVU207
+ 832              	 .syntax unified
+ 833              	
+ 834 0090 00BF     	 nop
+ 835              	
+ 150:XOR_test.c    ****           asm volatile("nop");
+ 836              	 .loc 2 150 40 discriminator 3 view .LVU208
+ 150:XOR_test.c    ****           asm volatile("nop");
+ 837              	 .loc 2 150 41 is_stmt 0 discriminator 3 view .LVU209
+ 838              	 .thumb
+ 839              	 .syntax unified
+ 840 0092 039B     	 ldr r3,[sp,#12]
+ 841 0094 0133     	 adds r3,r3,#1
+ 842 0096 0393     	 str r3,[sp,#12]
+ 843 0098 D9E7     	 b .L42
+ 844              	.L52:
+ 845 009a 00BF     	 .align 2
+ 846              	.L51:
+ 847 009c 00000000 	 .word platform_init
+ 848 00a0 00000000 	 .word my_puts
+ 849 00a4 07000000 	 .word .LC2
+ 850 00a8 00000000 	 .word trigger_high
+ 851 00ac 00000000 	 .word init_uart
+ 852 00b0 00000000 	 .word trigger_setup
+ 853 00b4 00000000 	 .word .LC1
+ 854 00b8 00000000 	 .word trigger_low
+ 855              	.LBE33:
+ 856              	.LBE36:
+ 857              	 .cfi_endproc
+ 858              	.LFE12:
+ 860              	 .global pt
+ 861              	 .global asciibuf
+ 862              	 .global tmp
+ 863              	 .global memory
+ 864              	 .section .bss.asciibuf,"aw",%nobits
+ 867              	asciibuf:
+ 868 0000 00000000 	 .space 64
+ 868      00000000 
+ 868      00000000 
+ 868      00000000 
+ 868      00000000 
+ 869              	 .section .bss.memory,"aw",%nobits
+ 872              	memory:
+ 873 0000 00000000 	 .space 64
+ 873      00000000 
+ 873      00000000 
+ 873      00000000 
+ 873      00000000 
+ 874              	 .section .bss.pt,"aw",%nobits
+ 877              	pt:
+ 878 0000 00000000 	 .space 16
+ 878      00000000 
+ 878      00000000 
+ 878      00000000 
+ 879              	 .section .bss.tmp,"aw",%nobits
+ 882              	tmp:
+ 883 0000 00000000 	 .space 64
+ 883      00000000 
+ 883      00000000 
+ 883      00000000 
+ 883      00000000 
+ 884              	 .text
+ 885              	.Letext0:
+ 886              	 .file 3 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 887              	 .file 4 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 XOR_test.c
+    {standard input}:16     .text.led_ok:0000000000000000 $t
+    {standard input}:24     .text.led_ok:0000000000000000 led_ok
+    {standard input}:39     .text.led_error:0000000000000000 $t
+    {standard input}:46     .text.led_error:0000000000000000 led_error
+    {standard input}:57     .text.my_puts:0000000000000000 $t
+    {standard input}:64     .text.my_puts:0000000000000000 my_puts
+    {standard input}:109    .text.my_puts:0000000000000014 $d
+    {standard input}:114    .text.my_read:0000000000000000 $t
+    {standard input}:121    .text.my_read:0000000000000000 my_read
+    {standard input}:214    .text.my_read:0000000000000038 $d
+    {standard input}:223    .text.char_to_int:0000000000000000 $t
+    {standard input}:230    .text.char_to_int:0000000000000000 char_to_int
+    {standard input}:357    .text.char_to_int:000000000000006c $d
+    {standard input}:368    .text.int_to_char_arr:0000000000000000 $t
+    {standard input}:375    .text.int_to_char_arr:0000000000000000 int_to_char_arr
+    {standard input}:424    .text.long_delay:0000000000000000 $t
+    {standard input}:431    .text.long_delay:0000000000000000 long_delay
+    {standard input}:484    .text.print_int_array_serial:0000000000000000 $t
+    {standard input}:491    .text.print_int_array_serial:0000000000000000 print_int_array_serial
+    {standard input}:598    .text.print_int_array_serial:0000000000000040 $d
+    {standard input}:612    .text.startup.main:0000000000000000 $t
+    {standard input}:619    .text.startup.main:0000000000000000 main
+    {standard input}:847    .text.startup.main:000000000000009c $d
+    {standard input}:877    .bss.pt:0000000000000000 pt
+    {standard input}:867    .bss.asciibuf:0000000000000000 asciibuf
+    {standard input}:882    .bss.tmp:0000000000000000 tmp
+    {standard input}:872    .bss.memory:0000000000000000 memory
+    {standard input}:868    .bss.asciibuf:0000000000000000 $d
+    {standard input}:873    .bss.memory:0000000000000000 $d
+    {standard input}:878    .bss.pt:0000000000000000 $d
+    {standard input}:883    .bss.tmp:0000000000000000 $d
+                           .group:0000000000000000 wm4.0.0ec9be273080d86c743d99e5316a201d
+                           .group:0000000000000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:0000000000000000 wm4.hal.h.27.7074d56fee637e30bfe28f5452443c14
+                           .group:0000000000000000 wm4.ieeefp.h.77.f33a4dce62116f6f5175ff8bae57a54c
+                           .group:0000000000000000 wm4._newlib_version.h.4.1ef4e12f167f8b69d7c30054be56050d
+                           .group:0000000000000000 wm4.newlib.h.21.1ae2897bc09bbe4bc80ffb801fb02432
+                           .group:0000000000000000 wm4.features.h.22.026edb2397769f4ae13f35900dbdb560
+                           .group:0000000000000000 wm4.config.h.224.c701144a7b0518c6ee9b9b5465b79f81
+                           .group:0000000000000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:0000000000000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:0000000000000000 wm4.stddef.h.181.13772e73e5434e8cc4fafaaddad2b5da
+                           .group:0000000000000000 wm4.stddef.h.39.1bfffcccc3897d82880a055878218da6
+                           .group:0000000000000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:0000000000000000 wm4.stddef.h.155.3588ebfdd1e8c7ede80509bb9c3b8009
+                           .group:0000000000000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:0000000000000000 wm4._types.h.127.34941de1b2539d59d5cac00e0dd27a45
+                           .group:0000000000000000 wm4.reent.h.17.e292bf8b0bec6c96e131a54347145a30
+                           .group:0000000000000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:0000000000000000 wm4.reent.h.77.dcd6129ff07fe81bd5636db29abe53b2
+                           .group:0000000000000000 wm4.cdefs.h.49.3d0fe8ea14e93bda8c589d4f684b21b8
+                           .group:0000000000000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:0000000000000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:0000000000000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:0000000000000000 wm4.stddef.h.155.ba788add86a0e365f264484f110c3c29
+                           .group:0000000000000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:0000000000000000 wm4.types.h.40.8b6acba56cefbb11746718204edc8f5e
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:0000000000000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:0000000000000000 wm4._timeval.h.32.bec3221fa7a9bb0bdde696c9c57e47d2
+                           .group:0000000000000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:0000000000000000 wm4.select.h.19.97ca6fd0c752a0f3b6719fd314d361e6
+                           .group:0000000000000000 wm4.types.h.51.5571ec98f267d17d3c670b7a3ba33afa
+                           .group:0000000000000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:0000000000000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:0000000000000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:0000000000000000 wm4.stdio.h.81.932d0c162786b883f622b8d05c120c78
+                           .group:0000000000000000 wm4.math.h.13.97100c05caf9f40dd9f5a3cda48ccc01
+                           .group:0000000000000000 wm4.complex.h.9.e398adf3f8fc1220141cdf5a13c2daaf
+                           .group:0000000000000000 wm4.time.h.8.db4619001f026d0b4874c029fef0e91f
+                           .group:0000000000000000 wm4.time.h.2.4581ce0ffb6627cfc02162c94bf846c9
+                           .group:0000000000000000 wm4.time.h.25.0e6a0fdbc9955f5707ed54246ed2e089
+                           .group:0000000000000000 wm4.time.h.162.85256a1e684b58f061361067da714e0e
+
+UNDEFINED SYMBOLS
+putch
+getch
+__aeabi_i2d
+__aeabi_dmul
+__aeabi_dadd
+__aeabi_d2iz
+pow
+sprintf
+platform_init
+trigger_high
+init_uart
+trigger_setup
+trigger_low
