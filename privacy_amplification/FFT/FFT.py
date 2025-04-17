@@ -155,13 +155,15 @@ def DIT_FFT_leaky(x):
         n=0
         while(n <= 2**(stage-1) and q <=N):
             w = np.exp(-2j*np.pi*n/(2**stage))
-            y = x[p] + w*x[q]
-            z = x[p] - w*x[q]
+            y = x[p]
+            z = x[q]
+            
+           # HW_trace.append(HW_calc(x[p]) + HW_calc())
 
-            HW_trace.append(HW_calc(x[p]) + HW_calc(x[q]))
+            z = z*w
             ###HW before and after this assigment
-            x[p] = y
-            x[q] = z
+            x[p] = y + z
+            x[q] = y - z
             #####################################
             HW_trace.append(HW_calc(x[p]) + HW_calc(x[q]))
 
@@ -182,4 +184,5 @@ if __name__=="__main__":
         arr[i] = i
     arr_r = bit_reverse(arr)
     k=7
-    DIT_FFT(np.asarray([1,0,1,1,0,1,0,0,1,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0]))
+    x, HW = DIT_FFT_leaky(np.asarray([0,1,0,1,0,1,0,0]))
+    #DIT_FFT(np.asarray([1,0,1,1,0,1,0,0,1,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0]))
