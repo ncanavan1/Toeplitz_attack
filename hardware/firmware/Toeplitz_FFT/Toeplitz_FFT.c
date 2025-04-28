@@ -165,47 +165,23 @@ void DIT_FFT(float complex *X, int N){
             float complex y = X[p];
             float complex z = X[q];
 
-            uint32_t cycles = 20;
-
-            for(volatile int i = 0; i < 5; i++) {
-              asm volatile("nop");
-            }            
-            
-            for(volatile int i = 0; i < 5; i++) {
-              asm volatile("nop");
-            }
-
-            z *= w;
 
             trigger_high();
 
+            //for(int i = 0; i < 20; i++){
+              //__asm__ volatile ("nop");
+            //}
 
-
-
-            for(volatile int i = 0; i < 5; i++) {
-              asm volatile("nop");
-            }
+            z *= w;
             X[p] = y+z;
-
-
-            for(volatile int i = 0; i < 5; i++) {
-              asm volatile("nop");
-            }
-
             X[q] = y-z;
 
 
-            for(volatile int i = 0; i < 5; i++) {
-              asm volatile("nop");
-            }
-
+            //for(int i = 0; i < 20; i++){
+              //__asm__ volatile ("nop");
+            //}
 
             trigger_low();
-
-
-            for(volatile int i = 0; i < 20; i++) {
-              asm volatile("nop");
-            }
 
             p++;
             q++;
