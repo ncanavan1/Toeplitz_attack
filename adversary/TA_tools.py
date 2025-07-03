@@ -43,7 +43,7 @@ class Tools:
             #target.read(num_char, 10)
             #time.sleep(0.01)
             #num_char = target.in_waiting()
-        time.sleep(0.1)
+        time.sleep(0.01)
         #target.flush()
         self.scope.arm()
         self.target.write(x)
@@ -203,7 +203,7 @@ class Tools:
             PC.append(stats.pearsonr(target_trace[segment],template_traces[i][segment]))
             print("Guess {0}. MSE: {1}, PC: {2}".format(i,MSE[i], PC[i]))
             
-        best = np.argsort(MSE)[0]
+        best = np.argsort(PC)[0]
         result = []
         match best:
             case 0:
@@ -295,7 +295,8 @@ class Tools:
 
 
         start = time.time()
-        guess = self.guess_sequentially_by_2(target_trace, L, N)
+        sigma_Eve = 0
+        guess = self.guess_sequentially_by_2(target_trace, L, N, sigma_Eve)
         end = time.time()
 
         time_taken = end - start

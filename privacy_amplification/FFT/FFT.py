@@ -158,7 +158,7 @@ def DIT_FFT_leaky(x):
             y = x[p]
             z = x[q]
             
-           # HW_trace.append(HW_calc(x[p]) + HW_calc())
+            HW_trace.append(HW_calc(x[p]) + HW_calc())
 
             z = z*w
             ###HW before and after this assigment
