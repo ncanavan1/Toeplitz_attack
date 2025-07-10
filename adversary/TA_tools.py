@@ -30,7 +30,7 @@ class Tools:
         aligned_traces = []
 
         for trace in traces:
-            correlation = np.correlate(trace, ref_trace, mode="full")  # Compute cross-correlation
+            correlation = np.correlate(trace, ref_trace)#, mode="full")  # Compute cross-correlation
             shift = np.argmax(correlation) - (len(trace) - 1)  # Find best alignment
             aligned_trace = np.roll(trace, -shift)  # Shift the trace
             aligned_traces.append(aligned_trace)
@@ -203,7 +203,7 @@ class Tools:
             PC.append(stats.pearsonr(target_trace[segment],template_traces[i][segment]))
             print("Guess {0}. MSE: {1}, PC: {2}".format(i,MSE[i], PC[i]))
             
-        best = np.argsort(PC)[0]
+        best = np.argsort(MSE)[0]
         result = []
         match best:
             case 0:
@@ -254,7 +254,7 @@ class Tools:
         for pair in pairs:
 
             self.reset_target()
-            for _ in range(5):
+            for _ in range(1):
                 warmup_str = self.array_to_bin_input(np.ones(N))
                 warmup = self.get_trace(warmup_str)
 
@@ -316,10 +316,10 @@ class Tools:
             print("Incorrect Key Recovery, {0}% Correct".format(cor_count/N *100))
         print("Time Taken: {0}s".format(time_taken))
 
-        return cor_count
+        return cor_count, time_taken
     
     def reset_target(self):
         self.scope.io.nrst = False
-        time.sleep(0.05)
+        time.sleep(0.001)
         self.scope.io.nrst = True
-        time.sleep(0.05)
+        time.sleep(0.001)
