@@ -25,13 +25,22 @@ class Tools:
         return cw.plot(trace1 - trace2) 
 
 
-    def align_traces(self, traces):
-        ref_trace = traces[0]  # Use the first trace as reference
+    def allign_traces_vec(self, pattern, traces, max_shift=None):
+        aligned_traces = np.zeros(traces.shape)
+
+        for i, trace_set in enumerate(traces):
+            aligned_traces[i] = self.align_traces(pattern, trace_set, max_shift)
+        return aligned_traces
+
+    def align_traces(self, pattern, traces, max_shift=None):
         aligned_traces = []
 
         for trace in traces:
-            correlation = np.correlate(trace, ref_trace)#, mode="full")  # Compute cross-correlation
-            shift = np.argmax(correlation) - (len(trace) - 1)  # Find best alignment
+            correlation = np.correlate(trace, pattern, mode="valid")  # Compute cross-correlation
+            shift = np.argmax(correlation)
+            if max_shift is not None:
+            # constrain shift if desired
+                shift = np.clip(shift, 0, max_shift)
             aligned_trace = np.roll(trace, -shift)  # Shift the trace
             aligned_traces.append(aligned_trace)
         
@@ -46,12 +55,15 @@ class Tools:
         time.sleep(0.01)
         #target.flush()
         self.scope.arm()
+       # initial_trig_count = self.scope.adc.trig_count
         self.target.write(x)
         if self.scope.capture():
             raise RuntimeError("Capture failed")
-        trace_segments = self.scope.get_last_trace_segmented()
-        alligned_traces = self.align_traces(trace_segments)
-        return alligned_traces
+        trace_segments = self.scope.get_last_trace()#_segmented()
+        active_trig_count = self.scope.adc.trig_count# - initial_trig_count
+        print("Trig count: {0}".format(active_trig_count))
+        #alligned_traces = self.align_traces(trace_segments)
+        return trace_segments #alligned_traces
     
     ##################################
     ### USED IN FORMAL MGD METHOD ####

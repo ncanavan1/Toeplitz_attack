@@ -1,0 +1,1181 @@
+   1              	 .cpu cortex-m4
+   2              	 .eabi_attribute 20,1
+   3              	 .eabi_attribute 21,1
+   4              	 .eabi_attribute 23,3
+   5              	 .eabi_attribute 24,1
+   6              	 .eabi_attribute 25,1
+   7              	 .eabi_attribute 26,1
+   8              	 .eabi_attribute 30,4
+   9              	 .eabi_attribute 34,1
+  10              	 .eabi_attribute 18,4
+  11              	 .file "floating_point_multiply_test.c"
+  12              	 .text
+  13              	.Ltext0:
+  14              	 .cfi_sections .debug_frame
+  15              	 .section .text.led_ok,"ax",%progbits
+  16              	 .align 1
+  17              	 .weak led_ok
+  18              	 .arch armv7e-m
+  19              	 .syntax unified
+  20              	 .thumb
+  21              	 .thumb_func
+  22              	 .fpu softvfp
+  24              	led_ok:
+  25              	.LVL0:
+  26              	.LFB0:
+  27              	 .file 1 ".././hal/hal.h"
+   1:.././hal/hal.h **** /*
+   2:.././hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:.././hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:.././hal/hal.h **** 
+   5:.././hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:.././hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:.././hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:.././hal/hal.h ****     (at your option) any later version.
+   9:.././hal/hal.h **** 
+  10:.././hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:.././hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:.././hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:.././hal/hal.h ****     GNU General Public License for more details.
+  14:.././hal/hal.h **** 
+  15:.././hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:.././hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:.././hal/hal.h **** */
+  18:.././hal/hal.h **** 
+  19:.././hal/hal.h **** #ifndef HAL_H_
+  20:.././hal/hal.h **** #define HAL_H_
+  21:.././hal/hal.h **** 
+  22:.././hal/hal.h **** #include <stdint.h>
+  23:.././hal/hal.h **** 
+  24:.././hal/hal.h **** void platform_init(void);
+  25:.././hal/hal.h **** 
+  26:.././hal/hal.h **** //PLATFORM Define Types
+  27:.././hal/hal.h **** #define CW301_AVR      1
+  28:.././hal/hal.h **** #define CW301_XMEGA    2
+  29:.././hal/hal.h **** #define CW303          3
+  30:.././hal/hal.h **** #define CW304          4
+  31:.././hal/hal.h **** #define CW308_MEGARF   8
+  32:.././hal/hal.h **** #define CW308_PIC24FJ  10
+  33:.././hal/hal.h **** #define CW308_SAM4L    11
+  34:.././hal/hal.h **** #define CW308_SI4010   12
+  35:.././hal/hal.h **** #define CW308_MPC5748G 13
+  36:.././hal/hal.h **** #define CW308_STM32F0  14
+  37:.././hal/hal.h **** #define CW308_STM32F1  15
+  38:.././hal/hal.h **** #define CW308_STM32F2  16
+  39:.././hal/hal.h **** #define CW308_STM32F3  17
+  40:.././hal/hal.h **** #define CW308_STM32F4  18
+  41:.././hal/hal.h **** #define CW308_CC2538   19
+  42:.././hal/hal.h **** #define CW308_K24F     20
+  43:.././hal/hal.h **** #define CW308_NRF52840 21
+  44:.././hal/hal.h **** #define CW308_AURIX    22
+  45:.././hal/hal.h **** #define CW308_SAML11   23
+  46:.././hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:.././hal/hal.h **** #define CW308_K82F     25
+  48:.././hal/hal.h **** #define CW308_LPC55S6X 26
+  49:.././hal/hal.h **** #define CW308_PSOC62   27
+  50:.././hal/hal.h **** #define CW308_IMXRT1062 28
+  51:.././hal/hal.h **** #define CW308_FE310    29
+  52:.././hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:.././hal/hal.h **** #define CW308_EFM32GG11  31
+  54:.././hal/hal.h **** #define CW308_STM32L5  32
+  55:.././hal/hal.h **** #define CW308_STM32L4  33
+  56:.././hal/hal.h **** #define CW308_RX65N  34
+  57:.././hal/hal.h **** #define CW308_MPC5676R 35
+  58:.././hal/hal.h **** #define CW308_NEORV32  36
+  59:.././hal/hal.h **** #define CW305_IBEX  37
+  60:.././hal/hal.h **** 
+  61:.././hal/hal.h **** //HAL_TYPE Define Types
+  62:.././hal/hal.h **** #define HAL_avr      1
+  63:.././hal/hal.h **** #define HAL_xmega    2
+  64:.././hal/hal.h **** #define HAL_pic24f   3
+  65:.././hal/hal.h **** #define HAL_sam4l    4
+  66:.././hal/hal.h **** #define HAL_stm32f0  5
+  67:.././hal/hal.h **** #define HAL_stm32f1  6
+  68:.././hal/hal.h **** #define HAL_stm32f2  7
+  69:.././hal/hal.h **** #define HAL_stm32f3  8
+  70:.././hal/hal.h **** #define HAL_stm32f4  9
+  71:.././hal/hal.h **** #define HAL_cc2538   10
+  72:.././hal/hal.h **** #define HAL_k24f     11
+  73:.././hal/hal.h **** #define HAL_nrf52840 12
+  74:.././hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:.././hal/hal.h **** #define HAL_aurix    14
+  76:.././hal/hal.h **** #define HAL_saml11   15
+  77:.././hal/hal.h **** #define HAL_efm32tg11b 16
+  78:.././hal/hal.h **** #define HAL_k82f     17
+  79:.././hal/hal.h **** #define HAL_lpc55s6x 18
+  80:.././hal/hal.h **** #define HAL_psoc62   19
+  81:.././hal/hal.h **** #define HAL_imxrt1062 20
+  82:.././hal/hal.h **** #define HAL_fe310    21
+  83:.././hal/hal.h **** #define HAL_efr32mg21a 22
+  84:.././hal/hal.h **** #define HAL_efm32gg11 23
+  85:.././hal/hal.h **** #define HAL_stm32l5 24
+  86:.././hal/hal.h **** #define HAL_stm32l4 25
+  87:.././hal/hal.h **** #define HAL_rx65n 26
+  88:.././hal/hal.h **** #define HAL_mpc5676r 27
+  89:.././hal/hal.h **** #define HAL_neorv32  28
+  90:.././hal/hal.h **** #define HAL_sam4s  29
+  91:.././hal/hal.h **** #define HAL_ibex  30
+  92:.././hal/hal.h **** 
+  93:.././hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:.././hal/hal.h ****     #include <avr/io.h>
+  95:.././hal/hal.h ****     #include <util/delay.h>
+  96:.././hal/hal.h ****     #include "avr/avr_hal.h"
+  97:.././hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:.././hal/hal.h ****     #include <avr/io.h>
+  99:.././hal/hal.h ****     #include <util/delay.h>
+ 100:.././hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:.././hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:.././hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:.././hal/hal.h ****     #include <xc.h>
+ 104:.././hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:.././hal/hal.h ****     #include "pic24f/uart.h"
+ 106:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:.././hal/hal.h ****     #include "sam4l/sam4l_hal.h"
+ 108:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:.././hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:.././hal/hal.h **** 	#include "stm32f1/stm32f1_hal.h"
+ 112:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:.././hal/hal.h **** 	#include "stm32f2/stm32f2_hal.h"
+ 114:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:.././hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:.././hal/hal.h **** 	#ifdef SECCAN
+ 117:.././hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:.././hal/hal.h **** 	#endif
+ 119:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:.././hal/hal.h **** 	#include "stm32f4/stm32f4_hal.h"
+ 121:.././hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:.././hal/hal.h **** 	#include "cc2538/cc2538_hal.h"
+ 123:.././hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:.././hal/hal.h ****     #include "k24f/k24f_hal.h"
+ 125:.././hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:.././hal/hal.h **** #include "k82f/k82f_hal.h"
+ 127:.././hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:.././hal/hal.h ****     #include "nrf52840/nrf52840_hal.h"   
+ 129:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:.././hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:.././hal/hal.h ****     void led_error(unsigned int status);
+ 132:.././hal/hal.h ****     void led_ok(unsigned int status);
+ 133:.././hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:.././hal/hal.h ****     #include "aurix/aurix_hal.h"
+ 135:.././hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:.././hal/hal.h ****      #include "saml11/saml11_hal.h"
+ 137:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:.././hal/hal.h ****      #include "efm32tg11b/efm32tg11b_hal.h"
+ 139:.././hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:.././hal/hal.h ****      #include "lpc55s6x/lpc55s6x_hal.h"
+ 141:.././hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:.././hal/hal.h ****     #include "psoc62/psoc62_hal.h"
+ 143:.././hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:.././hal/hal.h ****     #include "imxrt1062/imxrt1062_hal.h"
+ 145:.././hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:.././hal/hal.h ****     #include "fe310/fe310_hal.h"
+ 147:.././hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:.././hal/hal.h ****     #include "efr32mg21a/efr32mg21a_hal.h"
+ 149:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:.././hal/hal.h ****     #include "efm32gg11/efm32gg11_hal.h"
+ 151:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:.././hal/hal.h ****     #include "stm32l5/stm32l5_hal.h"
+ 153:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:.././hal/hal.h ****     #include "stm32l4/stm32l4_hal.h"
+ 155:.././hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:.././hal/hal.h ****     #include "rx65n/rx65n_hal.h"
+ 157:.././hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:.././hal/hal.h ****     #include "mpc5676r/MPC5676R_hal.h"
+ 159:.././hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:.././hal/hal.h ****     #include "neorv32/neorv32_hal.h"
+ 161:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:.././hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:.././hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:.././hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:.././hal/hal.h **** #else
+ 166:.././hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:.././hal/hal.h **** #endif
+ 168:.././hal/hal.h **** 
+ 169:.././hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:.././hal/hal.h ****     #undef trigger_setup
+ 171:.././hal/hal.h ****     #undef trigger_high
+ 172:.././hal/hal.h ****     #undef trigger_low
+ 173:.././hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:.././hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:.././hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:.././hal/hal.h ****     
+ 177:.././hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:.././hal/hal.h **** 
+ 179:.././hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:.././hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:.././hal/hal.h ****                                   }
+ 182:.././hal/hal.h **** 
+ 183:.././hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:.././hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:.././hal/hal.h ****                                 } \
+ 186:.././hal/hal.h ****                                   \
+ 187:.././hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:.././hal/hal.h ****                                   \
+ 189:.././hal/hal.h ****                                 /*Wait for done  */ \
+ 190:.././hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:.././hal/hal.h ****                                     ; \
+ 192:.././hal/hal.h ****                                 } \
+ 193:.././hal/hal.h ****                                   \
+ 194:.././hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:.././hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:.././hal/hal.h ****                                 }
+ 197:.././hal/hal.h ****     
+ 198:.././hal/hal.h **** #endif
+ 199:.././hal/hal.h **** 
+ 200:.././hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+ 201:.././hal/hal.h **** {
+  28              	 .loc 1 201 1 view-0
+  29              	 .cfi_startproc
+  30              	 
+  31              	 
+  32              	 
+ 202:.././hal/hal.h **** }
+  33              	 .loc 1 202 1 view .LVU1
+  34 0000 7047     	 bx lr
+  35              	 .cfi_endproc
+  36              	.LFE0:
+  38              	 .section .text.led_error,"ax",%progbits
+  39              	 .align 1
+  40              	 .weak led_error
+  41              	 .syntax unified
+  42              	 .thumb
+  43              	 .thumb_func
+  44              	 .fpu softvfp
+  46              	led_error:
+  47              	.LFB13:
+  48              	 .cfi_startproc
+  49              	 
+  50              	 
+  51              	 
+  52 0000 7047     	 bx lr
+  53              	 .cfi_endproc
+  54              	.LFE13:
+  56              	 .section .text.my_puts,"ax",%progbits
+  57              	 .align 1
+  58              	 .global my_puts
+  59              	 .syntax unified
+  60              	 .thumb
+  61              	 .thumb_func
+  62              	 .fpu softvfp
+  64              	my_puts:
+  65              	.LVL1:
+  66              	.LFB5:
+  67              	 .file 2 "floating_point_multiply_test.c"
+   1:floating_point_multiply_test.c **** #include "hal.h"
+   2:floating_point_multiply_test.c **** #include <stdint.h>
+   3:floating_point_multiply_test.c **** #include <stdlib.h>
+   4:floating_point_multiply_test.c **** #include <stdio.h>
+   5:floating_point_multiply_test.c **** #include <math.h>
+   6:floating_point_multiply_test.c **** #include <complex.h>
+   7:floating_point_multiply_test.c **** #include <time.h>
+   8:floating_point_multiply_test.c **** #include <string.h>
+   9:floating_point_multiply_test.c **** 
+  10:floating_point_multiply_test.c **** void my_puts(char *c)
+  11:floating_point_multiply_test.c **** {
+  68              	 .loc 2 11 1 view-0
+  69              	 .cfi_startproc
+  70              	 
+  71              	 
+  72              	 .loc 2 11 1 is_stmt 0 view .LVU3
+  73 0000 38B5     	 push {r3,r4,r5,lr}
+  74              	.LCFI0:
+  75              	 .cfi_def_cfa_offset 16
+  76              	 .cfi_offset 3,-16
+  77              	 .cfi_offset 4,-12
+  78              	 .cfi_offset 5,-8
+  79              	 .cfi_offset 14,-4
+  80              	.LBB9:
+  12:floating_point_multiply_test.c ****   do {
+  13:floating_point_multiply_test.c ****     putch(*c);
+  81              	 .loc 2 13 5 view .LVU4
+  82 0002 044D     	 ldr r5,.L6
+  83              	.LBE9:
+  11:floating_point_multiply_test.c ****   do {
+  84              	 .loc 2 11 1 view .LVU5
+  85 0004 0446     	 mov r4,r0
+  86              	.LVL2:
+  87              	.L4:
+  12:floating_point_multiply_test.c ****   do {
+  88              	 .loc 2 12 3 is_stmt 1 discriminator 1 view .LVU6
+  89              	.LBB10:
+  90              	 .loc 2 13 5 discriminator 1 view .LVU7
+  91 0006 2078     	 ldrb r0,[r4]
+  92 0008 A847     	 blx r5
+  93              	.LVL3:
+  94              	.LBE10:
+  14:floating_point_multiply_test.c **** 
+  15:floating_point_multiply_test.c ****   } while (*++c);
+  95              	 .loc 2 15 11 discriminator 1 view .LVU8
+  96              	 .loc 2 15 3 is_stmt 0 discriminator 1 view .LVU9
+  97 000a 14F8013F 	 ldrb r3,[r4,#1]!
+  98              	.LVL4:
+  99              	 .loc 2 15 3 discriminator 1 view .LVU10
+ 100 000e 002B     	 cmp r3,#0
+ 101 0010 F9D1     	 bne .L4
+  16:floating_point_multiply_test.c **** }
+ 102              	 .loc 2 16 1 view .LVU11
+ 103 0012 38BD     	 pop {r3,r4,r5,pc}
+ 104              	.LVL5:
+ 105              	.L7:
+ 106              	 .loc 2 16 1 view .LVU12
+ 107              	 .align 2
+ 108              	.L6:
+ 109 0014 00000000 	 .word putch
+ 110              	 .cfi_endproc
+ 111              	.LFE5:
+ 113              	 .section .text.my_read,"ax",%progbits
+ 114              	 .align 1
+ 115              	 .global my_read
+ 116              	 .syntax unified
+ 117              	 .thumb
+ 118              	 .thumb_func
+ 119              	 .fpu softvfp
+ 121              	my_read:
+ 122              	.LVL6:
+ 123              	.LFB6:
+  17:floating_point_multiply_test.c **** 
+  18:floating_point_multiply_test.c **** void my_read(char *buf, int len)
+  19:floating_point_multiply_test.c **** {
+ 124              	 .loc 2 19 1 is_stmt 1 view-0
+ 125              	 .cfi_startproc
+ 126              	 
+ 127              	 
+  20:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 128              	 .loc 2 20 3 view .LVU14
+ 129              	.LBB11:
+ 130              	 .loc 2 20 7 view .LVU15
+ 131              	 .loc 2 20 7 is_stmt 0 view .LVU16
+ 132              	.LBE11:
+  19:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 133              	 .loc 2 19 1 view .LVU17
+ 134 0000 2DE9F041 	 push {r4,r5,r6,r7,r8,lr}
+ 135              	.LCFI1:
+ 136              	 .cfi_def_cfa_offset 24
+ 137              	 .cfi_offset 4,-24
+ 138              	 .cfi_offset 5,-20
+ 139              	 .cfi_offset 6,-16
+ 140              	 .cfi_offset 7,-12
+ 141              	 .cfi_offset 8,-8
+ 142              	 .cfi_offset 14,-4
+ 143              	.LBB14:
+ 144              	.LBB12:
+  21:floating_point_multiply_test.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 145              	 .loc 2 21 21 view .LVU18
+ 146 0004 DFF83080 	 ldr r8,.L17
+ 147              	.LBE12:
+ 148              	.LBE14:
+  19:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 149              	 .loc 2 19 1 view .LVU19
+ 150 0008 0446     	 mov r4,r0
+ 151 000a 0E46     	 mov r6,r1
+ 152              	.LBB15:
+  20:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 153              	 .loc 2 20 11 view .LVU20
+ 154 000c 0025     	 movs r5,#0
+ 155              	.LVL7:
+ 156              	.L9:
+  20:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 157              	 .loc 2 20 18 is_stmt 1 discriminator 1 view .LVU21
+  20:floating_point_multiply_test.c ****   for(int i = 0; i < len; i++) {
+ 158              	 .loc 2 20 3 is_stmt 0 discriminator 1 view .LVU22
+ 159 000e B542     	 cmp r5,r6
+ 160 0010 0DDA     	 bge .L16
+ 161 0012 6719     	 adds r7,r4,r5
+ 162              	.L10:
+ 163              	.LBB13:
+ 164              	 .loc 2 21 45 is_stmt 1 discriminator 1 view .LVU23
+ 165              	 .loc 2 21 11 discriminator 1 view .LVU24
+ 166              	 .loc 2 21 21 is_stmt 0 discriminator 1 view .LVU25
+ 167 0014 C047     	 blx r8
+ 168              	.LVL8:
+ 169              	 .loc 2 21 19 discriminator 1 view .LVU26
+ 170 0016 C0B2     	 uxtb r0,r0
+ 171 0018 6055     	 strb r0,[r4,r5]
+ 172              	 .loc 2 21 11 discriminator 1 view .LVU27
+ 173 001a 0028     	 cmp r0,#0
+ 174 001c FAD0     	 beq .L10
+ 175              	.LBE13:
+  22:floating_point_multiply_test.c **** 
+  23:floating_point_multiply_test.c ****     if (buf[i] == '\n') {
+ 176              	 .loc 2 23 5 is_stmt 1 view .LVU28
+ 177              	 .loc 2 23 8 is_stmt 0 view .LVU29
+ 178 001e 0A28     	 cmp r0,#10
+ 179 0020 03D1     	 bne .L11
+  24:floating_point_multiply_test.c ****       buf[i] = '\0';
+ 180              	 .loc 2 24 7 is_stmt 1 view .LVU30
+ 181              	 .loc 2 24 14 is_stmt 0 view .LVU31
+ 182 0022 0023     	 movs r3,#0
+ 183 0024 3B70     	 strb r3,[r7]
+  25:floating_point_multiply_test.c ****       return;
+ 184              	 .loc 2 25 7 is_stmt 1 view .LVU32
+ 185              	.LVL9:
+ 186              	.L8:
+ 187              	 .loc 2 25 7 is_stmt 0 view .LVU33
+ 188              	.LBE15:
+  26:floating_point_multiply_test.c ****     }
+  27:floating_point_multiply_test.c ****   }
+  28:floating_point_multiply_test.c ****   buf[len - 1] = '\0';
+  29:floating_point_multiply_test.c **** }
+ 189              	 .loc 2 29 1 view .LVU34
+ 190 0026 BDE8F081 	 pop {r4,r5,r6,r7,r8,pc}
+ 191              	.LVL10:
+ 192              	.L11:
+ 193              	.LBB16:
+  20:floating_point_multiply_test.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 194              	 .loc 2 20 27 is_stmt 1 discriminator 2 view .LVU35
+  20:floating_point_multiply_test.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 195              	 .loc 2 20 28 is_stmt 0 discriminator 2 view .LVU36
+ 196 002a 0135     	 adds r5,r5,#1
+ 197              	.LVL11:
+  20:floating_point_multiply_test.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 198              	 .loc 2 20 28 discriminator 2 view .LVU37
+ 199 002c EFE7     	 b .L9
+ 200              	.L16:
+  20:floating_point_multiply_test.c ****     while (buf[i] = getch(), buf[i] == '\0');
+ 201              	 .loc 2 20 28 discriminator 2 view .LVU38
+ 202              	.LBE16:
+  28:floating_point_multiply_test.c **** }
+ 203              	 .loc 2 28 3 is_stmt 1 view .LVU39
+  28:floating_point_multiply_test.c **** }
+ 204              	 .loc 2 28 16 is_stmt 0 view .LVU40
+ 205 002e 3444     	 add r4,r4,r6
+ 206              	.LVL12:
+  28:floating_point_multiply_test.c **** }
+ 207              	 .loc 2 28 16 view .LVU41
+ 208 0030 0023     	 movs r3,#0
+ 209 0032 04F8013C 	 strb r3,[r4,#-1]
+ 210 0036 F6E7     	 b .L8
+ 211              	.L18:
+ 212              	 .align 2
+ 213              	.L17:
+ 214 0038 00000000 	 .word getch
+ 215              	 .cfi_endproc
+ 216              	.LFE6:
+ 218              	 .global __aeabi_d2f
+ 219              	 .section .text.take_base_10_input,"ax",%progbits
+ 220              	 .align 1
+ 221              	 .global take_base_10_input
+ 222              	 .syntax unified
+ 223              	 .thumb
+ 224              	 .thumb_func
+ 225              	 .fpu softvfp
+ 227              	take_base_10_input:
+ 228              	.LFB7:
+  30:floating_point_multiply_test.c **** 
+  31:floating_point_multiply_test.c **** 
+  32:floating_point_multiply_test.c **** static volatile float volatile_sink;
+  33:floating_point_multiply_test.c **** 
+  34:floating_point_multiply_test.c **** float take_base_10_input(){
+ 229              	 .loc 2 34 27 is_stmt 1 view-0
+ 230              	 .cfi_startproc
+ 231              	 
+ 232              	 
+  35:floating_point_multiply_test.c **** 
+  36:floating_point_multiply_test.c ****   char arr_char[32];
+ 233              	 .loc 2 36 3 view .LVU43
+  37:floating_point_multiply_test.c ****   my_read(arr_char, 32);
+ 234              	 .loc 2 37 3 view .LVU44
+  34:floating_point_multiply_test.c **** 
+ 235              	 .loc 2 34 27 is_stmt 0 view .LVU45
+ 236 0000 00B5     	 push {lr}
+ 237              	.LCFI2:
+ 238              	 .cfi_def_cfa_offset 4
+ 239              	 .cfi_offset 14,-4
+ 240 0002 89B0     	 sub sp,sp,#36
+ 241              	.LCFI3:
+ 242              	 .cfi_def_cfa_offset 40
+ 243              	 .loc 2 37 3 view .LVU46
+ 244 0004 6846     	 mov r0,sp
+ 245 0006 054B     	 ldr r3,.L20
+ 246 0008 2021     	 movs r1,#32
+ 247 000a 9847     	 blx r3
+ 248              	.LVL13:
+  38:floating_point_multiply_test.c ****   return atof(arr_char);
+ 249              	 .loc 2 38 3 is_stmt 1 view .LVU47
+ 250              	 .loc 2 38 10 is_stmt 0 view .LVU48
+ 251 000c 044B     	 ldr r3,.L20+4
+ 252 000e 6846     	 mov r0,sp
+ 253 0010 9847     	 blx r3
+ 254              	.LVL14:
+ 255 0012 044B     	 ldr r3,.L20+8
+ 256 0014 9847     	 blx r3
+ 257              	.LVL15:
+  39:floating_point_multiply_test.c **** }
+ 258              	 .loc 2 39 1 view .LVU49
+ 259 0016 09B0     	 add sp,sp,#36
+ 260              	.LCFI4:
+ 261              	 .cfi_def_cfa_offset 4
+ 262              	 
+ 263 0018 5DF804FB 	 ldr pc,[sp],#4
+ 264              	.L21:
+ 265              	 .align 2
+ 266              	.L20:
+ 267 001c 00000000 	 .word my_read
+ 268 0020 00000000 	 .word atof
+ 269 0024 00000000 	 .word __aeabi_d2f
+ 270              	 .cfi_endproc
+ 271              	.LFE7:
+ 273              	 .section .rodata.print_float_hex.str1.1,"aMS",%progbits,1
+ 274              	.LC0:
+ 275 0000 30782530 	 .ascii "0x%08lX\000"
+ 275      386C5800 
+ 276              	 .section .text.print_float_hex,"ax",%progbits
+ 277              	 .align 1
+ 278              	 .global print_float_hex
+ 279              	 .syntax unified
+ 280              	 .thumb
+ 281              	 .thumb_func
+ 282              	 .fpu softvfp
+ 284              	print_float_hex:
+ 285              	.LVL16:
+ 286              	.LFB8:
+  40:floating_point_multiply_test.c **** 
+  41:floating_point_multiply_test.c **** void print_float_hex(float f) {
+ 287              	 .loc 2 41 31 is_stmt 1 view-0
+ 288              	 .cfi_startproc
+ 289              	 
+ 290              	 
+  42:floating_point_multiply_test.c ****   union {
+ 291              	 .loc 2 42 3 view .LVU51
+  43:floating_point_multiply_test.c ****       float f;
+  44:floating_point_multiply_test.c ****       uint32_t u;
+  45:floating_point_multiply_test.c ****   } u;
+  46:floating_point_multiply_test.c ****   u.f = f;
+ 292              	 .loc 2 46 3 view .LVU52
+  47:floating_point_multiply_test.c **** 
+  48:floating_point_multiply_test.c ****   char buf[16];
+ 293              	 .loc 2 48 3 view .LVU53
+  49:floating_point_multiply_test.c ****   sprintf(buf, "0x%08lX", (unsigned long)u.u);
+ 294              	 .loc 2 49 3 view .LVU54
+  41:floating_point_multiply_test.c ****   union {
+ 295              	 .loc 2 41 31 is_stmt 0 view .LVU55
+ 296 0000 1FB5     	 push {r0,r1,r2,r3,r4,lr}
+ 297              	.LCFI5:
+ 298              	 .cfi_def_cfa_offset 24
+ 299              	 .cfi_offset 14,-4
+ 300              	 .loc 2 49 3 view .LVU56
+ 301 0002 0246     	 mov r2,r0
+ 302 0004 0449     	 ldr r1,.L23
+ 303 0006 054B     	 ldr r3,.L23+4
+ 304 0008 6846     	 mov r0,sp
+ 305              	.LVL17:
+ 306              	 .loc 2 49 3 view .LVU57
+ 307 000a 9847     	 blx r3
+ 308              	.LVL18:
+  50:floating_point_multiply_test.c ****   my_puts(buf);
+ 309              	 .loc 2 50 3 is_stmt 1 view .LVU58
+ 310 000c 044B     	 ldr r3,.L23+8
+ 311 000e 6846     	 mov r0,sp
+ 312 0010 9847     	 blx r3
+ 313              	.LVL19:
+  51:floating_point_multiply_test.c **** }
+ 314              	 .loc 2 51 1 is_stmt 0 view .LVU59
+ 315 0012 05B0     	 add sp,sp,#20
+ 316              	.LCFI6:
+ 317              	 .cfi_def_cfa_offset 4
+ 318              	 
+ 319 0014 5DF804FB 	 ldr pc,[sp],#4
+ 320              	.L24:
+ 321              	 .align 2
+ 322              	.L23:
+ 323 0018 00000000 	 .word .LC0
+ 324 001c 00000000 	 .word sprintf
+ 325 0020 00000000 	 .word my_puts
+ 326              	 .cfi_endproc
+ 327              	.LFE8:
+ 329              	 .global __aeabi_i2f
+ 330              	 .global __aeabi_fmul
+ 331              	 .section .text.randomFloat,"ax",%progbits
+ 332              	 .align 1
+ 333              	 .global randomFloat
+ 334              	 .syntax unified
+ 335              	 .thumb
+ 336              	 .thumb_func
+ 337              	 .fpu softvfp
+ 339              	randomFloat:
+ 340              	.LFB9:
+  52:floating_point_multiply_test.c **** 
+  53:floating_point_multiply_test.c **** float randomFloat()
+  54:floating_point_multiply_test.c **** {
+ 341              	 .loc 2 54 1 is_stmt 1 view-0
+ 342              	 .cfi_startproc
+ 343              	 
+ 344              	 
+  55:floating_point_multiply_test.c ****     return (float)(rand()) / (float)(RAND_MAX);
+ 345              	 .loc 2 55 5 view .LVU61
+  54:floating_point_multiply_test.c ****     return (float)(rand()) / (float)(RAND_MAX);
+ 346              	 .loc 2 54 1 is_stmt 0 view .LVU62
+ 347 0000 08B5     	 push {r3,lr}
+ 348              	.LCFI7:
+ 349              	 .cfi_def_cfa_offset 8
+ 350              	 .cfi_offset 3,-8
+ 351              	 .cfi_offset 14,-4
+ 352              	 .loc 2 55 20 view .LVU63
+ 353 0002 044B     	 ldr r3,.L26
+ 354 0004 9847     	 blx r3
+ 355              	.LVL20:
+ 356              	 .loc 2 55 12 view .LVU64
+ 357 0006 044B     	 ldr r3,.L26+4
+ 358 0008 9847     	 blx r3
+ 359              	.LVL21:
+ 360              	 .loc 2 55 28 view .LVU65
+ 361 000a 044B     	 ldr r3,.L26+8
+ 362 000c 4FF04051 	 mov r1,#805306368
+ 363 0010 9847     	 blx r3
+ 364              	.LVL22:
+  56:floating_point_multiply_test.c **** }
+ 365              	 .loc 2 56 1 view .LVU66
+ 366 0012 08BD     	 pop {r3,pc}
+ 367              	.L27:
+ 368              	 .align 2
+ 369              	.L26:
+ 370 0014 00000000 	 .word rand
+ 371 0018 00000000 	 .word __aeabi_i2f
+ 372 001c 00000000 	 .word __aeabi_fmul
+ 373              	 .cfi_endproc
+ 374              	.LFE9:
+ 376              	 .section .text.xor_floats,"ax",%progbits
+ 377              	 .align 1
+ 378              	 .global xor_floats
+ 379              	 .syntax unified
+ 380              	 .thumb
+ 381              	 .thumb_func
+ 382              	 .fpu softvfp
+ 384              	xor_floats:
+ 385              	.LVL23:
+ 386              	.LFB10:
+  57:floating_point_multiply_test.c **** 
+  58:floating_point_multiply_test.c **** float xor_floats(float a, float b) {
+ 387              	 .loc 2 58 36 is_stmt 1 view-0
+ 388              	 .cfi_startproc
+ 389              	 
+ 390              	 
+ 391              	 
+  59:floating_point_multiply_test.c ****   uint32_t ua, ub, uc;
+ 392              	 .loc 2 59 3 view .LVU68
+  60:floating_point_multiply_test.c **** 
+  61:floating_point_multiply_test.c ****   // reinterpret float as 32-bit integer
+  62:floating_point_multiply_test.c ****   memcpy(&ua, &a, sizeof(float));
+ 393              	 .loc 2 62 3 view .LVU69
+  63:floating_point_multiply_test.c ****   memcpy(&ub, &b, sizeof(float));
+ 394              	 .loc 2 63 3 view .LVU70
+  64:floating_point_multiply_test.c **** 
+  65:floating_point_multiply_test.c ****   // XOR the integer representations
+  66:floating_point_multiply_test.c ****   uc = ua ^ ub;
+ 395              	 .loc 2 66 3 view .LVU71
+  67:floating_point_multiply_test.c **** 
+  68:floating_point_multiply_test.c ****   // reinterpret result back to float
+  69:floating_point_multiply_test.c ****   float c;
+ 396              	 .loc 2 69 3 view .LVU72
+  70:floating_point_multiply_test.c ****   memcpy(&c, &uc, sizeof(float));
+ 397              	 .loc 2 70 3 view .LVU73
+  71:floating_point_multiply_test.c ****   return c;
+ 398              	 .loc 2 71 3 view .LVU74
+ 399              	 .loc 2 71 10 is_stmt 0 view .LVU75
+ 400 0000 4840     	 eors r0,r0,r1
+ 401              	.LVL24:
+  72:floating_point_multiply_test.c **** }
+ 402              	 .loc 2 72 1 view .LVU76
+ 403 0002 7047     	 bx lr
+ 404              	 .cfi_endproc
+ 405              	.LFE10:
+ 407              	 .section .rodata.main.str1.1,"aMS",%progbits,1
+ 408              	.LC1:
+ 409 0000 46505F4D 	 .ascii "FP_MUL_READY\012\000"
+ 409      554C5F52 
+ 409      45414459 
+ 409      0A00
+ 410              	.LC2:
+ 411 000e 0A476976 	 .ascii "\012Give two floats: \012\000"
+ 411      65207477 
+ 411      6F20666C 
+ 411      6F617473 
+ 411      3A200A00 
+ 412              	.LC3:
+ 413 0022 496E7075 	 .ascii "Input a: \000"
+ 413      7420613A 
+ 413      2000
+ 414              	.LC4:
+ 415 002c 0A496E70 	 .ascii "\012Input b: \000"
+ 415      75742062 
+ 415      3A2000
+ 416              	.LC5:
+ 417 0037 0A4F7574 	 .ascii "\012Outout c: \000"
+ 417      6F757420 
+ 417      633A2000 
+ 418              	 .section .text.startup.main,"ax",%progbits
+ 419              	 .align 1
+ 420              	 .global main
+ 421              	 .syntax unified
+ 422              	 .thumb
+ 423              	 .thumb_func
+ 424              	 .fpu softvfp
+ 426              	main:
+ 427              	.LFB11:
+  73:floating_point_multiply_test.c **** 
+  74:floating_point_multiply_test.c **** int main(void) {
+ 428              	 .loc 2 74 16 is_stmt 1 view-0
+ 429              	 .cfi_startproc
+ 430              	 
+ 431              	 
+  75:floating_point_multiply_test.c ****   platform_init();
+ 432              	 .loc 2 75 3 view .LVU78
+  74:floating_point_multiply_test.c ****   platform_init();
+ 433              	 .loc 2 74 16 is_stmt 0 view .LVU79
+ 434 0000 2DE9F04F 	 push {r4,r5,r6,r7,r8,r9,r10,fp,lr}
+ 435              	.LCFI8:
+ 436              	 .cfi_def_cfa_offset 36
+ 437              	 .cfi_offset 4,-36
+ 438              	 .cfi_offset 5,-32
+ 439              	 .cfi_offset 6,-28
+ 440              	 .cfi_offset 7,-24
+ 441              	 .cfi_offset 8,-20
+ 442              	 .cfi_offset 9,-16
+ 443              	 .cfi_offset 10,-12
+ 444              	 .cfi_offset 11,-8
+ 445              	 .cfi_offset 14,-4
+ 446              	 .loc 2 75 3 view .LVU80
+ 447 0004 224B     	 ldr r3,.L31
+  76:floating_point_multiply_test.c ****   init_uart();
+  77:floating_point_multiply_test.c ****   trigger_setup();
+  78:floating_point_multiply_test.c **** 
+  79:floating_point_multiply_test.c ****   /* Simple prompt (optional) */
+  80:floating_point_multiply_test.c ****   my_puts("FP_MUL_READY\n");
+ 448              	 .loc 2 80 3 view .LVU81
+ 449 0006 234C     	 ldr r4,.L31+4
+ 450              	.LBB17:
+  81:floating_point_multiply_test.c **** 
+  82:floating_point_multiply_test.c ****   char line[128];
+  83:floating_point_multiply_test.c ****   while (1) {
+  84:floating_point_multiply_test.c **** 
+  85:floating_point_multiply_test.c ****       my_puts("\nGive two floats: \n");
+  86:floating_point_multiply_test.c **** 
+  87:floating_point_multiply_test.c ****       float a = take_base_10_input();
+ 451              	 .loc 2 87 17 view .LVU82
+ 452 0008 DFF88CA0 	 ldr r10,.L31+8
+  88:floating_point_multiply_test.c ****       float b = take_base_10_input();
+  89:floating_point_multiply_test.c **** 
+  90:floating_point_multiply_test.c ****       my_puts("Input a: ");
+ 453              	 .loc 2 90 7 view .LVU83
+ 454 000c DFF88CB0 	 ldr fp,.L31+12
+ 455              	.LBE17:
+  74:floating_point_multiply_test.c ****   platform_init();
+ 456              	 .loc 2 74 16 view .LVU84
+ 457 0010 85B0     	 sub sp,sp,#20
+ 458              	.LCFI9:
+ 459              	 .cfi_def_cfa_offset 56
+  75:floating_point_multiply_test.c ****   init_uart();
+ 460              	 .loc 2 75 3 view .LVU85
+ 461 0012 9847     	 blx r3
+ 462              	.LVL25:
+  76:floating_point_multiply_test.c ****   trigger_setup();
+ 463              	 .loc 2 76 3 is_stmt 1 view .LVU86
+ 464 0014 224B     	 ldr r3,.L31+16
+ 465 0016 9847     	 blx r3
+ 466              	.LVL26:
+  77:floating_point_multiply_test.c **** 
+ 467              	 .loc 2 77 3 view .LVU87
+ 468 0018 224B     	 ldr r3,.L31+20
+ 469 001a 9847     	 blx r3
+ 470              	.LVL27:
+  80:floating_point_multiply_test.c **** 
+ 471              	 .loc 2 80 3 view .LVU88
+ 472 001c 2248     	 ldr r0,.L31+24
+ 473 001e A047     	 blx r4
+ 474              	.LVL28:
+ 475              	.LBB24:
+  85:floating_point_multiply_test.c **** 
+ 476              	 .loc 2 85 7 is_stmt 0 view .LVU89
+ 477 0020 224A     	 ldr r2,.L31+28
+ 478              	.L30:
+ 479              	.LBE24:
+  82:floating_point_multiply_test.c ****   while (1) {
+ 480              	 .loc 2 82 3 is_stmt 1 discriminator 1 view .LVU90
+  83:floating_point_multiply_test.c **** 
+ 481              	 .loc 2 83 3 discriminator 1 view .LVU91
+ 482              	.LBB25:
+  85:floating_point_multiply_test.c **** 
+ 483              	 .loc 2 85 7 discriminator 1 view .LVU92
+  91:floating_point_multiply_test.c ****       print_float_hex(a);
+ 484              	 .loc 2 91 7 is_stmt 0 discriminator 1 view .LVU93
+ 485 0022 DFF88C90 	 ldr r9,.L31+32
+  92:floating_point_multiply_test.c ****       my_puts("\nInput b: ");
+  93:floating_point_multiply_test.c ****       print_float_hex(b);
+  94:floating_point_multiply_test.c **** 
+  95:floating_point_multiply_test.c ****       float mask_a = randomFloat();
+ 486              	 .loc 2 95 22 discriminator 1 view .LVU94
+ 487 0026 234E     	 ldr r6,.L31+36
+  85:floating_point_multiply_test.c **** 
+ 488              	 .loc 2 85 7 discriminator 1 view .LVU95
+ 489 0028 1046     	 mov r0,r2
+ 490 002a A047     	 blx r4
+ 491              	.LVL29:
+  87:floating_point_multiply_test.c ****       float b = take_base_10_input();
+ 492              	 .loc 2 87 7 is_stmt 1 discriminator 1 view .LVU96
+  87:floating_point_multiply_test.c ****       float b = take_base_10_input();
+ 493              	 .loc 2 87 17 is_stmt 0 discriminator 1 view .LVU97
+ 494 002c D047     	 blx r10
+ 495              	.LVL30:
+ 496 002e 8046     	 mov r8,r0
+ 497              	.LVL31:
+  88:floating_point_multiply_test.c **** 
+ 498              	 .loc 2 88 7 is_stmt 1 discriminator 1 view .LVU98
+  88:floating_point_multiply_test.c **** 
+ 499              	 .loc 2 88 17 is_stmt 0 discriminator 1 view .LVU99
+ 500 0030 D047     	 blx r10
+ 501              	.LVL32:
+  88:floating_point_multiply_test.c **** 
+ 502              	 .loc 2 88 17 discriminator 1 view .LVU100
+ 503 0032 0746     	 mov r7,r0
+ 504              	.LVL33:
+  90:floating_point_multiply_test.c ****       print_float_hex(a);
+ 505              	 .loc 2 90 7 is_stmt 1 discriminator 1 view .LVU101
+ 506 0034 5846     	 mov r0,fp
+ 507              	.LVL34:
+  90:floating_point_multiply_test.c ****       print_float_hex(a);
+ 508              	 .loc 2 90 7 is_stmt 0 discriminator 1 view .LVU102
+ 509 0036 A047     	 blx r4
+ 510              	.LVL35:
+  91:floating_point_multiply_test.c ****       my_puts("\nInput b: ");
+ 511              	 .loc 2 91 7 is_stmt 1 discriminator 1 view .LVU103
+ 512 0038 4046     	 mov r0,r8
+ 513 003a C847     	 blx r9
+ 514              	.LVL36:
+  92:floating_point_multiply_test.c ****       print_float_hex(b);
+ 515              	 .loc 2 92 7 discriminator 1 view .LVU104
+ 516 003c 1E48     	 ldr r0,.L31+40
+ 517 003e A047     	 blx r4
+ 518              	.LVL37:
+  93:floating_point_multiply_test.c **** 
+ 519              	 .loc 2 93 7 discriminator 1 view .LVU105
+ 520 0040 3846     	 mov r0,r7
+ 521 0042 C847     	 blx r9
+ 522              	.LVL38:
+ 523              	 .loc 2 95 7 discriminator 1 view .LVU106
+ 524              	 .loc 2 95 22 is_stmt 0 discriminator 1 view .LVU107
+ 525 0044 B047     	 blx r6
+ 526              	.LVL39:
+ 527 0046 0546     	 mov r5,r0
+ 528              	.LVL40:
+  96:floating_point_multiply_test.c ****       float mask_b = randomFloat();
+ 529              	 .loc 2 96 7 is_stmt 1 discriminator 1 view .LVU108
+ 530              	 .loc 2 96 22 is_stmt 0 discriminator 1 view .LVU109
+ 531 0048 B047     	 blx r6
+ 532              	.LVL41:
+  97:floating_point_multiply_test.c **** 
+  98:floating_point_multiply_test.c ****       float a_mask = xor_floats(a, mask_a);
+  99:floating_point_multiply_test.c ****       float b_mask = xor_floats(b, mask_b);
+ 100:floating_point_multiply_test.c **** 
+ 101:floating_point_multiply_test.c **** 
+ 102:floating_point_multiply_test.c ****       /* trigger -> multiply -> untrigger */
+ 103:floating_point_multiply_test.c **** 
+ 104:floating_point_multiply_test.c ****       trigger_high();
+ 533              	 .loc 2 104 7 discriminator 1 view .LVU110
+ 534 004a 1C4B     	 ldr r3,.L31+44
+  96:floating_point_multiply_test.c ****       float mask_b = randomFloat();
+ 535              	 .loc 2 96 22 discriminator 1 view .LVU111
+ 536 004c 0646     	 mov r6,r0
+ 537              	.LVL42:
+  98:floating_point_multiply_test.c ****       float b_mask = xor_floats(b, mask_b);
+ 538              	 .loc 2 98 7 is_stmt 1 discriminator 1 view .LVU112
+ 539              	.LBB18:
+ 540              	.LBI18:
+  58:floating_point_multiply_test.c ****   uint32_t ua, ub, uc;
+ 541              	 .loc 2 58 7 discriminator 1 view .LVU113
+ 542              	.LBB19:
+  59:floating_point_multiply_test.c **** 
+ 543              	 .loc 2 59 3 discriminator 1 view .LVU114
+  62:floating_point_multiply_test.c ****   memcpy(&ub, &b, sizeof(float));
+ 544              	 .loc 2 62 3 discriminator 1 view .LVU115
+  63:floating_point_multiply_test.c **** 
+ 545              	 .loc 2 63 3 discriminator 1 view .LVU116
+  66:floating_point_multiply_test.c **** 
+ 546              	 .loc 2 66 3 discriminator 1 view .LVU117
+  69:floating_point_multiply_test.c ****   memcpy(&c, &uc, sizeof(float));
+ 547              	 .loc 2 69 3 discriminator 1 view .LVU118
+  70:floating_point_multiply_test.c ****   return c;
+ 548              	 .loc 2 70 3 discriminator 1 view .LVU119
+  71:floating_point_multiply_test.c **** }
+ 549              	 .loc 2 71 3 discriminator 1 view .LVU120
+  71:floating_point_multiply_test.c **** }
+ 550              	 .loc 2 71 3 is_stmt 0 discriminator 1 view .LVU121
+ 551              	.LBE19:
+ 552              	.LBE18:
+  99:floating_point_multiply_test.c **** 
+ 553              	 .loc 2 99 7 is_stmt 1 discriminator 1 view .LVU122
+ 554              	.LBB20:
+ 555              	.LBI20:
+  58:floating_point_multiply_test.c ****   uint32_t ua, ub, uc;
+ 556              	 .loc 2 58 7 discriminator 1 view .LVU123
+ 557              	.LBB21:
+  59:floating_point_multiply_test.c **** 
+ 558              	 .loc 2 59 3 discriminator 1 view .LVU124
+  62:floating_point_multiply_test.c ****   memcpy(&ub, &b, sizeof(float));
+ 559              	 .loc 2 62 3 discriminator 1 view .LVU125
+  63:floating_point_multiply_test.c **** 
+ 560              	 .loc 2 63 3 discriminator 1 view .LVU126
+  66:floating_point_multiply_test.c **** 
+ 561              	 .loc 2 66 3 discriminator 1 view .LVU127
+  69:floating_point_multiply_test.c ****   memcpy(&c, &uc, sizeof(float));
+ 562              	 .loc 2 69 3 discriminator 1 view .LVU128
+  70:floating_point_multiply_test.c ****   return c;
+ 563              	 .loc 2 70 3 discriminator 1 view .LVU129
+  71:floating_point_multiply_test.c **** }
+ 564              	 .loc 2 71 3 discriminator 1 view .LVU130
+  71:floating_point_multiply_test.c **** }
+ 565              	 .loc 2 71 3 is_stmt 0 discriminator 1 view .LVU131
+ 566              	.LBE21:
+ 567              	.LBE20:
+ 568              	 .loc 2 104 7 is_stmt 1 discriminator 1 view .LVU132
+ 569 004e 9847     	 blx r3
+ 570              	.LVL43:
+ 105:floating_point_multiply_test.c ****       // for(int i = 0; i < 10; i++){
+ 106:floating_point_multiply_test.c ****       //     __asm__ volatile ("nop");
+ 107:floating_point_multiply_test.c ****       // }
+ 108:floating_point_multiply_test.c **** 
+ 109:floating_point_multiply_test.c ****       /* The multiply itself */
+ 110:floating_point_multiply_test.c **** 
+ 111:floating_point_multiply_test.c ****       /////////////////////////
+ 112:floating_point_multiply_test.c ****       /////////////////////////
+ 113:floating_point_multiply_test.c ****       //UNMASKED VERSION
+ 114:floating_point_multiply_test.c ****       
+ 115:floating_point_multiply_test.c ****       //volatile float c = a * b;
+ 116:floating_point_multiply_test.c **** 
+ 117:floating_point_multiply_test.c ****       /////////////////////////
+ 118:floating_point_multiply_test.c ****       /////////////////////////
+ 119:floating_point_multiply_test.c ****       //MASKED VERSION
+ 120:floating_point_multiply_test.c ****       volatile float c_mask = a_mask * b_mask;
+ 571              	 .loc 2 120 7 discriminator 1 view .LVU133
+ 572              	 .loc 2 120 38 is_stmt 0 discriminator 1 view .LVU134
+ 573 0050 1B4B     	 ldr r3,.L31+48
+ 574 0052 88EA0501 	 eor r1,r8,r5
+ 575              	.LVL44:
+ 576              	 .loc 2 120 38 discriminator 1 view .LVU135
+ 577 0056 87EA0600 	 eor r0,r7,r6
+ 578              	.LVL45:
+ 579              	 .loc 2 120 38 discriminator 1 view .LVU136
+ 580 005a 9847     	 blx r3
+ 581              	.LVL46:
+ 121:floating_point_multiply_test.c ****       volatile float mask_c = mask_a * mask_b;
+ 582              	 .loc 2 121 38 discriminator 1 view .LVU137
+ 583 005c 184B     	 ldr r3,.L31+48
+ 120:floating_point_multiply_test.c ****       volatile float mask_c = mask_a * mask_b;
+ 584              	 .loc 2 120 22 discriminator 1 view .LVU138
+ 585 005e 0190     	 str r0,[sp,#4]
+ 586              	 .loc 2 121 7 is_stmt 1 discriminator 1 view .LVU139
+ 587              	 .loc 2 121 38 is_stmt 0 discriminator 1 view .LVU140
+ 588 0060 3146     	 mov r1,r6
+ 589 0062 2846     	 mov r0,r5
+ 590 0064 9847     	 blx r3
+ 591              	.LVL47:
+ 592              	 .loc 2 121 22 discriminator 1 view .LVU141
+ 593 0066 0290     	 str r0,[sp,#8]
+ 122:floating_point_multiply_test.c **** 
+ 123:floating_point_multiply_test.c ****       volatile float c = xor_floats(c_mask, mask_c);
+ 594              	 .loc 2 123 7 is_stmt 1 discriminator 1 view .LVU142
+ 595              	 .loc 2 123 26 is_stmt 0 discriminator 1 view .LVU143
+ 596 0068 0199     	 ldr r1,[sp,#4]
+ 597 006a 029B     	 ldr r3,[sp,#8]
+ 598              	.LVL48:
+ 599              	.LBB22:
+ 600              	.LBI22:
+  58:floating_point_multiply_test.c ****   uint32_t ua, ub, uc;
+ 601              	 .loc 2 58 7 is_stmt 1 discriminator 1 view .LVU144
+ 602              	.LBB23:
+  59:floating_point_multiply_test.c **** 
+ 603              	 .loc 2 59 3 discriminator 1 view .LVU145
+  62:floating_point_multiply_test.c ****   memcpy(&ub, &b, sizeof(float));
+ 604              	 .loc 2 62 3 discriminator 1 view .LVU146
+  63:floating_point_multiply_test.c **** 
+ 605              	 .loc 2 63 3 discriminator 1 view .LVU147
+  66:floating_point_multiply_test.c **** 
+ 606              	 .loc 2 66 3 discriminator 1 view .LVU148
+  69:floating_point_multiply_test.c ****   memcpy(&c, &uc, sizeof(float));
+ 607              	 .loc 2 69 3 discriminator 1 view .LVU149
+  70:floating_point_multiply_test.c ****   return c;
+ 608              	 .loc 2 70 3 discriminator 1 view .LVU150
+  71:floating_point_multiply_test.c **** }
+ 609              	 .loc 2 71 3 discriminator 1 view .LVU151
+ 610 006c 4B40     	 eors r3,r3,r1
+ 611              	.LVL49:
+  71:floating_point_multiply_test.c **** }
+ 612              	 .loc 2 71 3 is_stmt 0 discriminator 1 view .LVU152
+ 613              	.LBE23:
+ 614              	.LBE22:
+ 615              	 .loc 2 123 22 discriminator 1 view .LVU153
+ 616 006e 0393     	 str r3,[sp,#12]
+ 124:floating_point_multiply_test.c **** 
+ 125:floating_point_multiply_test.c ****       /*
+ 126:floating_point_multiply_test.c ****         * Small software fence to ensure result is materialised and not optimized away.
+ 127:floating_point_multiply_test.c ****         * (volatile_sink forces the compiler to keep the result)
+ 128:floating_point_multiply_test.c ****         */
+ 129:floating_point_multiply_test.c ****       volatile_sink = c_mask;
+ 617              	 .loc 2 129 7 is_stmt 1 discriminator 1 view .LVU154
+ 618              	 .loc 2 129 21 is_stmt 0 discriminator 1 view .LVU155
+ 619 0070 144B     	 ldr r3,.L31+52
+ 620              	.LVL50:
+ 621              	 .loc 2 129 21 discriminator 1 view .LVU156
+ 622 0072 0199     	 ldr r1,[sp,#4]
+ 623              	.LVL51:
+ 624              	 .loc 2 129 21 discriminator 1 view .LVU157
+ 625 0074 1960     	 str r1,[r3]
+ 130:floating_point_multiply_test.c ****       volatile_sink = mask_c;
+ 626              	 .loc 2 130 7 is_stmt 1 discriminator 1 view .LVU158
+ 627              	 .loc 2 130 21 is_stmt 0 discriminator 1 view .LVU159
+ 628 0076 0299     	 ldr r1,[sp,#8]
+ 629 0078 1960     	 str r1,[r3]
+ 131:floating_point_multiply_test.c ****       volatile_sink = c;
+ 630              	 .loc 2 131 7 is_stmt 1 discriminator 1 view .LVU160
+ 631              	 .loc 2 131 21 is_stmt 0 discriminator 1 view .LVU161
+ 632 007a 0399     	 ldr r1,[sp,#12]
+ 633 007c 1960     	 str r1,[r3]
+ 132:floating_point_multiply_test.c **** 
+ 133:floating_point_multiply_test.c ****       // for(int i = 0; i < 10; i++){
+ 134:floating_point_multiply_test.c ****       //   __asm__ volatile ("nop");
+ 135:floating_point_multiply_test.c ****       // }
+ 136:floating_point_multiply_test.c **** 
+ 137:floating_point_multiply_test.c ****       trigger_low();
+ 634              	 .loc 2 137 7 is_stmt 1 discriminator 1 view .LVU162
+ 635 007e 124B     	 ldr r3,.L31+56
+ 636 0080 9847     	 blx r3
+ 637              	.LVL52:
+ 138:floating_point_multiply_test.c **** 
+ 139:floating_point_multiply_test.c ****       /* Optionally perform a tiny delay if you want measurable time window:
+ 140:floating_point_multiply_test.c ****         * for (volatile int i=0;i<100;i++);  // uncomment if needed
+ 141:floating_point_multiply_test.c ****         */
+ 142:floating_point_multiply_test.c **** 
+ 143:floating_point_multiply_test.c ****       /* Print back the result */
+ 144:floating_point_multiply_test.c ****       my_puts("\nOutout c: ");
+ 638              	 .loc 2 144 7 discriminator 1 view .LVU163
+ 639 0082 1248     	 ldr r0,.L31+60
+ 640 0084 A047     	 blx r4
+ 641              	.LVL53:
+ 145:floating_point_multiply_test.c ****       print_float_hex(c);
+ 642              	 .loc 2 145 7 discriminator 1 view .LVU164
+ 643 0086 0398     	 ldr r0,[sp,#12]
+ 644 0088 C847     	 blx r9
+ 645              	.LVL54:
+ 646              	.LBE25:
+  83:floating_point_multiply_test.c **** 
+ 647              	 .loc 2 83 9 discriminator 1 view .LVU165
+ 648 008a 084A     	 ldr r2,.L31+28
+ 649 008c C9E7     	 b .L30
+ 650              	.L32:
+ 651 008e 00BF     	 .align 2
+ 652              	.L31:
+ 653 0090 00000000 	 .word platform_init
+ 654 0094 00000000 	 .word my_puts
+ 655 0098 00000000 	 .word take_base_10_input
+ 656 009c 22000000 	 .word .LC3
+ 657 00a0 00000000 	 .word init_uart
+ 658 00a4 00000000 	 .word trigger_setup
+ 659 00a8 00000000 	 .word .LC1
+ 660 00ac 0E000000 	 .word .LC2
+ 661 00b0 00000000 	 .word print_float_hex
+ 662 00b4 00000000 	 .word randomFloat
+ 663 00b8 2C000000 	 .word .LC4
+ 664 00bc 00000000 	 .word trigger_high
+ 665 00c0 00000000 	 .word __aeabi_fmul
+ 666 00c4 00000000 	 .word .LANCHOR0
+ 667 00c8 00000000 	 .word trigger_low
+ 668 00cc 37000000 	 .word .LC5
+ 669              	 .cfi_endproc
+ 670              	.LFE11:
+ 672              	 .section .bss.volatile_sink,"aw",%nobits
+ 673              	 .align 2
+ 674              	 .set .LANCHOR0,.+0
+ 677              	volatile_sink:
+ 678 0000 00000000 	 .space 4
+ 679              	 .text
+ 680              	.Letext0:
+ 681              	 .file 3 "/usr/include/newlib/stdlib.h"
+ 682              	 .file 4 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stdint.h"
+ 683              	 .file 5 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 floating_point_multiply_test.c
+    {standard input}:16     .text.led_ok:0000000000000000 $t
+    {standard input}:24     .text.led_ok:0000000000000000 led_ok
+    {standard input}:39     .text.led_error:0000000000000000 $t
+    {standard input}:46     .text.led_error:0000000000000000 led_error
+    {standard input}:57     .text.my_puts:0000000000000000 $t
+    {standard input}:64     .text.my_puts:0000000000000000 my_puts
+    {standard input}:109    .text.my_puts:0000000000000014 $d
+    {standard input}:114    .text.my_read:0000000000000000 $t
+    {standard input}:121    .text.my_read:0000000000000000 my_read
+    {standard input}:214    .text.my_read:0000000000000038 $d
+    {standard input}:220    .text.take_base_10_input:0000000000000000 $t
+    {standard input}:227    .text.take_base_10_input:0000000000000000 take_base_10_input
+    {standard input}:267    .text.take_base_10_input:000000000000001c $d
+    {standard input}:277    .text.print_float_hex:0000000000000000 $t
+    {standard input}:284    .text.print_float_hex:0000000000000000 print_float_hex
+    {standard input}:323    .text.print_float_hex:0000000000000018 $d
+    {standard input}:332    .text.randomFloat:0000000000000000 $t
+    {standard input}:339    .text.randomFloat:0000000000000000 randomFloat
+    {standard input}:370    .text.randomFloat:0000000000000014 $d
+    {standard input}:377    .text.xor_floats:0000000000000000 $t
+    {standard input}:384    .text.xor_floats:0000000000000000 xor_floats
+    {standard input}:419    .text.startup.main:0000000000000000 $t
+    {standard input}:426    .text.startup.main:0000000000000000 main
+    {standard input}:653    .text.startup.main:0000000000000090 $d
+    {standard input}:673    .bss.volatile_sink:0000000000000000 $d
+    {standard input}:677    .bss.volatile_sink:0000000000000000 volatile_sink
+                           .group:0000000000000000 wm4.0.cac3647e893f83223ff923b0dca54cf3
+                           .group:0000000000000000 wm4.stdint.h.29.6d480f4ba0f60596e88234283d42444f
+                           .group:0000000000000000 wm4.hal.h.27.7074d56fee637e30bfe28f5452443c14
+                           .group:0000000000000000 wm4.ieeefp.h.77.f33a4dce62116f6f5175ff8bae57a54c
+                           .group:0000000000000000 wm4._newlib_version.h.4.1ef4e12f167f8b69d7c30054be56050d
+                           .group:0000000000000000 wm4.newlib.h.21.1ae2897bc09bbe4bc80ffb801fb02432
+                           .group:0000000000000000 wm4.features.h.22.026edb2397769f4ae13f35900dbdb560
+                           .group:0000000000000000 wm4.config.h.224.c701144a7b0518c6ee9b9b5465b79f81
+                           .group:0000000000000000 wm4._ansi.h.31.de524f58584151836e90d8620a16f8e8
+                           .group:0000000000000000 wm4.stdlib.h.13.4ed386f5c1a80d71e72172885d946ef2
+                           .group:0000000000000000 wm4.stddef.h.181.13772e73e5434e8cc4fafaaddad2b5da
+                           .group:0000000000000000 wm4.stddef.h.39.1bfffcccc3897d82880a055878218da6
+                           .group:0000000000000000 wm4._types.h.20.dd0d04dca3800a0d2a6129b87f3adbb2
+                           .group:0000000000000000 wm4.stddef.h.155.3588ebfdd1e8c7ede80509bb9c3b8009
+                           .group:0000000000000000 wm4._default_types.h.6.959254cf5f09734ea7516c89e8bb21bd
+                           .group:0000000000000000 wm4._types.h.127.34941de1b2539d59d5cac00e0dd27a45
+                           .group:0000000000000000 wm4.reent.h.17.e292bf8b0bec6c96e131a54347145a30
+                           .group:0000000000000000 wm4.lock.h.2.c0958401bd0ce484d507ee19aacab817
+                           .group:0000000000000000 wm4.reent.h.77.dcd6129ff07fe81bd5636db29abe53b2
+                           .group:0000000000000000 wm4.cdefs.h.49.3d0fe8ea14e93bda8c589d4f684b21b8
+                           .group:0000000000000000 wm4.alloca.h.8.dfc0c703c47ec3e69746825b17d9e66d
+                           .group:0000000000000000 wm4.stdlib.h.56.f4862cfbf4363a1db01842d5bdf72c18
+                           .group:0000000000000000 wm4.stdio.h.27.3fc80220048df77954e38daec3bb9670
+                           .group:0000000000000000 wm4.stddef.h.155.ba788add86a0e365f264484f110c3c29
+                           .group:0000000000000000 wm4.stdarg.h.34.3a23a216c0c293b3d2ea2e89281481e6
+                           .group:0000000000000000 wm4.types.h.40.8b6acba56cefbb11746718204edc8f5e
+                           .group:0000000000000000 wm4._stdint.h.10.c24fa3af3bc1706662bb5593a907e841
+                           .group:0000000000000000 wm4._endian.h.31.65a10590763c3dde1ac4a7f66d7d4891
+                           .group:0000000000000000 wm4.endian.h.9.49f3a4695c1b61e8a0808de3c4a106cb
+                           .group:0000000000000000 wm4._timeval.h.32.bec3221fa7a9bb0bdde696c9c57e47d2
+                           .group:0000000000000000 wm4.timespec.h.41.d855182eb0e690443ab8651bcedca6e1
+                           .group:0000000000000000 wm4.select.h.19.97ca6fd0c752a0f3b6719fd314d361e6
+                           .group:0000000000000000 wm4.types.h.51.5571ec98f267d17d3c670b7a3ba33afa
+                           .group:0000000000000000 wm4.sched.h.22.c60982713a5c428609783c78f9c78d95
+                           .group:0000000000000000 wm4._pthreadtypes.h.36.fcee9961c35163dde6267ef772ad1972
+                           .group:0000000000000000 wm4.stdio.h.2.4aa87247282eca6c8f36f9de33d8df1a
+                           .group:0000000000000000 wm4.stdio.h.81.932d0c162786b883f622b8d05c120c78
+                           .group:0000000000000000 wm4.math.h.13.97100c05caf9f40dd9f5a3cda48ccc01
+                           .group:0000000000000000 wm4.complex.h.9.e398adf3f8fc1220141cdf5a13c2daaf
+                           .group:0000000000000000 wm4.time.h.8.db4619001f026d0b4874c029fef0e91f
+                           .group:0000000000000000 wm4.time.h.2.4581ce0ffb6627cfc02162c94bf846c9
+                           .group:0000000000000000 wm4.time.h.25.0e6a0fdbc9955f5707ed54246ed2e089
+                           .group:0000000000000000 wm4.time.h.162.85256a1e684b58f061361067da714e0e
+                           .group:0000000000000000 wm4.string.h.8.c4b8571ce60dff2817f43fec8b86aecd
+
+UNDEFINED SYMBOLS
+putch
+getch
+__aeabi_d2f
+atof
+sprintf
+__aeabi_i2f
+__aeabi_fmul
+rand
+platform_init
+init_uart
+trigger_setup
+trigger_high
+trigger_low

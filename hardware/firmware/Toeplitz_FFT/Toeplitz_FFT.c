@@ -152,36 +152,37 @@ void reverse_array(float complex *X, int N, int s){
 
 //https://github.com/Swati-Verma671/Computation-of-DFT-using-Radix-2-DIT-FFT-algorithm/blob/main/code.m
 void DIT_FFT(float complex *X, int N){
+
+    //int collected = 0;
+
     int s = round(log2(N));
     reverse_array(X,N,s);
+    trigger_high();
     for(int stage=1; stage <= s; stage++){
         int p = 0;
         int q = 0 + pow(2,stage-1);
         int n = 0;
         while (n<=pow(2,(stage-1))-1 && q <=N)
         {
-            float complex w = cexp(-2*I*PI*n/(pow(2,stage)));
+
+            if (stage == 2){
+              trigger_low();
+            }
+
+            float complex w = 1;//cexp(-2*I*PI*n/(pow(2,stage)));
 
             float complex y = X[p];
             float complex z = X[q];
 
 
-            trigger_high();
-
-            //for(int i = 0; i < 20; i++){
-              //__asm__ volatile ("nop");
-            //}
+            // for(int i = 0; i < 20; i++){
+            //     __asm__ volatile ("nop");
+            // }
 
             z *= w;
             X[p] = y+z;
             X[q] = y-z;
 
-
-            //for(int i = 0; i < 20; i++){
-              //__asm__ volatile ("nop");
-            //}
-
-            trigger_low();
 
             p++;
             q++;

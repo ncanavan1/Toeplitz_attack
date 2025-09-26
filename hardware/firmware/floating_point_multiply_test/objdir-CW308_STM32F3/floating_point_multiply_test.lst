@@ -1,0 +1,632 @@
+   1              		.cpu cortex-m4
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 4
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"floating_point_multiply_test.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.led_ok,"ax",%progbits
+  16              		.align	1
+  17              		.weak	led_ok
+  18              		.arch armv7e-m
+  19              		.syntax unified
+  20              		.thumb
+  21              		.thumb_func
+  22              		.fpu softvfp
+  24              	led_ok:
+  25              	.LVL0:
+  26              	.LFB0:
+  27              		.file 1 ".././hal/hal.h"
+   1:.././hal/hal.h **** /*
+   2:.././hal/hal.h ****     This file is part of the ChipWhisperer Example Targets
+   3:.././hal/hal.h ****     Copyright (C) 2012-2015 NewAE Technology Inc.
+   4:.././hal/hal.h **** 
+   5:.././hal/hal.h ****     This program is free software: you can redistribute it and/or modify
+   6:.././hal/hal.h ****     it under the terms of the GNU General Public License as published by
+   7:.././hal/hal.h ****     the Free Software Foundation, either version 3 of the License, or
+   8:.././hal/hal.h ****     (at your option) any later version.
+   9:.././hal/hal.h **** 
+  10:.././hal/hal.h ****     This program is distributed in the hope that it will be useful,
+  11:.././hal/hal.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  12:.././hal/hal.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  13:.././hal/hal.h ****     GNU General Public License for more details.
+  14:.././hal/hal.h **** 
+  15:.././hal/hal.h ****     You should have received a copy of the GNU General Public License
+  16:.././hal/hal.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  17:.././hal/hal.h **** */
+  18:.././hal/hal.h **** 
+  19:.././hal/hal.h **** #ifndef HAL_H_
+  20:.././hal/hal.h **** #define HAL_H_
+  21:.././hal/hal.h **** 
+  22:.././hal/hal.h **** #include <stdint.h>
+  23:.././hal/hal.h **** 
+  24:.././hal/hal.h **** void platform_init(void);
+  25:.././hal/hal.h **** 
+  26:.././hal/hal.h **** //PLATFORM Define Types
+  27:.././hal/hal.h **** #define CW301_AVR      1
+  28:.././hal/hal.h **** #define CW301_XMEGA    2
+  29:.././hal/hal.h **** #define CW303          3
+  30:.././hal/hal.h **** #define CW304          4
+  31:.././hal/hal.h **** #define CW308_MEGARF   8
+  32:.././hal/hal.h **** #define CW308_PIC24FJ  10
+  33:.././hal/hal.h **** #define CW308_SAM4L    11
+  34:.././hal/hal.h **** #define CW308_SI4010   12
+  35:.././hal/hal.h **** #define CW308_MPC5748G 13
+  36:.././hal/hal.h **** #define CW308_STM32F0  14
+  37:.././hal/hal.h **** #define CW308_STM32F1  15
+  38:.././hal/hal.h **** #define CW308_STM32F2  16
+  39:.././hal/hal.h **** #define CW308_STM32F3  17
+  40:.././hal/hal.h **** #define CW308_STM32F4  18
+  41:.././hal/hal.h **** #define CW308_CC2538   19
+  42:.././hal/hal.h **** #define CW308_K24F     20
+  43:.././hal/hal.h **** #define CW308_NRF52840 21
+  44:.././hal/hal.h **** #define CW308_AURIX    22
+  45:.././hal/hal.h **** #define CW308_SAML11   23
+  46:.././hal/hal.h **** #define CW308_EFM32TG11B 24
+  47:.././hal/hal.h **** #define CW308_K82F     25
+  48:.././hal/hal.h **** #define CW308_LPC55S6X 26
+  49:.././hal/hal.h **** #define CW308_PSOC62   27
+  50:.././hal/hal.h **** #define CW308_IMXRT1062 28
+  51:.././hal/hal.h **** #define CW308_FE310    29
+  52:.././hal/hal.h **** #define CW308_EFR32MG21A  30
+  53:.././hal/hal.h **** #define CW308_EFM32GG11  31
+  54:.././hal/hal.h **** #define CW308_STM32L5  32
+  55:.././hal/hal.h **** #define CW308_STM32L4  33
+  56:.././hal/hal.h **** #define CW308_RX65N  34
+  57:.././hal/hal.h **** #define CW308_MPC5676R 35
+  58:.././hal/hal.h **** #define CW308_NEORV32  36
+  59:.././hal/hal.h **** #define CW305_IBEX  37
+  60:.././hal/hal.h **** 
+  61:.././hal/hal.h **** //HAL_TYPE Define Types
+  62:.././hal/hal.h **** #define HAL_avr      1
+  63:.././hal/hal.h **** #define HAL_xmega    2
+  64:.././hal/hal.h **** #define HAL_pic24f   3
+  65:.././hal/hal.h **** #define HAL_sam4l    4
+  66:.././hal/hal.h **** #define HAL_stm32f0  5
+  67:.././hal/hal.h **** #define HAL_stm32f1  6
+  68:.././hal/hal.h **** #define HAL_stm32f2  7
+  69:.././hal/hal.h **** #define HAL_stm32f3  8
+  70:.././hal/hal.h **** #define HAL_stm32f4  9
+  71:.././hal/hal.h **** #define HAL_cc2538   10
+  72:.././hal/hal.h **** #define HAL_k24f     11
+  73:.././hal/hal.h **** #define HAL_nrf52840 12
+  74:.././hal/hal.h **** #define HAL_stm32f0_nano 13
+  75:.././hal/hal.h **** #define HAL_aurix    14
+  76:.././hal/hal.h **** #define HAL_saml11   15
+  77:.././hal/hal.h **** #define HAL_efm32tg11b 16
+  78:.././hal/hal.h **** #define HAL_k82f     17
+  79:.././hal/hal.h **** #define HAL_lpc55s6x 18
+  80:.././hal/hal.h **** #define HAL_psoc62   19
+  81:.././hal/hal.h **** #define HAL_imxrt1062 20
+  82:.././hal/hal.h **** #define HAL_fe310    21
+  83:.././hal/hal.h **** #define HAL_efr32mg21a 22
+  84:.././hal/hal.h **** #define HAL_efm32gg11 23
+  85:.././hal/hal.h **** #define HAL_stm32l5 24
+  86:.././hal/hal.h **** #define HAL_stm32l4 25
+  87:.././hal/hal.h **** #define HAL_rx65n 26
+  88:.././hal/hal.h **** #define HAL_mpc5676r 27
+  89:.././hal/hal.h **** #define HAL_neorv32  28
+  90:.././hal/hal.h **** #define HAL_sam4s  29
+  91:.././hal/hal.h **** #define HAL_ibex  30
+  92:.././hal/hal.h **** 
+  93:.././hal/hal.h **** #if HAL_TYPE == HAL_avr
+  94:.././hal/hal.h ****     #include <avr/io.h>
+  95:.././hal/hal.h ****     #include <util/delay.h>
+  96:.././hal/hal.h ****     #include "avr/avr_hal.h"
+  97:.././hal/hal.h **** #elif HAL_TYPE == HAL_xmega
+  98:.././hal/hal.h ****     #include <avr/io.h>
+  99:.././hal/hal.h ****     #include <util/delay.h>
+ 100:.././hal/hal.h ****     #include "xmega/xmega_hal.h"
+ 101:.././hal/hal.h ****     #include "xmega/avr_compiler.h"
+ 102:.././hal/hal.h **** #elif HAL_TYPE == HAL_pic24f
+ 103:.././hal/hal.h ****     #include <xc.h>
+ 104:.././hal/hal.h ****     #include "pic24f/pic24f_hal.h"
+ 105:.././hal/hal.h ****     #include "pic24f/uart.h"
+ 106:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4l
+ 107:.././hal/hal.h ****     #include "sam4l/sam4l_hal.h"
+ 108:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0
+ 109:.././hal/hal.h **** 	#include "stm32f0/stm32f0_hal.h"
+ 110:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f1
+ 111:.././hal/hal.h **** 	#include "stm32f1/stm32f1_hal.h"
+ 112:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f2
+ 113:.././hal/hal.h **** 	#include "stm32f2/stm32f2_hal.h"
+ 114:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f3
+ 115:.././hal/hal.h **** 	#include "stm32f3/stm32f3_hal.h"
+ 116:.././hal/hal.h **** 	#ifdef SECCAN
+ 117:.././hal/hal.h **** 		#include "stm32f3/stm32f3_hal_seccan.h"
+ 118:.././hal/hal.h **** 	#endif
+ 119:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f4
+ 120:.././hal/hal.h **** 	#include "stm32f4/stm32f4_hal.h"
+ 121:.././hal/hal.h **** #elif HAL_TYPE == HAL_cc2538
+ 122:.././hal/hal.h **** 	#include "cc2538/cc2538_hal.h"
+ 123:.././hal/hal.h **** #elif HAL_TYPE == HAL_k24f
+ 124:.././hal/hal.h ****     #include "k24f/k24f_hal.h"
+ 125:.././hal/hal.h **** #elif HAL_TYPE == HAL_k82f
+ 126:.././hal/hal.h **** #include "k82f/k82f_hal.h"
+ 127:.././hal/hal.h **** #elif HAL_TYPE == HAL_nrf52840
+ 128:.././hal/hal.h ****     #include "nrf52840/nrf52840_hal.h"   
+ 129:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32f0_nano
+ 130:.././hal/hal.h ****     #include "stm32f0/stm32f0_hal.h" 
+ 131:.././hal/hal.h ****     void led_error(unsigned int status);
+ 132:.././hal/hal.h ****     void led_ok(unsigned int status);
+ 133:.././hal/hal.h **** #elif HAL_TYPE == HAL_aurix
+ 134:.././hal/hal.h ****     #include "aurix/aurix_hal.h"
+ 135:.././hal/hal.h **** #elif HAL_TYPE == HAL_saml11
+ 136:.././hal/hal.h ****      #include "saml11/saml11_hal.h"
+ 137:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32tg11b
+ 138:.././hal/hal.h ****      #include "efm32tg11b/efm32tg11b_hal.h"
+ 139:.././hal/hal.h **** #elif HAL_TYPE == HAL_lpc55s6x
+ 140:.././hal/hal.h ****      #include "lpc55s6x/lpc55s6x_hal.h"
+ 141:.././hal/hal.h **** #elif HAL_TYPE == HAL_psoc62
+ 142:.././hal/hal.h ****     #include "psoc62/psoc62_hal.h"
+ 143:.././hal/hal.h **** #elif HAL_TYPE == HAL_imxrt1062
+ 144:.././hal/hal.h ****     #include "imxrt1062/imxrt1062_hal.h"
+ 145:.././hal/hal.h **** #elif HAL_TYPE == HAL_fe310
+ 146:.././hal/hal.h ****     #include "fe310/fe310_hal.h"
+ 147:.././hal/hal.h **** #elif HAL_TYPE == HAL_efr32mg21a
+ 148:.././hal/hal.h ****     #include "efr32mg21a/efr32mg21a_hal.h"
+ 149:.././hal/hal.h **** #elif HAL_TYPE == HAL_efm32gg11
+ 150:.././hal/hal.h ****     #include "efm32gg11/efm32gg11_hal.h"
+ 151:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l5
+ 152:.././hal/hal.h ****     #include "stm32l5/stm32l5_hal.h"
+ 153:.././hal/hal.h **** #elif HAL_TYPE == HAL_stm32l4
+ 154:.././hal/hal.h ****     #include "stm32l4/stm32l4_hal.h"
+ 155:.././hal/hal.h **** #elif HAL_TYPE == HAL_rx65n
+ 156:.././hal/hal.h ****     #include "rx65n/rx65n_hal.h"
+ 157:.././hal/hal.h **** #elif HAL_TYPE == HAL_mpc5676r
+ 158:.././hal/hal.h ****     #include "mpc5676r/MPC5676R_hal.h"
+ 159:.././hal/hal.h **** #elif HAL_TYPE == HAL_neorv32
+ 160:.././hal/hal.h ****     #include "neorv32/neorv32_hal.h"
+ 161:.././hal/hal.h **** #elif HAL_TYPE == HAL_sam4s
+ 162:.././hal/hal.h ****     #include "sam4s/sam4s_hal.h"
+ 163:.././hal/hal.h **** #elif HAL_TYPE == HAL_ibex
+ 164:.././hal/hal.h ****     #include "ibex/ibex_hal.h"
+ 165:.././hal/hal.h **** #else
+ 166:.././hal/hal.h ****     #error "Unsupported HAL Type"
+ 167:.././hal/hal.h **** #endif
+ 168:.././hal/hal.h **** 
+ 169:.././hal/hal.h **** #if PLATFORM == CW308_MEGARF
+ 170:.././hal/hal.h ****     #undef trigger_setup
+ 171:.././hal/hal.h ****     #undef trigger_high
+ 172:.././hal/hal.h ****     #undef trigger_low
+ 173:.././hal/hal.h ****     #define trigger_setup() DDRD |= 0x02
+ 174:.././hal/hal.h ****     #define trigger_high()  PORTD |= 0x02
+ 175:.././hal/hal.h ****     #define trigger_low()   PORTD &= ~(0x02)
+ 176:.././hal/hal.h ****     
+ 177:.././hal/hal.h ****     #define HW_AES128_Init();      AES_CTRL = 0x00;
+ 178:.././hal/hal.h **** 
+ 179:.././hal/hal.h ****     #define HW_AES128_LoadKey(key);  for (uint8_t i = 0; i < 16; i++){ \
+ 180:.././hal/hal.h ****                                      AES_KEY = *(key+i); \
+ 181:.././hal/hal.h ****                                   }
+ 182:.././hal/hal.h **** 
+ 183:.././hal/hal.h ****     #define HW_AES128_Enc(pt);  for (uint8_t i = 0; i < 16; i++){ \
+ 184:.././hal/hal.h ****                                     AES_STATE = *(pt+i); \
+ 185:.././hal/hal.h ****                                 } \
+ 186:.././hal/hal.h ****                                   \
+ 187:.././hal/hal.h ****                                 AES_CTRL |= 1<<AES_REQUEST; \
+ 188:.././hal/hal.h ****                                   \
+ 189:.././hal/hal.h ****                                 /*Wait for done  */ \
+ 190:.././hal/hal.h ****                                 while ((AES_STATUS & (1<<AES_DONE)) == 0){ \
+ 191:.././hal/hal.h ****                                     ; \
+ 192:.././hal/hal.h ****                                 } \
+ 193:.././hal/hal.h ****                                   \
+ 194:.././hal/hal.h ****                                 for (uint8_t i = 0; i < 16; i++){ \
+ 195:.././hal/hal.h ****                                     *(pt+i) = AES_STATE; \
+ 196:.././hal/hal.h ****                                 }
+ 197:.././hal/hal.h ****     
+ 198:.././hal/hal.h **** #endif
+ 199:.././hal/hal.h **** 
+ 200:.././hal/hal.h **** __attribute__((weak)) void led_ok(unsigned int status)
+ 201:.././hal/hal.h **** {
+  28              		.loc 1 201 1 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 202:.././hal/hal.h **** }
+  33              		.loc 1 202 1 view .LVU1
+  34 0000 7047     		bx	lr
+  35              		.cfi_endproc
+  36              	.LFE0:
+  38              		.section	.text.led_error,"ax",%progbits
+  39              		.align	1
+  40              		.weak	led_error
+  41              		.syntax unified
+  42              		.thumb
+  43              		.thumb_func
+  44              		.fpu softvfp
+  46              	led_error:
+  47              	.LFB8:
+  48              		.cfi_startproc
+  49              		@ args = 0, pretend = 0, frame = 0
+  50              		@ frame_needed = 0, uses_anonymous_args = 0
+  51              		@ link register save eliminated.
+  52 0000 7047     		bx	lr
+  53              		.cfi_endproc
+  54              	.LFE8:
+  56              		.section	.rodata.str1.1,"aMS",%progbits,1
+  57              	.LC0:
+  58 0000 46505F4D 		.ascii	"FP_MUL_READY\000"
+  58      554C5F52 
+  58      45414459 
+  58      00
+  59              	.LC1:
+  60 000d 25662025 		.ascii	"%f %f\000"
+  60      6600
+  61              	.LC2:
+  62 0013 4241445F 		.ascii	"BAD_INPUT\000"
+  62      494E5055 
+  62      5400
+  63              		.global	__aeabi_fmul
+  64              		.global	__aeabi_f2d
+  65              	.LC3:
+  66 001d 52455355 		.ascii	"RESULT %.*g\012\000"
+  66      4C542025 
+  66      2E2A670A 
+  66      00
+  67              		.section	.text.startup.main,"ax",%progbits
+  68              		.align	1
+  69              		.global	main
+  70              		.syntax unified
+  71              		.thumb
+  72              		.thumb_func
+  73              		.fpu softvfp
+  75              	main:
+  76              	.LFB6:
+  77              		.file 2 "floating_point_multiply_test.c"
+   1:floating_point_multiply_test.c **** #include "hal.h"
+   2:floating_point_multiply_test.c **** #include <stdint.h>
+   3:floating_point_multiply_test.c **** #include <stdlib.h>
+   4:floating_point_multiply_test.c **** #include <stdio.h>
+   5:floating_point_multiply_test.c **** #include <math.h>
+   6:floating_point_multiply_test.c **** #include <complex.h>
+   7:floating_point_multiply_test.c **** #include <time.h>
+   8:floating_point_multiply_test.c **** 
+   9:floating_point_multiply_test.c **** static volatile float volatile_sink;
+  10:floating_point_multiply_test.c **** 
+  11:floating_point_multiply_test.c **** /* Blocking read of a line from stdin (UART) into buffer */
+  12:floating_point_multiply_test.c **** static int read_line(char *buf, int maxlen) {
+  13:floating_point_multiply_test.c ****     int i = 0;
+  14:floating_point_multiply_test.c ****     int c;
+  15:floating_point_multiply_test.c ****     while (i < maxlen - 1) {
+  16:floating_point_multiply_test.c ****         c = getchar();
+  17:floating_point_multiply_test.c ****         if (c == EOF) return -1;
+  18:floating_point_multiply_test.c ****         buf[i++] = (char)c;
+  19:floating_point_multiply_test.c ****         if (c == '\n') break;
+  20:floating_point_multiply_test.c ****     }
+  21:floating_point_multiply_test.c ****     buf[i] = '\0';
+  22:floating_point_multiply_test.c ****     return i;
+  23:floating_point_multiply_test.c **** }
+  24:floating_point_multiply_test.c **** 
+  25:floating_point_multiply_test.c **** int main(void) {
+  78              		.loc 2 25 16 view -0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 144
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  26:floating_point_multiply_test.c ****   platform_init();
+  82              		.loc 2 26 3 view .LVU3
+  25:floating_point_multiply_test.c ****   platform_init();
+  83              		.loc 2 25 16 is_stmt 0 view .LVU4
+  84 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+  85              	.LCFI0:
+  86              		.cfi_def_cfa_offset 32
+  87              		.cfi_offset 4, -32
+  88              		.cfi_offset 5, -28
+  89              		.cfi_offset 6, -24
+  90              		.cfi_offset 7, -20
+  91              		.cfi_offset 8, -16
+  92              		.cfi_offset 9, -12
+  93              		.cfi_offset 10, -8
+  94              		.cfi_offset 14, -4
+  27:floating_point_multiply_test.c ****   init_uart();
+  28:floating_point_multiply_test.c ****   trigger_setup();
+  29:floating_point_multiply_test.c **** 
+  30:floating_point_multiply_test.c ****   /* Simple prompt (optional) */
+  31:floating_point_multiply_test.c ****   printf("FP_MUL_READY\n");
+  32:floating_point_multiply_test.c ****   fflush(stdout);
+  95              		.loc 2 32 10 view .LVU5
+  96 0004 284D     		ldr	r5, .L18
+  97              	.LBB5:
+  33:floating_point_multiply_test.c **** 
+  34:floating_point_multiply_test.c ****   char line[128];
+  35:floating_point_multiply_test.c ****   while (1) {
+  36:floating_point_multiply_test.c ****       /* Read a line like: "1.234 5.678\n" */
+  37:floating_point_multiply_test.c ****       if (read_line(line, sizeof(line)) <= 0) {
+  38:floating_point_multiply_test.c ****           /* nothing or EOF, continue */
+  39:floating_point_multiply_test.c ****           continue;
+  40:floating_point_multiply_test.c ****       }
+  41:floating_point_multiply_test.c **** 
+  42:floating_point_multiply_test.c ****       float a = 0.0f, b = 0.0f;
+  43:floating_point_multiply_test.c ****       /* Parse two floats; robustly handle whitespace */
+  44:floating_point_multiply_test.c ****       int parsed = sscanf(line, "%f %f", &a, &b);
+  98              		.loc 2 44 20 view .LVU6
+  99 0006 DFF8A480 		ldr	r8, .L18+4
+  45:floating_point_multiply_test.c ****       if (parsed < 2) {
+  46:floating_point_multiply_test.c ****           printf("BAD_INPUT\n");
+  47:floating_point_multiply_test.c ****           fflush(stdout);
+  48:floating_point_multiply_test.c ****           continue;
+  49:floating_point_multiply_test.c ****       }
+  50:floating_point_multiply_test.c **** 
+  51:floating_point_multiply_test.c ****       /* trigger -> multiply -> untrigger */
+  52:floating_point_multiply_test.c ****       trigger_high();
+  53:floating_point_multiply_test.c **** 
+  54:floating_point_multiply_test.c ****       /* The multiply itself */
+  55:floating_point_multiply_test.c ****       volatile float c = a * b;
+  56:floating_point_multiply_test.c **** 
+  57:floating_point_multiply_test.c ****       /*
+  58:floating_point_multiply_test.c ****         * Small software fence to ensure result is materialised and not optimized away.
+  59:floating_point_multiply_test.c ****         * (volatile_sink forces the compiler to keep the result)
+  60:floating_point_multiply_test.c ****         */
+  61:floating_point_multiply_test.c ****       volatile_sink = c;
+ 100              		.loc 2 61 21 view .LVU7
+ 101 000a 294F     		ldr	r7, .L18+8
+ 102              	.LBE5:
+  25:floating_point_multiply_test.c ****   platform_init();
+ 103              		.loc 2 25 16 view .LVU8
+ 104 000c A4B0     		sub	sp, sp, #144
+ 105              	.LCFI1:
+ 106              		.cfi_def_cfa_offset 176
+  26:floating_point_multiply_test.c ****   init_uart();
+ 107              		.loc 2 26 3 view .LVU9
+ 108 000e FFF7FEFF 		bl	platform_init
+ 109              	.LVL1:
+  27:floating_point_multiply_test.c ****   trigger_setup();
+ 110              		.loc 2 27 3 is_stmt 1 view .LVU10
+ 111 0012 FFF7FEFF 		bl	init_uart
+ 112              	.LVL2:
+  28:floating_point_multiply_test.c **** 
+ 113              		.loc 2 28 3 view .LVU11
+ 114 0016 FFF7FEFF 		bl	trigger_setup
+ 115              	.LVL3:
+  31:floating_point_multiply_test.c ****   fflush(stdout);
+ 116              		.loc 2 31 3 view .LVU12
+ 117 001a 2648     		ldr	r0, .L18+12
+ 118 001c FFF7FEFF 		bl	puts
+ 119              	.LVL4:
+  32:floating_point_multiply_test.c **** 
+ 120              		.loc 2 32 3 view .LVU13
+  32:floating_point_multiply_test.c **** 
+ 121              		.loc 2 32 10 is_stmt 0 view .LVU14
+ 122 0020 2B68     		ldr	r3, [r5]
+  32:floating_point_multiply_test.c **** 
+ 123              		.loc 2 32 3 view .LVU15
+ 124 0022 9868     		ldr	r0, [r3, #8]
+ 125 0024 FFF7FEFF 		bl	fflush
+ 126              	.LVL5:
+ 127              	.LBB8:
+  42:floating_point_multiply_test.c ****       /* Parse two floats; robustly handle whitespace */
+ 128              		.loc 2 42 13 view .LVU16
+ 129 0028 0026     		movs	r6, #0
+ 130              	.L4:
+ 131              	.LBE8:
+  34:floating_point_multiply_test.c ****   while (1) {
+ 132              		.loc 2 34 3 is_stmt 1 view .LVU17
+  35:floating_point_multiply_test.c ****       /* Read a line like: "1.234 5.678\n" */
+ 133              		.loc 2 35 3 view .LVU18
+ 134              	.LBB9:
+  37:floating_point_multiply_test.c ****           /* nothing or EOF, continue */
+ 135              		.loc 2 37 7 view .LVU19
+ 136              	.LVL6:
+ 137              	.LBB6:
+ 138              	.LBI6:
+  12:floating_point_multiply_test.c ****     int i = 0;
+ 139              		.loc 2 12 12 view .LVU20
+ 140              	.LBB7:
+  15:floating_point_multiply_test.c ****         c = getchar();
+ 141              		.loc 2 15 11 view .LVU21
+ 142 002a 0DF1100A 		add	r10, sp, #16
+ 143              	.LVL7:
+  13:floating_point_multiply_test.c ****     int c;
+ 144              		.loc 2 13 9 is_stmt 0 view .LVU22
+ 145 002e 0024     		movs	r4, #0
+ 146 0030 D146     		mov	r9, r10
+ 147              	.LVL8:
+ 148              	.L7:
+  16:floating_point_multiply_test.c ****         if (c == EOF) return -1;
+ 149              		.loc 2 16 9 is_stmt 1 view .LVU23
+  16:floating_point_multiply_test.c ****         if (c == EOF) return -1;
+ 150              		.loc 2 16 13 is_stmt 0 view .LVU24
+ 151 0032 FFF7FEFF 		bl	getchar
+ 152              	.LVL9:
+  17:floating_point_multiply_test.c ****         buf[i++] = (char)c;
+ 153              		.loc 2 17 9 is_stmt 1 view .LVU25
+  17:floating_point_multiply_test.c ****         buf[i++] = (char)c;
+ 154              		.loc 2 17 12 is_stmt 0 view .LVU26
+ 155 0036 431C     		adds	r3, r0, #1
+ 156 0038 F7D0     		beq	.L4
+  18:floating_point_multiply_test.c ****         if (c == '\n') break;
+ 157              		.loc 2 18 9 is_stmt 1 view .LVU27
+  19:floating_point_multiply_test.c ****     }
+ 158              		.loc 2 19 12 is_stmt 0 view .LVU28
+ 159 003a 0A28     		cmp	r0, #10
+  18:floating_point_multiply_test.c ****         if (c == '\n') break;
+ 160              		.loc 2 18 20 view .LVU29
+ 161 003c 0AF8010B 		strb	r0, [r10], #1
+  18:floating_point_multiply_test.c ****         if (c == '\n') break;
+ 162              		.loc 2 18 14 view .LVU30
+ 163 0040 04F10104 		add	r4, r4, #1
+ 164              	.LVL10:
+  19:floating_point_multiply_test.c ****     }
+ 165              		.loc 2 19 9 is_stmt 1 view .LVU31
+  19:floating_point_multiply_test.c ****     }
+ 166              		.loc 2 19 12 is_stmt 0 view .LVU32
+ 167 0044 01D0     		beq	.L6
+  15:floating_point_multiply_test.c ****         c = getchar();
+ 168              		.loc 2 15 11 is_stmt 1 view .LVU33
+ 169 0046 7F2C     		cmp	r4, #127
+ 170 0048 F3D1     		bne	.L7
+ 171              	.L6:
+  21:floating_point_multiply_test.c ****     return i;
+ 172              		.loc 2 21 5 view .LVU34
+  21:floating_point_multiply_test.c ****     return i;
+ 173              		.loc 2 21 12 is_stmt 0 view .LVU35
+ 174 004a 04F19003 		add	r3, r4, #144
+ 175 004e 0DEB0304 		add	r4, sp, r3
+ 176              	.LVL11:
+  21:floating_point_multiply_test.c ****     return i;
+ 177              		.loc 2 21 12 view .LVU36
+ 178 0052 0023     		movs	r3, #0
+ 179              	.LVL12:
+  21:floating_point_multiply_test.c ****     return i;
+ 180              		.loc 2 21 12 view .LVU37
+ 181 0054 04F8803C 		strb	r3, [r4, #-128]
+  22:floating_point_multiply_test.c **** }
+ 182              		.loc 2 22 5 is_stmt 1 view .LVU38
+ 183              	.LVL13:
+  22:floating_point_multiply_test.c **** }
+ 184              		.loc 2 22 5 is_stmt 0 view .LVU39
+ 185              	.LBE7:
+ 186              	.LBE6:
+  42:floating_point_multiply_test.c ****       /* Parse two floats; robustly handle whitespace */
+ 187              		.loc 2 42 7 is_stmt 1 view .LVU40
+  44:floating_point_multiply_test.c ****       if (parsed < 2) {
+ 188              		.loc 2 44 20 is_stmt 0 view .LVU41
+ 189 0058 01AA     		add	r2, sp, #4
+ 190 005a 02AB     		add	r3, sp, #8
+ 191 005c 4146     		mov	r1, r8
+ 192 005e 4846     		mov	r0, r9
+  42:floating_point_multiply_test.c ****       /* Parse two floats; robustly handle whitespace */
+ 193              		.loc 2 42 13 view .LVU42
+ 194 0060 0196     		str	r6, [sp, #4]	@ float
+  42:floating_point_multiply_test.c ****       /* Parse two floats; robustly handle whitespace */
+ 195              		.loc 2 42 23 view .LVU43
+ 196 0062 0296     		str	r6, [sp, #8]	@ float
+  44:floating_point_multiply_test.c ****       if (parsed < 2) {
+ 197              		.loc 2 44 7 is_stmt 1 view .LVU44
+  44:floating_point_multiply_test.c ****       if (parsed < 2) {
+ 198              		.loc 2 44 20 is_stmt 0 view .LVU45
+ 199 0064 FFF7FEFF 		bl	sscanf
+ 200              	.LVL14:
+  45:floating_point_multiply_test.c ****           printf("BAD_INPUT\n");
+ 201              		.loc 2 45 7 is_stmt 1 view .LVU46
+  45:floating_point_multiply_test.c ****           printf("BAD_INPUT\n");
+ 202              		.loc 2 45 10 is_stmt 0 view .LVU47
+ 203 0068 0128     		cmp	r0, #1
+ 204 006a 07DC     		bgt	.L8
+  46:floating_point_multiply_test.c ****           fflush(stdout);
+ 205              		.loc 2 46 11 is_stmt 1 view .LVU48
+ 206 006c 1248     		ldr	r0, .L18+16
+ 207              	.LVL15:
+  46:floating_point_multiply_test.c ****           fflush(stdout);
+ 208              		.loc 2 46 11 is_stmt 0 view .LVU49
+ 209 006e FFF7FEFF 		bl	puts
+ 210              	.LVL16:
+  47:floating_point_multiply_test.c ****           continue;
+ 211              		.loc 2 47 11 is_stmt 1 view .LVU50
+ 212              	.L17:
+  62:floating_point_multiply_test.c **** 
+  63:floating_point_multiply_test.c ****       trigger_low();
+  64:floating_point_multiply_test.c **** 
+  65:floating_point_multiply_test.c ****       /* Optionally perform a tiny delay if you want measurable time window:
+  66:floating_point_multiply_test.c ****         * for (volatile int i=0;i<100;i++);  // uncomment if needed
+  67:floating_point_multiply_test.c ****         */
+  68:floating_point_multiply_test.c **** 
+  69:floating_point_multiply_test.c ****       /* Print back the result */
+  70:floating_point_multiply_test.c ****       printf("RESULT %.*g\n", 9, c);  /* prints with up to 9 significant digits */
+  71:floating_point_multiply_test.c ****       fflush(stdout);
+ 213              		.loc 2 71 7 view .LVU51
+ 214              		.loc 2 71 14 is_stmt 0 view .LVU52
+ 215 0072 2B68     		ldr	r3, [r5]
+ 216              		.loc 2 71 7 view .LVU53
+ 217 0074 9868     		ldr	r0, [r3, #8]
+ 218 0076 FFF7FEFF 		bl	fflush
+ 219              	.LVL17:
+ 220 007a D6E7     		b	.L4
+ 221              	.LVL18:
+ 222              	.L8:
+  52:floating_point_multiply_test.c **** 
+ 223              		.loc 2 52 7 is_stmt 1 view .LVU54
+ 224 007c FFF7FEFF 		bl	trigger_high
+ 225              	.LVL19:
+  55:floating_point_multiply_test.c **** 
+ 226              		.loc 2 55 7 view .LVU55
+  55:floating_point_multiply_test.c **** 
+ 227              		.loc 2 55 28 is_stmt 0 view .LVU56
+ 228 0080 0299     		ldr	r1, [sp, #8]	@ float
+ 229 0082 0198     		ldr	r0, [sp, #4]	@ float
+ 230 0084 FFF7FEFF 		bl	__aeabi_fmul
+ 231              	.LVL20:
+  55:floating_point_multiply_test.c **** 
+ 232              		.loc 2 55 22 view .LVU57
+ 233 0088 0390     		str	r0, [sp, #12]	@ float
+  61:floating_point_multiply_test.c **** 
+ 234              		.loc 2 61 7 is_stmt 1 view .LVU58
+  61:floating_point_multiply_test.c **** 
+ 235              		.loc 2 61 21 is_stmt 0 view .LVU59
+ 236 008a 039B     		ldr	r3, [sp, #12]	@ float
+ 237 008c 3B60     		str	r3, [r7]	@ float
+  63:floating_point_multiply_test.c **** 
+ 238              		.loc 2 63 7 is_stmt 1 view .LVU60
+ 239 008e FFF7FEFF 		bl	trigger_low
+ 240              	.LVL21:
+  70:floating_point_multiply_test.c ****       fflush(stdout);
+ 241              		.loc 2 70 7 view .LVU61
+ 242 0092 0398     		ldr	r0, [sp, #12]	@ float
+ 243 0094 FFF7FEFF 		bl	__aeabi_f2d
+ 244              	.LVL22:
+ 245 0098 0246     		mov	r2, r0
+ 246 009a 0B46     		mov	r3, r1
+ 247 009c 0748     		ldr	r0, .L18+20
+ 248 009e 0921     		movs	r1, #9
+ 249 00a0 FFF7FEFF 		bl	printf
+ 250              	.LVL23:
+ 251 00a4 E5E7     		b	.L17
+ 252              	.L19:
+ 253 00a6 00BF     		.align	2
+ 254              	.L18:
+ 255 00a8 00000000 		.word	_impure_ptr
+ 256 00ac 0D000000 		.word	.LC1
+ 257 00b0 00000000 		.word	.LANCHOR0
+ 258 00b4 00000000 		.word	.LC0
+ 259 00b8 13000000 		.word	.LC2
+ 260 00bc 1D000000 		.word	.LC3
+ 261              	.LBE9:
+ 262              		.cfi_endproc
+ 263              	.LFE6:
+ 265              		.bss
+ 266              		.align	2
+ 267              		.set	.LANCHOR0,. + 0
+ 270              	volatile_sink:
+ 271 0000 00000000 		.space	4
+ 272              		.text
+ 273              	.Letext0:
+ 274              		.file 3 "/usr/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 275              		.file 4 "/usr/include/newlib/sys/_types.h"
+ 276              		.file 5 "/usr/include/newlib/sys/reent.h"
+ 277              		.file 6 "/usr/include/newlib/sys/lock.h"
+ 278              		.file 7 "/usr/include/newlib/stdio.h"
+ 279              		.file 8 ".././hal/stm32f3/stm32f3_hal.h"
+ 280              		.file 9 "<built-in>"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 floating_point_multiply_test.c
+     /tmp/ccKWmlf9.s:16     .text.led_ok:0000000000000000 $t
+     /tmp/ccKWmlf9.s:24     .text.led_ok:0000000000000000 led_ok
+     /tmp/ccKWmlf9.s:39     .text.led_error:0000000000000000 $t
+     /tmp/ccKWmlf9.s:46     .text.led_error:0000000000000000 led_error
+     /tmp/ccKWmlf9.s:68     .text.startup.main:0000000000000000 $t
+     /tmp/ccKWmlf9.s:75     .text.startup.main:0000000000000000 main
+     /tmp/ccKWmlf9.s:255    .text.startup.main:00000000000000a8 $d
+     /tmp/ccKWmlf9.s:266    .bss:0000000000000000 $d
+     /tmp/ccKWmlf9.s:270    .bss:0000000000000000 volatile_sink
+
+UNDEFINED SYMBOLS
+__aeabi_fmul
+__aeabi_f2d
+platform_init
+init_uart
+trigger_setup
+puts
+fflush
+getchar
+sscanf
+trigger_high
+trigger_low
+printf
+_impure_ptr
