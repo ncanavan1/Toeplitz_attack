@@ -81,6 +81,16 @@ void long_delay(){
 }
 
 
+void take_base_2_input(int *arr_int, int arrLen){
+  int maxlen = 1024;
+  char arr_char[maxlen];
+  my_read(arr_char, maxlen);
+  my_puts("\n");
+  binary_char_to_int(arr_char, arr_int, arrLen);
+  print_int_array_serial(arr_int, arrLen);
+
+}
+
 void print_int_array_serial(const int *arr, int len) {
     char buffer[16]; // Temporary buffer to hold string representations of integers
     for (int i = 0; i < len; i++) {
@@ -99,7 +109,39 @@ void print_int_array_serial(const int *arr, int len) {
 ////////////////////////
 /// FFT STUFF //////////
 
+void run_xor_test(){
 
+  int repeats = 100;
+  int xor_res = 0;
+  int a = 0;
+  int b = 0;
+
+  for(int i = 0; i < repeats; i++){
+    if(i%4 == 0){
+      a = 0;
+      b = 0;
+    }
+    else if (i%4 == 1){
+      a = 0;
+      b = 1;
+    }
+    else if (i%4 == 2){
+      a = 1;
+      b = 0;
+    }
+    else if (i%4 == 3){
+      a = 1;
+      b = 1;
+    }
+
+    trigger_high();
+    xor_res = a ^ b;
+    trigger_low();
+    my_puts("\nDone");
+
+  }
+
+}
 
 
 int main(void)
@@ -115,39 +157,14 @@ int main(void)
     my_puts("Start?");
 
     while(1){
+      my_puts("\nPress any key to start\n");
+      int maxlen = 1024;
+      char arr_char[maxlen];
+      my_read(arr_char, maxlen);  
+      run_xor_test();  
 
-        if (count%4 == 0){
-          a = 0;
-          b = 0;
-        }
-        else if (count%4 == 1){
-          a = 0;
-          b = 1;
-        }
-        else if (count%4 == 2){
-          a = 1;
-          b = 0;
-        }
-        else if (count%4 == 3){
-          a = 1;
-          b = 1;
-        }
-
-
-        int xor;
-        trigger_high();
-        for(volatile int i = 0; i < 5; i++) {
-          asm volatile("nop");
-        }
-        xor = a ^ b;
-        for(volatile int i = 0; i < 5; i++) {
-          asm volatile("nop");
-        }
-        trigger_low();
-        xor = 0;
-        count++;
-      }
-      return 1;
+    }
+    return 1;
   }
 
 
